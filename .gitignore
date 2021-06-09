@@ -1,0 +1,4 @@
+#忽略obj 和bin 文件所有内容
+/bin
+/obj
+/.vscode 
