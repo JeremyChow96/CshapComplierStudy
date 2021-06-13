@@ -23,5 +23,4 @@ namespace complier
             yield return Right;
         }
     }
-
 }

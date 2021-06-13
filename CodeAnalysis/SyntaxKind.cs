@@ -6,7 +6,7 @@
         BadToken,
         EndOfFileToken,
         WhitespaceToken,
-        NumberToken,
+        literalToken,
         PlusToken,
         MinusToken,
         StarToken,
@@ -16,8 +16,9 @@
 
         //Expressions
         LiteralExpression,
+        UnaryExpression,
         BinaryExpression,
-        ParenthesizedExpression
+        ParenthesizedExpression,
     }
 
 }

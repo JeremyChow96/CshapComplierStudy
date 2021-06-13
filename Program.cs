@@ -9,7 +9,7 @@ namespace complier
         
         static void Main(string[] args)
         {
-            bool showTree = false;
+            var showTree = false;
 
             while (true)
             {

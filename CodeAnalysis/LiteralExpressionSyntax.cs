@@ -6,16 +6,16 @@ namespace complier
     {
         public LiteralExpressionSyntax(SyntaxToken literalToken)
         {
-            NumberToken = literalToken;
+            LiteralToken = literalToken;
         }
 
-        public SyntaxToken NumberToken { get; }
+        public SyntaxToken LiteralToken { get; }
 
         public override SyntaxKind Kind => SyntaxKind.LiteralExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
-            yield return NumberToken;
+            yield return LiteralToken;
         }
     }
 

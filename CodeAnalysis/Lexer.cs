@@ -57,7 +57,7 @@ namespace complier
                 }
 
 
-                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
+                return new SyntaxToken(SyntaxKind.literalToken, start, text, value);
 
             }
 

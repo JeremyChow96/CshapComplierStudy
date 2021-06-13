@@ -78,7 +78,21 @@ namespace complier
 
         private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            var left = ParsePrimaryExpression();
+
+            ExpressionSyntax left;
+            var unaryOperatorPrecedence = Current.Kind.GetBinaryOperatorPrecedence();
+            if (unaryOperatorPrecedence!=0 && unaryOperatorPrecedence >= parentPrecedence)
+            {
+                var operatorToken = NextToken();
+                var operand = ParseExpression(unaryOperatorPrecedence);
+                left = new UnaryExpressionSyntax(operatorToken, operand);
+            }
+            else
+            {
+                left = ParsePrimaryExpression();
+            }
+
+
             while (true)
             {
                 var precedence = Current.Kind.GetBinaryOperatorPrecedence();
@@ -142,7 +156,7 @@ namespace complier
                 return new ParenthesizedExpressionSyntax(left, exprssion, right);
             }
 
-            var numberToken = MatchToken(SyntaxKind.NumberToken);
+            var numberToken = MatchToken(SyntaxKind.literalToken);
             return new LiteralExpressionSyntax(numberToken);
         }
     }
