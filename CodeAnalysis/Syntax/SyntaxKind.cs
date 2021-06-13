@@ -19,6 +19,13 @@
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+
+        //Keyword  boolean use
+        TrueKeyword,
+        FalseKeyword,
+
+
+        IdentifierToken,
     }
 
 }

@@ -80,8 +80,8 @@ namespace complier.CodeAnalysis.Syntax
         {
 
             ExpressionSyntax left;
-            var unaryOperatorPrecedence = Current.Kind.GetBinaryOperatorPrecedence();
-            if (unaryOperatorPrecedence!=0 && unaryOperatorPrecedence >= parentPrecedence)
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
                 var operand = ParseExpression(unaryOperatorPrecedence);
@@ -148,16 +148,33 @@ namespace complier.CodeAnalysis.Syntax
 
         private ExpressionSyntax ParsePrimaryExpression()
         {
-            if (Current.Kind == SyntaxKind.OpenParenthesisToken)
+            switch (Current.Kind)
             {
-                var left = NextToken();
-                var exprssion = ParseExpression();
-                var right = MatchToken(SyntaxKind.CloseParentesisToken);
-                return new ParenthesizedExpressionSyntax(left, exprssion, right);
+                case SyntaxKind.OpenParenthesisToken:
+                    {
+                        var left = NextToken();
+                        var exprssion = ParseExpression();
+                        var right = MatchToken(SyntaxKind.CloseParentesisToken);
+                        return new ParenthesizedExpressionSyntax(left, exprssion, right);
+                    }
+
+                case SyntaxKind.TrueKeyword:
+                case SyntaxKind.FalseKeyword:
+                    {
+
+                        // make sure to meet the endOfFileToken
+                        var value = Current.Kind == SyntaxKind.TrueKeyword;
+                        var keywordToken = NextToken();
+                        return new LiteralExpressionSyntax(keywordToken, value);
+                    }
+                default:
+                    {
+                        var numberToken = MatchToken(SyntaxKind.literalToken);
+                        return new LiteralExpressionSyntax(numberToken);
+                    }
             }
 
-            var numberToken = MatchToken(SyntaxKind.literalToken);
-            return new LiteralExpressionSyntax(numberToken);
+       
         }
     }
 
