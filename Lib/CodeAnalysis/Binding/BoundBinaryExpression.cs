@@ -21,4 +21,15 @@ namespace complier.CodeAnalysis.Binding
         public BoundBinaryOpertor Op { get; }
         public BoundExpression Right { get; }
     }
+
+    // internal sealed class BoundParentheiszedExpression : BoundExpression
+    // {
+    //     public BoundParentheiszedExpression(Bound)
+    //     {
+    //     }
+
+    //     public override Type Type => throw new NotImplementedException();
+
+    //     public override BoundNodeKind Kind => throw new NotImplementedException();
+    // }
 }

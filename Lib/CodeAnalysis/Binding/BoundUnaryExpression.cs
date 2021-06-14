@@ -9,7 +9,7 @@ namespace complier.CodeAnalysis.Binding
             Op = op;
             Operand = operand;
         }
-
+        
         public BoundUnaryOperator Op { get; }
         public BoundExpression Operand { get; }
 

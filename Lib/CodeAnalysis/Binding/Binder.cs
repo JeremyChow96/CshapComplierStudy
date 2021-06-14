@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace complier.CodeAnalysis.Binding
 {
+
     internal sealed class Binder
     {
         private readonly List<string> _diagnostics = new List<string>();

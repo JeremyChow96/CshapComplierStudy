@@ -32,14 +32,18 @@ namespace complier
                 {
                     Console.Clear();
                     continue;
+                }else if(line =="q")
+                {
+                   return ;
                 }
+    
 
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new Binder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                var compilation = new Compilation(syntaxTree);
+                var result = compilation.Evaluate();
 
-                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+                var diagnostics = result.Diagnostics;
            
                 if (showTree)
                 {
@@ -52,9 +56,8 @@ namespace complier
 
                 if (!diagnostics.Any())
                 {
-                    var e = new Evaluator(boundExpression);
-                    var result = e.Evaluate();
-                    Console.WriteLine(result);
+         
+                    Console.WriteLine(result.Value);
                 }
                 else
                 {
