@@ -10,7 +10,7 @@
         PlusToken,
         MinusToken,
         StarToken,
-        SlahToken,
+        SlashToken,
         OpenParenthesisToken,
         CloseParentesisToken,
 

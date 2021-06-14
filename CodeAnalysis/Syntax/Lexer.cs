@@ -100,7 +100,7 @@ namespace complier.CodeAnalysis.Syntax
                 case '*':
                     return new SyntaxToken(SyntaxKind.StarToken, _position++, "*", null);
                 case '/':
-                    return new SyntaxToken(SyntaxKind.SlahToken, _position++, "/", null);
+                    return new SyntaxToken(SyntaxKind.SlashToken, _position++, "/", null);
                 case '(':
                     return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _position++, "(", null);
                 case ')':

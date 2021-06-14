@@ -28,7 +28,7 @@ namespace complier.CodeAnalysis.Syntax
             {
 
                 case SyntaxKind.StarToken:
-                case SyntaxKind.SlahToken:
+                case SyntaxKind.SlashToken:
                     return 4;
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:

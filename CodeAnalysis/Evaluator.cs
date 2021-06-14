@@ -29,12 +29,12 @@ namespace complier.CodeAnalysis
             {
                 var operand = EvaluateExpression(u.Operand);
 
-                return u.OperatorKind switch
+                return u.Op.Kind switch
                 {
                     BoundUnaryOperatorKind.Identity => (int)operand,
                     BoundUnaryOperatorKind.Negation => -(int)operand,
                     BoundUnaryOperatorKind.LogicalNegation => (bool)operand,
-                    _ => throw new Exception($"Unexpected unary operator {u.OperatorKind}")
+                    _ => throw new Exception($"Unexpected unary operator {u.Op}")
                 };
             }
 
@@ -45,7 +45,7 @@ namespace complier.CodeAnalysis
                 var right = EvaluateExpression(b.Right);
 
 
-                return b.OperatorKind switch
+                return b.Op.Kind switch
                 {
                     BoundBinaryOperatorKind.Addition => (int)left + (int)right,
                     BoundBinaryOperatorKind.Substraction => (int)left - (int)right,
@@ -54,7 +54,7 @@ namespace complier.CodeAnalysis
                     BoundBinaryOperatorKind.LogicalAnd => (bool)left && (bool)right,
                     BoundBinaryOperatorKind.LogicalOr => (bool)left || (bool)right,
 
-                    _ => throw new Exception($"Unexpected binary operator {b.OperatorKind}"),
+                    _ => throw new Exception($"Unexpected binary operator {b.Op.Kind}"),
                 };
             }
 
