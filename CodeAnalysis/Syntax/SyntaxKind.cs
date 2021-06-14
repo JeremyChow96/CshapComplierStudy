@@ -11,8 +11,15 @@
         MinusToken,
         StarToken,
         SlashToken,
+        BangToken,
+        PipePipeToken,
+        AmpersandAmpersandToken,
+        EqualsEqualsToken,
+        BangEqualsToken,
         OpenParenthesisToken,
         CloseParentesisToken,
+
+        IdentifierToken,
 
         //Expressions
         LiteralExpression,
@@ -25,10 +32,7 @@
         FalseKeyword,
 
 
-        IdentifierToken,
-        BangToken,
-        PipePipeToken,
-        AmpersandAmpersandToken,
+     
     }
 
 }
