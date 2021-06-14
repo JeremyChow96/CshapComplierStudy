@@ -30,9 +30,7 @@
         //Keyword  boolean use
         TrueKeyword,
         FalseKeyword,
-
-
-     
+        NameExpression,
     }
 
 }
