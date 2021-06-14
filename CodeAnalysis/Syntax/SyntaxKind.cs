@@ -26,6 +26,9 @@
 
 
         IdentifierToken,
+        BangToken,
+        PipePipeToken,
+        AmpersandAmpersandToken,
     }
 
 }

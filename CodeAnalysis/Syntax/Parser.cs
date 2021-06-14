@@ -163,8 +163,8 @@ namespace complier.CodeAnalysis.Syntax
                     {
 
                         // make sure to meet the endOfFileToken
-                        var value = Current.Kind == SyntaxKind.TrueKeyword;
                         var keywordToken = NextToken();
+                        var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
                         return new LiteralExpressionSyntax(keywordToken, value);
                     }
                 default:
