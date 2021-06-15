@@ -8,9 +8,9 @@ namespace complier.CodeAnalysis
     internal class Evaluator
     {
         private readonly BoundExpression _root;
-        private readonly Dictionary<string, object> _variables;
+        private readonly Dictionary<VariableSymbol, object> _variables;
 
-        public Evaluator(BoundExpression root, Dictionary<string, object> variables)
+        public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
         {
             this._root = root;
             this._variables = variables;
@@ -27,6 +27,18 @@ namespace complier.CodeAnalysis
             {
                 return n.Value;
             }
+            if (node is BoundVariableExpression v)
+            {
+                var value = _variables[v.Variable];
+                return value;
+            }
+
+            if (node is BoundAssignmentExpression a)
+            {
+                var value = EvaluateExpression(a.Expresion);
+                _variables[a.Variable] = value;
+                return value;
+            }
 
             if (node is BoundUnaryExpression u)
             {
@@ -36,7 +48,7 @@ namespace complier.CodeAnalysis
                 {
                     BoundUnaryOperatorKind.Identity => (int)operand,
                     BoundUnaryOperatorKind.Negation => -(int)operand,
-                    BoundUnaryOperatorKind.LogicalNegation => (bool)operand,
+                    BoundUnaryOperatorKind.LogicalNegation => !(bool)operand,
                     _ => throw new Exception($"Unexpected unary operator {u.Op}")
                 };
             }

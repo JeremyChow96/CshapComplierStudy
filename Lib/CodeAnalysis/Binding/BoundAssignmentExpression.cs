@@ -4,10 +4,11 @@ namespace complier.CodeAnalysis.Binding
 {
     internal class BoundAssignmentExpression : BoundExpression
     {
-        public BoundAssignmentExpression(string name, BoundExpression expression)
+        public BoundAssignmentExpression(VariableSymbol variable, BoundExpression expression)
         {
             
-            Name = name;
+          
+            Variable = variable;
             Expresion = expression;
         }
 
@@ -15,7 +16,7 @@ namespace complier.CodeAnalysis.Binding
 
         public override BoundNodeKind Kind => BoundNodeKind.AssignmentExpression;
 
-        public string Name { get; }
+        public VariableSymbol Variable { get; }
         public BoundExpression Expresion { get; }
     }
 }
