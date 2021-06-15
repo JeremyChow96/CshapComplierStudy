@@ -10,7 +10,14 @@ namespace complier.CodeAnalysis.Binding
 
     internal sealed class Binder
     {
+        private readonly Dictionary<string, object> _variables;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+
+        public Binder(Dictionary<string, object> variables)
+        {
+            _variables = variables;
+        }
+
         public DiagnosticBag Diagnostics => _diagnostics;
 
 
@@ -24,11 +31,45 @@ namespace complier.CodeAnalysis.Binding
                     return BindBinaryExpression((BinaryExpressionSyntax)syntax);
                 case SyntaxKind.UnaryExpression:
                     return BindUnaryExpression((UnaryExpressionSyntax)syntax);
+                case SyntaxKind.ParenthesizedExpression:
+                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax);
+                case SyntaxKind.NameExpression:
+                    return BindNameExpression((NameExpressionSyntax)syntax);
+                case SyntaxKind.AssignmentExpression:
+                    return BindAssignmentExpression((AssignmentExpressionSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
 
             }
         }
+
+        private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
+        {
+            var name = syntax.IdentifierToken.Text;
+            if (!_variables.TryGetValue(name,out var value))
+            {
+                _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+                return new BoundLiteralExpression(0);
+            }
+            var type = typeof(int);
+            return new BoundVariableExpression(name, type);
+        }
+        private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
+        {
+            var name = syntax.Identifier.Text;
+            var boundExpresion = BindExpression(syntax.Expression);
+            // var defaultVaule = 
+            return new BoundAssignmentExpression(name, boundExpresion);
+            
+        }
+
+       
+
+        private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
+        {
+            return BindExpression(syntax.Expression);
+        }
+
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
 

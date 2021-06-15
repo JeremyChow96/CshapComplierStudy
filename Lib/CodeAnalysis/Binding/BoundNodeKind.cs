@@ -4,6 +4,8 @@
     {
         UnaryExpreesion,
         LiteralExpression,
-        BinaryExpreesion
+        BinaryExpreesion,
+        VariableExpression,
+        AssignmentExpression
     }
 }

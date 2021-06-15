@@ -1,6 +1,6 @@
 ﻿namespace complier.CodeAnalysis.Syntax
 {
-   public  enum SyntaxKind
+    public enum SyntaxKind
     {
         //Tokens
         BadToken,
@@ -12,25 +12,27 @@
         StarToken,
         SlashToken,
         BangToken,
+        EqualsToken,
         PipePipeToken,
         AmpersandAmpersandToken,
         EqualsEqualsToken,
         BangEqualsToken,
         OpenParenthesisToken,
         CloseParentesisToken,
-
         IdentifierToken,
+
+        //Keyword  boolean use
+        TrueKeyword,
+        FalseKeyword,
 
         //Expressions
         LiteralExpression,
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
-
-        //Keyword  boolean use
-        TrueKeyword,
-        FalseKeyword,
         NameExpression,
+        AssignmentExpression,
+
     }
 
 }

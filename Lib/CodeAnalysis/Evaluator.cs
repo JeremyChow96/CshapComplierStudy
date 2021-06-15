@@ -1,5 +1,6 @@
 ﻿using complier.CodeAnalysis.Binding;
 using System;
+using System.Collections.Generic;
 
 namespace complier.CodeAnalysis
 {
@@ -7,10 +8,12 @@ namespace complier.CodeAnalysis
     internal class Evaluator
     {
         private readonly BoundExpression _root;
+        private readonly Dictionary<string, object> _variables;
 
-        public Evaluator(BoundExpression root)
+        public Evaluator(BoundExpression root, Dictionary<string, object> variables)
         {
             this._root = root;
+            this._variables = variables;
         }
 
         public object Evaluate()

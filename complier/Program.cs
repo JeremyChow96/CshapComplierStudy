@@ -14,6 +14,7 @@ namespace complier
         static void Main(string[] args)
         {
             var showTree = false;
+            var  variables = new Dictionary<string,object>();
 
             while (true)
             {
