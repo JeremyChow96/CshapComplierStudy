@@ -22,6 +22,20 @@ namespace complier.CodeAnalysis.Syntax
             var paser = new Parser(text);
             return paser.Parse();
         }
+
+        public static IEnumerable<SyntaxToken> ParseTokens(string text)
+        {
+            var lexer = new Lexer(text);
+            while (true)
+            {
+                var token = lexer.NextToken();
+                if (token.Kind == SyntaxKind.EndOfFileToken)
+                {
+                     break;
+                }
+                yield return token;
+            }
+        }
     }
 
 }
