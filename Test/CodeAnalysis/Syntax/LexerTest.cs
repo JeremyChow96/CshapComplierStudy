@@ -5,8 +5,8 @@ using System.Linq;
 using Xunit;
 
 namespace Test.CodeAnalysis.Syntax
-
 {
+
     public class LexerTest
     {
         [Theory]
