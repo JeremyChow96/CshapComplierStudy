@@ -5,8 +5,8 @@ using System.Linq;
 using Xunit;
 
 namespace Test.CodeAnalysis.Syntax
-
 {
+
     public class LexerTest
     {
         [Theory]
@@ -114,6 +114,7 @@ namespace Test.CodeAnalysis.Syntax
             return new[]
             {
                (SyntaxKind.WhitespaceToken," "),
+               (SyntaxKind.WhitespaceToken,"   "),
                (SyntaxKind.WhitespaceToken,"\r"),
                (SyntaxKind.WhitespaceToken,"\n"),
                (SyntaxKind.WhitespaceToken,"\r\n"),

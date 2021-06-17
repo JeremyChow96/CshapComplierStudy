@@ -7,12 +7,13 @@ using System.Linq;
 
 namespace complier
 {
-    partial class Program
+    class Program
     {
         // 1 + 2 * 3 
-        
+
         static void Main(string[] args)
         {
+
             var showTree = false;
             var  variables = new Dictionary<VariableSymbol,object>();
 
