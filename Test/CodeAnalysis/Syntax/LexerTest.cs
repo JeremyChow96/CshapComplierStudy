@@ -9,15 +9,24 @@ namespace Test.CodeAnalysis.Syntax
 
     public class LexerTest
     {
-        [Theory]
-        [MemberData(nameof(GetTokensData))]
-        public void Lexer_Lexes_Tokens(SyntaxKind kind, string text)
+        [Fact]
+        public void Lexer_Lexes_AllTokens()
         {
-            var tokens = SyntaxTree.ParseTokens(text);
+            var tokenKinds = Enum.GetValues<SyntaxKind>().
+                Where(k => k.ToString().EndsWith("Keyword") || k.ToString().EndsWith("Token")).
+                ToList();
 
-            var token = Assert.Single(tokens);
-            Assert.Equal(kind, token.Kind);
-            Assert.Equal(text, token.Text);
+            var testedTokenKinds = GetTokens().Concat(GetSeparators()).Select(c => c.kind);
+
+            var untestedTokenKinds = new SortedSet<SyntaxKind>(tokenKinds);
+            untestedTokenKinds.ExceptWith(testedTokenKinds);
+            untestedTokenKinds.Remove(SyntaxKind.BadToken);
+            untestedTokenKinds.Remove(SyntaxKind.EndOfFileToken);
+
+
+            Assert.Empty(untestedTokenKinds);
+
+   
         }
 
         [Theory]
@@ -62,7 +71,7 @@ namespace Test.CodeAnalysis.Syntax
 
         public static IEnumerable<object[]> GetTokensData()
         {
-            foreach (var t in GetTokens().Concat(GetSeparator()))
+            foreach (var t in GetTokens().Concat(GetSeparators()))
             {
                 yield return new object[] { t.kind, t.text };
             }
@@ -85,31 +94,18 @@ namespace Test.CodeAnalysis.Syntax
         }
         private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
         {
-            return new[]
-            {
+            var fixedTokens = Enum.GetValues<SyntaxKind>().Select(k=>(kind:k,text: SyntaxFacts.GetText(k))).Where(t=>t.text!=null);
+
+            var dynamciToken = new[]
+           {
                 (SyntaxKind.NumberToken,"1") ,
                 (SyntaxKind.NumberToken,"123") ,
-                (SyntaxKind.PlusToken,"+") ,
-                (SyntaxKind.MinusToken,"-") ,
-                (SyntaxKind.StarToken,"*") ,
-                (SyntaxKind.SlashToken,"/") ,
-                (SyntaxKind.BangToken,"!") ,
-                (SyntaxKind.EqualsToken,"=") ,
-                (SyntaxKind.PipePipeToken,"||") ,
-                (SyntaxKind.AmpersandAmpersandToken,"&&") ,
-                (SyntaxKind.EqualsEqualsToken,"==") ,
-                (SyntaxKind.BangEqualsToken,"!=") ,
-                (SyntaxKind.OpenParenthesisToken,"(") ,
-                (SyntaxKind.CloseParentesisToken,")") ,
-                (SyntaxKind.IdentifierToken,"a"),
-                (SyntaxKind.IdentifierToken,"abc"),
-                (SyntaxKind.TrueKeyword,"true") ,
-                (SyntaxKind.FalseKeyword,"false") ,
-               
+               (SyntaxKind.IdentifierToken,"a"),
             };
+            return fixedTokens.Concat(dynamciToken);
 
         }
-        private static IEnumerable<(SyntaxKind kind, string text)> GetSeparator()
+        private static IEnumerable<(SyntaxKind kind, string text)> GetSeparators()
         {
             return new[]
             {
@@ -207,7 +203,7 @@ namespace Test.CodeAnalysis.Syntax
                 {
                     if (RequiresSeparator(t1.kind, t2.kind))
                     {
-                        foreach (var s in GetSeparator())
+                        foreach (var s in GetSeparators())
                         {
                             yield return (t1.kind, t1.text,s.kind,s.text, t2.kind, t2.text);
 
