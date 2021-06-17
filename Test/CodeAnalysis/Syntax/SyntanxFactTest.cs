@@ -15,16 +15,12 @@ namespace Test.CodeAnalysis.Syntax
             var text = SyntaxFacts.GetText(kind);
             if (text == null)
                 return;
-
-
             var tokens = SyntaxTree.ParseTokens(text);
             var token = Assert.Single(tokens);
 
             Assert.Equal(kind, token.Kind);
             Assert.Equal(text, token.Text);
         }
-
-
 
         public static IEnumerable<object[]> GetSyntaxKindData()
         {
