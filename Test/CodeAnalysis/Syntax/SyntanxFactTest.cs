@@ -7,9 +7,9 @@ namespace Test.CodeAnalysis.Syntax
 {
     public class SyntanxFactTest
     {
-        [ Theory]
+        [Theory]
         [MemberData(nameof(GetSyntaxKindData))]
-        public  void SyntaxFact_GetText_RoundTrips(SyntaxKind kind)
+        public void SyntaxFact_GetText_RoundTrips(SyntaxKind kind)
         {
             //var values = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
             var text = SyntaxFacts.GetText(kind);
@@ -23,6 +23,8 @@ namespace Test.CodeAnalysis.Syntax
             Assert.Equal(kind, token.Kind);
             Assert.Equal(text, token.Text);
         }
+
+
 
         public static IEnumerable<object[]> GetSyntaxKindData()
         {

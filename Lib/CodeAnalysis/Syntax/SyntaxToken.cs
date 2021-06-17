@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace complier.CodeAnalysis.Syntax
 {
+    //[DebuggerDisplay("kind : {Kind}  Text : {Text} ")]
    public sealed  class SyntaxToken : SyntaxNode
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object value)

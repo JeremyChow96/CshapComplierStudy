@@ -114,6 +114,7 @@ namespace Test.CodeAnalysis.Syntax
             return new[]
             {
                (SyntaxKind.WhitespaceToken," "),
+               (SyntaxKind.WhitespaceToken,"   "),
                (SyntaxKind.WhitespaceToken,"\r"),
                (SyntaxKind.WhitespaceToken,"\n"),
                (SyntaxKind.WhitespaceToken,"\r\n"),
