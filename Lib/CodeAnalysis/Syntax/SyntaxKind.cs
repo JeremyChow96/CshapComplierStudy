@@ -6,7 +6,7 @@
         BadToken,
         EndOfFileToken,
         WhitespaceToken,
-        literalToken,
+        NumberToken,
         PlusToken,
         MinusToken,
         StarToken,

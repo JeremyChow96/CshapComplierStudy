@@ -28,7 +28,7 @@ namespace complier.CodeAnalysis.Syntax
             var lexer = new Lexer(text);
             while (true)
             {
-                var token = lexer.NextToken();
+                var token = lexer.Lex();
                 if (token.Kind == SyntaxKind.EndOfFileToken)
                 {
                      break;

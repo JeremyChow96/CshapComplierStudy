@@ -87,8 +87,8 @@ namespace Test.CodeAnalysis.Syntax
         {
             return new[]
             {
-                (SyntaxKind.literalToken,"1") ,
-                (SyntaxKind.literalToken,"123") ,
+                (SyntaxKind.NumberToken,"1") ,
+                (SyntaxKind.NumberToken,"123") ,
                 (SyntaxKind.PlusToken,"+") ,
                 (SyntaxKind.MinusToken,"-") ,
                 (SyntaxKind.StarToken,"*") ,
@@ -133,7 +133,7 @@ namespace Test.CodeAnalysis.Syntax
                 return true;
             }
 
-            if (t1Kind == SyntaxKind.literalToken && t2Kind == SyntaxKind.literalToken)
+            if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.NumberToken)
             {
                 return true;
             }

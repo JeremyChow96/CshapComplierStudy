@@ -20,7 +20,7 @@ namespace complier.CodeAnalysis.Syntax
             SyntaxToken token;
             do
             {
-                token = lexer.NextToken();
+                token = lexer.Lex();
 
                 if (token.Kind != SyntaxKind.WhitespaceToken &&
                     token.Kind != SyntaxKind.BadToken)
@@ -215,7 +215,7 @@ namespace complier.CodeAnalysis.Syntax
                     }
                 default:
                     {
-                        var numberToken = MatchToken(SyntaxKind.literalToken);
+                        var numberToken = MatchToken(SyntaxKind.NumberToken);
                         return new LiteralExpressionSyntax(numberToken);
                     }
             }
