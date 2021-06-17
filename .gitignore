@@ -7,6 +7,6 @@ bin
 *.user
 *.suo
 
-.vs/
-.vscode/
+/.vs/
+/.vscode/
 /.idea/.idea.complier/.idea
