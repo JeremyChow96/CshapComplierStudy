@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 namespace complier.CodeAnalysis.Syntax
 {
@@ -24,6 +26,35 @@ namespace complier.CodeAnalysis.Syntax
         //}
 
 
+
+
+        public static TextWriter PrettyPrint(TextWriter writer,SyntaxNode node, string indent = "", bool islast = true)
+        {
+            //├─
+            //└─
+            //│
+            var marker = islast ? "└───" : "├───";
+            writer.Write(indent);
+            writer.Write(marker);
+            writer.Write(node.Kind);
+
+            if (node is SyntaxToken t && t.Value != null)
+            {
+                writer.Write(" ");
+                writer.Write(t.Value);
+            }
+            writer.WriteLine();
+
+            indent += islast ? "    " : "│    ";
+
+            var lastChild = node.GetChildren().LastOrDefault();
+
+            foreach (var child in node.GetChildren())
+            {
+                PrettyPrint(writer,child, indent, child == lastChild);
+            }
+            return writer;
+        }
     }
 
 }

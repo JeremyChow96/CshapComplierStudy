@@ -48,7 +48,7 @@ namespace complier
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    PrettyPrint(syntaxTree.Root);
+                    //syntaxTree.Root
                     Console.ResetColor();
 
                 }
@@ -89,35 +89,7 @@ namespace complier
             }
         }
 
-        static void PrettyPrint(SyntaxNode node, string indent = "", bool islast = true)
-        {
-            //├─
-            //└─
-            //│
-            var marker = islast ? "└───" : "├───";
-
-            Console.Write(indent);
-
-
-            Console.Write(marker);
-            Console.Write(node.Kind);
-
-            if (node is SyntaxToken t && t.Value != null)
-            {
-                Console.Write(" ");
-                Console.Write(t.Value);
-            }
-            Console.WriteLine();
-
-            indent += islast ? "    " : "│    ";
-
-            var lastChild = node.GetChildren().LastOrDefault();
-
-            foreach (var child in node.GetChildren())
-            {
-                PrettyPrint(child, indent, child == lastChild);
-            }
-        }
+      
 
     }
 }

@@ -9,7 +9,7 @@ namespace complier.CodeAnalysis.Syntax
     {
         private readonly SyntaxToken[] _tokens;
         private int _position;
-        private DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         public DiagnosticBag Diagnostics => _diagnostics;
 
 
@@ -110,10 +110,7 @@ namespace complier.CodeAnalysis.Syntax
             }
 
             return ParseBinaryExpression();
-            //var left = ParseBinaryExpression();
-            //while (Current.Kind == SyntaxKind.EqualsToken)
-            //{
-            //}
+       
 
         }
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
@@ -148,45 +145,58 @@ namespace complier.CodeAnalysis.Syntax
             return left;
 
         }
-
-
         private ExpressionSyntax ParsePrimaryExpression()
         {
             switch (Current.Kind)
             {
                 case SyntaxKind.OpenParenthesisToken:
-                    {
-                        var left = NextToken();
-                        var exprssion = ParseExpression();
-                        var right = MatchToken(SyntaxKind.CloseParentesisToken);
-                        return new ParenthesizedExpressionSyntax(left, exprssion, right);
-                    }
+                    return ParseParenthesisExpression();
+
 
                 case SyntaxKind.TrueKeyword:
                 case SyntaxKind.FalseKeyword:
-                    {
 
-                        // make sure to meet the endOfFileToken
-                        var keywordToken = NextToken();
-                        var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
-                        return new LiteralExpressionSyntax(keywordToken, value);
-                    }
+                    return ParseBooleanLiteral();
 
+
+                case SyntaxKind.NumberToken:               
+                        return ParseNumberLiteral();
                 case SyntaxKind.IdentifierToken:
-                    {
-                        var identifierToken = NextToken();
-                        return new NameExpressionSyntax(identifierToken);
-
-                    }
                 default:
-                    {
-                        var numberToken = MatchToken(SyntaxKind.NumberToken);
-                        return new LiteralExpressionSyntax(numberToken);
-                    }
+                    return ParseNameExpression();
+                    
             }
 
 
         }
+        private ExpressionSyntax ParseParenthesisExpression()
+        {
+            var left = MatchToken(SyntaxKind.OpenParenthesisToken);
+            var exprssion = ParseExpression();
+            var right = MatchToken(SyntaxKind.CloseParentesisToken);
+            return new ParenthesizedExpressionSyntax(left, exprssion, right);
+        }
+        private ExpressionSyntax ParseBooleanLiteral()
+        {
+            // make sure to meet the endOfFileToken
+            var isTure = Current.Kind == SyntaxKind.TrueKeyword;
+            var keywordToken = isTure ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
+            return new LiteralExpressionSyntax(keywordToken, isTure);
+        }
+        private ExpressionSyntax ParseNumberLiteral()
+        {
+            var numberToken = MatchToken(SyntaxKind.NumberToken);
+            return new LiteralExpressionSyntax(numberToken);
+        }
+
+ 
+
+        private ExpressionSyntax ParseNameExpression()
+        {
+            var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
+            return new NameExpressionSyntax(identifierToken);
+        }
+
     }
 
 }

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace complier.CodeAnalysis
 {
-
     internal class Evaluator
     {
         private readonly BoundExpression _root;
@@ -25,12 +24,12 @@ namespace complier.CodeAnalysis
         {
             return node.Kind switch
             {
-                BoundNodeKind.LiteralExpression => EvaluateLiteralExpression((BoundLiteralExpression)node),
-                BoundNodeKind.VariableExpression => EvaluateVariableExpression((BoundVariableExpression)node),
-                BoundNodeKind.AssignmentExpression => EvaluateAssignmentExpression((BoundAssignmentExpression)node),
-                BoundNodeKind.UnaryExpreesion => EvaluateUnaryExpression((BoundUnaryExpression)node),
-                BoundNodeKind.BinaryExpreesion => EvaluateBinaryExpression((BoundBinaryExpression)node),
-                _ => throw new Exception($"Unexpected node {node.Kind}"),
+                BoundNodeKind.LiteralExpression => EvaluateLiteralExpression((BoundLiteralExpression) node),
+                BoundNodeKind.VariableExpression => EvaluateVariableExpression((BoundVariableExpression) node),
+                BoundNodeKind.AssignmentExpression => EvaluateAssignmentExpression((BoundAssignmentExpression) node),
+                BoundNodeKind.UnaryExpreesion => EvaluateUnaryExpression((BoundUnaryExpression) node),
+                BoundNodeKind.BinaryExpreesion => EvaluateBinaryExpression((BoundBinaryExpression) node),
+                _ => throw new Exception($"Unexpected node {node.Kind}")
             };
         }
 
@@ -42,12 +41,12 @@ namespace complier.CodeAnalysis
 
             return b.Op.Kind switch
             {
-                BoundBinaryOperatorKind.Addition => (int)left + (int)right,
-                BoundBinaryOperatorKind.Substraction => (int)left - (int)right,
-                BoundBinaryOperatorKind.Multiplication => (int)left * (int)right,
-                BoundBinaryOperatorKind.Division => (int)left / (int)right,
-                BoundBinaryOperatorKind.LogicalAnd => (bool)left && (bool)right,
-                BoundBinaryOperatorKind.LogicalOr => (bool)left || (bool)right,
+                BoundBinaryOperatorKind.Addition => (int) left + (int) right,
+                BoundBinaryOperatorKind.Substraction => (int) left - (int) right,
+                BoundBinaryOperatorKind.Multiplication => (int) left * (int) right,
+                BoundBinaryOperatorKind.Division => (int) left / (int) right,
+                BoundBinaryOperatorKind.LogicalAnd => (bool) left && (bool) right,
+                BoundBinaryOperatorKind.LogicalOr => (bool) left || (bool) right,
                 BoundBinaryOperatorKind.Equals => Equals(left, right),
                 BoundBinaryOperatorKind.NotEquals => !Equals(left, right),
 
@@ -61,9 +60,9 @@ namespace complier.CodeAnalysis
 
             return u.Op.Kind switch
             {
-                BoundUnaryOperatorKind.Identity => (int)operand,
-                BoundUnaryOperatorKind.Negation => -(int)operand,
-                BoundUnaryOperatorKind.LogicalNegation => !(bool)operand,
+                BoundUnaryOperatorKind.Identity => (int) operand,
+                BoundUnaryOperatorKind.Negation => -(int) operand,
+                BoundUnaryOperatorKind.LogicalNegation => !(bool) operand,
                 _ => throw new Exception($"Unexpected unary operator {u.Op}")
             };
         }
