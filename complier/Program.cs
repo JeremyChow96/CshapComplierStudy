@@ -42,7 +42,7 @@ namespace complier
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
                 var result = compilation.Evaluate(variables);
-
+                syntaxTree.Root.WriteTo(Console.Out);
                 var diagnostics = result.Diagnostics;
            
                 if (showTree)

@@ -8,6 +8,16 @@ namespace complier.CodeAnalysis.Syntax
     {
         public abstract SyntaxKind Kind { get; }
         public abstract IEnumerable<SyntaxNode> GetChildren();
+        public virtual TextSpan Span
+        {
+            get
+            {
+                var first = GetChildren().First().Span;
+                var last = GetChildren().Last().Span;
+                return  TextSpan.FromBounds(first.Start, last.End);
+            }
+        }
+          
 
 
         //public  IEnumerable<SyntaxNode> GetChildren()
@@ -26,9 +36,13 @@ namespace complier.CodeAnalysis.Syntax
         //}
 
 
+        public void WriteTo(TextWriter writer)
+        {
+            PrettyPrint(writer, this);
+        }
 
 
-        public static TextWriter PrettyPrint(TextWriter writer,SyntaxNode node, string indent = "", bool islast = true)
+        public static void PrettyPrint(TextWriter writer,SyntaxNode node, string indent = "", bool islast = true)
         {
             //├─
             //└─
@@ -53,7 +67,16 @@ namespace complier.CodeAnalysis.Syntax
             {
                 PrettyPrint(writer,child, indent, child == lastChild);
             }
-            return writer;
+         
+        }
+
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                WriteTo(writer);
+                return writer.ToString();
+            }
         }
     }
 

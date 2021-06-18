@@ -29,7 +29,7 @@ namespace complier.CodeAnalysis
             var evaluator = new Evaluator(boundExpression, variables);
             var value = evaluator.Evaluate();
 
-            return new EvaluationResult(ImmutableArray.CreateBuilder<Diagnostic>().ToImmutable(), value);
+            return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
         }
     }
 

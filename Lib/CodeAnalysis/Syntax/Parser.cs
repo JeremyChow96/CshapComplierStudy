@@ -7,7 +7,7 @@ namespace complier.CodeAnalysis.Syntax
 
     internal sealed class Parser
     {
-        private readonly SyntaxToken[] _tokens;
+        private readonly ImmutableArray<SyntaxToken> _tokens;
         private int _position;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
         public DiagnosticBag Diagnostics => _diagnostics;
@@ -33,7 +33,7 @@ namespace complier.CodeAnalysis.Syntax
             } while (token.Kind != SyntaxKind.EndOfFileToken);
 
 
-            _tokens = tokens.ToArray();
+            _tokens = tokens.ToImmutableArray();
             _diagnostics.AddRange(lexer.Diagnostics);
         }
 
