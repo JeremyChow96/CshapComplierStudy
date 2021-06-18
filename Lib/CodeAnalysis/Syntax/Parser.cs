@@ -150,42 +150,6 @@ namespace complier.CodeAnalysis.Syntax
         }
 
 
-        //private ExpressionSyntax ParseExpression()
-        //{
-        //    return ParseTerm();
-        //}
-
-
-        //private ExpressionSyntax ParseTerm()
-        //{
-        //    var left = ParseFactor();
-        //    //priority rule
-
-
-        //    while (Current.Kind == SyntaxKind.PlusToken ||
-        //          Current.Kind == SyntaxKind.MinusToken)
-        //    {
-        //        var operatorToken = NextToken();
-        //        var right = ParseFactor();
-        //        left = new BinaryExpressionSyntax(left, operatorToken, right);
-        //    }
-        //    return left;
-        //}
-        //private ExpressionSyntax ParseFactor()
-        //{
-        //    var left = ParsePrimaryExpression();
-        //    //priority rule
-
-        //    while (Current.Kind == SyntaxKind.StarToken ||
-        //          Current.Kind == SyntaxKind.SlahToken)
-        //    {
-        //        var operatorToken = NextToken();
-        //        var right = ParsePrimaryExpression();
-        //        left = new BinaryExpressionSyntax(left, operatorToken, right);
-        //    }
-        //    return left;
-        //}
-
         private ExpressionSyntax ParsePrimaryExpression()
         {
             switch (Current.Kind)
