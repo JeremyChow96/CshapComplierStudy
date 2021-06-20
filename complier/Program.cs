@@ -4,6 +4,7 @@ using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace complier
 {
@@ -16,10 +17,9 @@ namespace complier
 
             var showTree = false;
             var  variables = new Dictionary<VariableSymbol,object>();
-
+            var input = new StringBuilder();
             while (true)
             {
-
                 Console.Write("> ");
                 var line = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
@@ -42,15 +42,13 @@ namespace complier
                 var syntaxTree = SyntaxTree.Parse(line);
                 var compilation = new Compilation(syntaxTree);
                 var result = compilation.Evaluate(variables);
-                syntaxTree.Root.WriteTo(Console.Out);
                 var diagnostics = result.Diagnostics;
            
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    //syntaxTree.Root
+                    syntaxTree.Root.WriteTo(Console.Out);
                     Console.ResetColor();
-
                 }
 
 
@@ -61,10 +59,19 @@ namespace complier
                 }
                 else
                 {
+                    var text = syntaxTree.Text;
+
                     foreach (var diagnostic in diagnostics)
                     {
+                        var lineIndex = text.GetLineIndex(diagnostic.Span.Start);
+                        var lineNumber = lineIndex + 1;
+                        var charater = diagnostic.Span.Start - text.Lines[lineIndex].Start + 1; 
+
+
+
                         Console.WriteLine();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Write($"({lineNumber}, {charater}) :  ");
                         Console.WriteLine(diagnostic);
                         Console.ResetColor();
 

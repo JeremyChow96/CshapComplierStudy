@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Lib.CodeAnalysis.Text;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace complier.CodeAnalysis.Syntax
@@ -8,12 +9,14 @@ namespace complier.CodeAnalysis.Syntax
     internal sealed class Parser
     {
         private readonly ImmutableArray<SyntaxToken> _tokens;
-        private int _position;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
+        private readonly SourceText _text;
+
+        private int _position;
         public DiagnosticBag Diagnostics => _diagnostics;
 
 
-        public Parser(string text)
+        public Parser(SourceText text)
         {
             var tokens = new List<SyntaxToken>();
 
@@ -35,6 +38,7 @@ namespace complier.CodeAnalysis.Syntax
 
             _tokens = tokens.ToImmutableArray();
             _diagnostics.AddRange(lexer.Diagnostics);
+            this._text = text;
         }
 
         private SyntaxToken Peek(int offset)
@@ -73,7 +77,7 @@ namespace complier.CodeAnalysis.Syntax
         {
             var expression = ParseExpression();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_diagnostics.ToImmutableArray(), expression, endOfFileToken);
+            return new SyntaxTree(_text,_diagnostics.ToImmutableArray(), expression, endOfFileToken);
 
         }
         private ExpressionSyntax ParseExpression()
