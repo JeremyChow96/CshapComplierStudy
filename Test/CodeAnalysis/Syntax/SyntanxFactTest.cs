@@ -5,6 +5,8 @@ using Xunit;
 
 namespace Test.CodeAnalysis.Syntax
 {
+
+
     public class SyntanxFactTest
     {
         [Theory]
