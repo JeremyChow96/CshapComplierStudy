@@ -71,7 +71,7 @@ namespace Lib.CodeAnalysis.Text
             }
 
             //Unfinish sentence ,like  'a + b + ' without break.
-            if (position>lineStart)
+            if (position>=lineStart)
             {
                 AddLine(result, sourceText, position, lineStart, 0);
             }
