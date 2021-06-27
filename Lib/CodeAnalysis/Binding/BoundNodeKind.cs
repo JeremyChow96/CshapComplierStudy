@@ -6,6 +6,10 @@
         LiteralExpression,
         BinaryExpreesion,
         VariableExpression,
-        AssignmentExpression
+        AssignmentExpression,
+        
+        
+        BlockStatement,
+        ExpressionStatement
     }
 }

@@ -20,7 +20,8 @@
         OpenParenthesisToken,
         CloseParentesisToken,
         IdentifierToken,
-
+        OpenBraceToken,
+        CloseBraceToken,
 
         //Keyword  boolean use
         TrueKeyword,
@@ -37,6 +38,11 @@
 
         //nodes
         CompliationUnit,
+        
+        //statements
+        BlockStatement,
+        ExpressionStatement,
+  
     }
 
 }

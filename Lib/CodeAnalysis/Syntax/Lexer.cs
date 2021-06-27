@@ -69,7 +69,14 @@ namespace complier.CodeAnalysis.Syntax
                     _kind = SyntaxKind.CloseParentesisToken;
                     _position++;
                     break;
-
+                case '{':
+                    _kind = SyntaxKind.OpenBraceToken;
+                    _position++;
+                    break;
+                case '}':
+                    _kind = SyntaxKind.CloseBraceToken;
+                    _position++;
+                    break;
                 case '&':
                     if (Lookahead == '&')
                     {
