@@ -8,18 +8,24 @@ namespace complier.CodeAnalysis.Syntax
 
     public class SyntaxTree
     {
-        public SyntaxTree(SourceText text,ImmutableArray<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken)
+        //ImmutableArray<Diagnostic> diagnostics, CompliationUnitSyntax root
+        private  SyntaxTree(SourceText text)
         {
+            var paser = new Parser(text);
+            var root = paser.ParseCompilationUnit();
+            var diagnostics = paser.Diagnostics.ToImmutableArray();
+
+
             Text = text;
             Diagnostics = diagnostics;
             Root = root;
-            EndOfFileToken = endOfFileToken;
+     
         }
 
         public SourceText Text { get; }
         public ImmutableArray<Diagnostic> Diagnostics { get; }
-        public ExpressionSyntax Root { get; }
-        public SyntaxToken EndOfFileToken { get; }
+        public CompilationUnitSyntax Root { get; }
+    
 
         public static SyntaxTree Parse(string text)
         {
@@ -30,8 +36,7 @@ namespace complier.CodeAnalysis.Syntax
 
         public static SyntaxTree Parse(SourceText text)
         {
-            var paser = new Parser(text);
-            return paser.Parse();
+            return new SyntaxTree(text);
         }
         public static IEnumerable<SyntaxToken> ParseTokens(string text)
         {

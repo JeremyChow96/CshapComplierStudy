@@ -13,6 +13,9 @@ namespace complier.CodeAnalysis.Syntax
         private readonly SourceText _text;
 
         private int _position;
+
+ 
+
         public DiagnosticBag Diagnostics => _diagnostics;
 
 
@@ -73,11 +76,11 @@ namespace complier.CodeAnalysis.Syntax
 
         }
 
-        public SyntaxTree Parse()
+        public CompilationUnitSyntax ParseCompilationUnit()
         {
             var expression = ParseExpression();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(_text,_diagnostics.ToImmutableArray(), expression, endOfFileToken);
+            return new CompilationUnitSyntax(expression, endOfFileToken);
 
         }
         private ExpressionSyntax ParseExpression()

@@ -34,6 +34,9 @@
         NameExpression,
         AssignmentExpression,
 
+
+        //nodes
+        CompliationUnit,
     }
 
 }
