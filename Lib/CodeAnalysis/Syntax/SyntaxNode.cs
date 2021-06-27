@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -44,19 +45,37 @@ namespace complier.CodeAnalysis.Syntax
 
         public static void PrettyPrint(TextWriter writer,SyntaxNode node, string indent = "", bool islast = true)
         {
+            var isConsoleOut = writer == Console.Out;
+        
             //├─
             //└─
             //│
             var marker = islast ? "└───" : "├───";
             writer.Write(indent);
-            writer.Write(marker);
-            writer.Write(node.Kind);
+            if (isConsoleOut)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                writer.Write(marker);
+                Console.ResetColor();
+            }
+            if (isConsoleOut)
+            {
+                Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Blue : ConsoleColor.Cyan;
+                writer.Write(node.Kind);
+            }
+
 
             if (node is SyntaxToken t && t.Value != null)
             {
                 writer.Write(" ");
                 writer.Write(t.Value);
             }
+
+            if (isConsoleOut)
+            {
+                Console.ResetColor();
+            }
+
             writer.WriteLine();
 
             indent += islast ? "    " : "│    ";

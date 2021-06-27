@@ -21,9 +21,13 @@ namespace complier
 
             while (true)
             {
-                Console.Write("> ");
-                var input = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Green;
 
+                Console.Write(">> ");
+
+                Console.ResetColor();
+
+                var input = Console.ReadLine();
                 var isBlank = string.IsNullOrWhiteSpace(input);
                
                 if (textBuilder.Length == 0)
@@ -69,8 +73,10 @@ namespace complier
 
                 if (!diagnostics.Any())
                 {
-         
+                    Console.ForegroundColor = ConsoleColor.Magenta;
                     Console.WriteLine(result.Value);
+                    Console.ResetColor();
+
                 }
                 else
                 {
