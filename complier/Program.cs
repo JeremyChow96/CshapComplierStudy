@@ -16,7 +16,7 @@ namespace complier
         {
 
             var showTree = false;
-            var  variables = new Dictionary<VariableSymbol,object>();
+            var variables = new Dictionary<VariableSymbol,object>();
             var textBuilder = new StringBuilder();
 
             while (true)
