@@ -20,8 +20,8 @@ namespace Test.CodeAnalysis
         [InlineData("1 * 2", 2)]
         [InlineData("6 / 2", 3)]
         [InlineData("(1 + 3) * 3", 12)]
-        [InlineData("a=12", 12)]
-        [InlineData("(a=10) * a", 100)]
+        [InlineData("var a=12", 12)]
+        //[InlineData(" (a=10) * a", 100)]
 
         [InlineData("true == true", true)]
         [InlineData("true == false", false)]

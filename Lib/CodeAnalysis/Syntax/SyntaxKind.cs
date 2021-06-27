@@ -26,6 +26,8 @@
         //Keyword  boolean use
         TrueKeyword,
         FalseKeyword,
+        LetKeyword,
+        VarKeyword,
 
         //Expressions
         LiteralExpression,
@@ -42,7 +44,8 @@
         //statements
         BlockStatement,
         ExpressionStatement,
-  
+
+        VariableDeclaration,
     }
 
 }

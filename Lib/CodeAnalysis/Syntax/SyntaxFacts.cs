@@ -55,6 +55,8 @@ namespace complier.CodeAnalysis.Syntax
             {
                 "true" => SyntaxKind.TrueKeyword,
                 "false" => SyntaxKind.FalseKeyword,
+                "let" => SyntaxKind.LetKeyword,
+                "var" => SyntaxKind.VarKeyword,
                 _ => SyntaxKind.IdentifierToken,
             };
         }
@@ -119,6 +121,10 @@ namespace complier.CodeAnalysis.Syntax
                     return "true";
                 case SyntaxKind.FalseKeyword:
                     return "false";
+                case SyntaxKind.LetKeyword:
+                    return "let";
+                case SyntaxKind.VarKeyword:
+                    return "var";
                 default:
                     return null;
             }

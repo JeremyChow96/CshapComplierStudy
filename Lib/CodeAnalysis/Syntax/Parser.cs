@@ -78,14 +78,23 @@ namespace complier.CodeAnalysis.Syntax
             return new CompilationUnitSyntax(statement, endOfFileToken);
         }
 
-        private StatementSyntax ParseStatement()
-        {
-            if (Current.Kind == SyntaxKind.OpenBraceToken)
+        private StatementSyntax ParseStatement() =>
+            Current.Kind switch
             {
-                return ParseBlockStatement();
-            }
+                SyntaxKind.OpenBraceToken => ParseBlockStatement(),
+                SyntaxKind.LetKeyword => ParseVariableDeclaration(),
+                SyntaxKind.VarKeyword => ParseVariableDeclaration(),
+                _ => ParseExpressionStatement()
+            };
 
-            return ParseExpressionStatement();
+        private StatementSyntax ParseVariableDeclaration()
+        {
+            var expected = Current.Kind == SyntaxKind.LetKeyword ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword;
+            var keyword = MatchToken(expected);
+            var identifier = MatchToken(SyntaxKind.IdentifierToken);
+            var equals = MatchToken(SyntaxKind.EqualsToken);
+            var initializer = ParseExpression();
+            return new VariableDeclarationSyntax(keyword, identifier, equals, initializer);
         }
 
         private BlockStatementSyntax ParseBlockStatement()
