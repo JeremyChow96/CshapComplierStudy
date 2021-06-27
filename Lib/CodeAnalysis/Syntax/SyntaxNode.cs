@@ -55,9 +55,10 @@ namespace complier.CodeAnalysis.Syntax
             if (isConsoleOut)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
-                writer.Write(marker);
-                Console.ResetColor();
             }
+            writer.Write(marker);
+            Console.ResetColor();
+
             if (isConsoleOut)
             {
                 Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Blue : ConsoleColor.Cyan;
