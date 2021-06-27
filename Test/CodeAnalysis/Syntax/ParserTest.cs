@@ -19,7 +19,7 @@ namespace Test.CodeAnalysis.Syntax
 
             var text = $"a {op1Text} b {op2Text} c";
 
-            var expression = SyntaxTree.Parse(text).Root;
+            var expression = ParseExpression(text);
             if (op1Precedence >= op2Precedence)
             {
                 //       op2
@@ -80,7 +80,7 @@ namespace Test.CodeAnalysis.Syntax
 
             var text = $"{unaryText} a {binaryText} b";
 
-            var expression = SyntaxTree.Parse(text).Root;
+            var expression = ParseExpression(text);
             if (unaryPrecedence >= binaryPrecedence)
             {
                 //       binary
@@ -122,6 +122,14 @@ namespace Test.CodeAnalysis.Syntax
                     e.AssertToken(SyntaxKind.IdentifierToken, "b");
                 }
             }
+        }
+
+        private static ExpressionSyntax ParseExpression(string text)
+        {
+            var syntaxTree = SyntaxTree.Parse(text);
+            var root = syntaxTree.Root;
+            var expression = root.Expression;
+            return expression;
         }
 
         public static IEnumerable<object[]> GetBinaryOperatorParisData()
