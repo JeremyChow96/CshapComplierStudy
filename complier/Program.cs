@@ -18,7 +18,8 @@ namespace complier
             var showTree = false;
             var variables = new Dictionary<VariableSymbol,object>();
             var textBuilder = new StringBuilder();
-
+            Compilation previous = null;
+            
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -36,15 +37,20 @@ namespace complier
                     {
                         break;
                     }
-                    if (input == "#showTree")
+                    else if (input == "#showTree")
                     {
                         showTree = !showTree;
                         Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
                         continue;
                     }
-                    if (input == "#cls")
+                    else if (input == "#cls")
                     {
                         Console.Clear();
+                        continue;
+                    }
+                    else if (input =="#reset")
+                    {
+                        previous = null;
                         continue;
                     }
  
@@ -57,7 +63,11 @@ namespace complier
                 {
                     continue;
                 }
-                var compilation = new Compilation(syntaxTree);
+                
+                var compilation = previous ==null
+                    ? new Compilation(syntaxTree)
+                    : previous.ContinueWith(syntaxTree);
+                
                 var result = compilation.Evaluate(variables);
 
 
@@ -77,6 +87,7 @@ namespace complier
                     Console.WriteLine(result.Value);
                     Console.ResetColor();
 
+                    previous = compilation;
                 }
                 else
                 {

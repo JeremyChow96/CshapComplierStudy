@@ -1,21 +1,60 @@
 ﻿using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Immutable;
 
 namespace complier.CodeAnalysis.Binding
 {
-
     internal sealed class Binder
     {
-        private readonly Dictionary<VariableSymbol, object> _variables;
         private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
 
-        public Binder(Dictionary<VariableSymbol, object> variables)
+        private BoundScope _scope;
+
+        public Binder(BoundScope parent)
         {
-            _variables = variables;
+            _scope = new BoundScope(parent);
+        }
+
+        public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax)
+        {
+            var parent = CreateParentScope(previous);
+            var binder = new Binder(parent);
+            var expression = binder.BindExpression(syntax.Expression);
+            var variables = binder._scope.GetDeclaredVariables();
+            var diagnostics = binder.Diagnostics.ToImmutableArray();
+            if (previous!=null)
+            {
+                diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
+            }
+            
+            return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        }
+
+        private static BoundScope CreateParentScope(BoundGlobalScope previous)
+        {
+            var stack = new Stack<BoundGlobalScope>();
+            while (previous!=null)
+            {
+                stack.Push(previous);
+                previous = previous.Previous;
+            }
+
+            BoundScope parent = null;
+            
+            while (stack.Count>0)
+            { 
+                previous = stack.Pop();
+                var scope = new BoundScope(parent);
+                foreach (var v in previous.Variable)
+                {
+                    scope.TryDeclare(v);
+                }
+
+                parent = scope;
+            }
+
+            return parent;
         }
 
         public DiagnosticBag Diagnostics => _diagnostics;
@@ -26,35 +65,34 @@ namespace complier.CodeAnalysis.Binding
             switch (syntax.Kind)
             {
                 case SyntaxKind.LiteralExpression:
-                    return BindLiteralExpression((LiteralExpressionSyntax)syntax);
+                    return BindLiteralExpression((LiteralExpressionSyntax) syntax);
                 case SyntaxKind.BinaryExpression:
-                    return BindBinaryExpression((BinaryExpressionSyntax)syntax);
+                    return BindBinaryExpression((BinaryExpressionSyntax) syntax);
                 case SyntaxKind.UnaryExpression:
-                    return BindUnaryExpression((UnaryExpressionSyntax)syntax);
+                    return BindUnaryExpression((UnaryExpressionSyntax) syntax);
                 case SyntaxKind.ParenthesizedExpression:
-                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)syntax);
+                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax) syntax);
                 case SyntaxKind.NameExpression:
-                    return BindNameExpression((NameExpressionSyntax)syntax);
+                    return BindNameExpression((NameExpressionSyntax) syntax);
                 case SyntaxKind.AssignmentExpression:
-                    return BindAssignmentExpression((AssignmentExpressionSyntax)syntax);
+                    return BindAssignmentExpression((AssignmentExpressionSyntax) syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
-
             }
         }
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
 
-            if (variable==null)
+
+            if (!_scope.TryLookup(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
             }
-     
-            var type = typeof(int);
+
+
             return new BoundVariableExpression(variable);
         }
 
@@ -62,20 +100,25 @@ namespace complier.CodeAnalysis.Binding
         {
             var name = syntax.Identifier.Text;
             var boundExpresion = BindExpression(syntax.Expression);
-            //var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-            //if (existingVariable !=null)
-            //{
-            //    _variables.Remove(existingVariable);
-            //}
 
-            var variable = new VariableSymbol(name, boundExpresion.Type);
+            if (!_scope.TryLookup(name,out var variable))
+            {
+                 variable = new VariableSymbol(name, boundExpresion.Type);
+                 _scope.TryDeclare(variable);
+            }
 
-            _variables[variable] = null;
+            if (boundExpresion.Type != variable.Type)
+            {
+                _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpresion.Type, variable.Type);
+                return boundExpresion;
+            }
+         
+              //  _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+         
+
             return new BoundAssignmentExpression(variable, boundExpresion);
-            
         }
 
-       
 
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
         {
@@ -84,7 +127,6 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
-
             var value = syntax.Value ?? 0;
             return new BoundLiteralExpression(value);
         }
@@ -95,9 +137,11 @@ namespace complier.CodeAnalysis.Binding
             var boundOperator = BoundUnaryOperator.Bind(syntax.OperatorToken.Kind, boundOperand.Type);
             if (boundOperator == null)
             {
-                _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundOperand.Type);
+                _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text,
+                    boundOperand.Type);
                 return boundOperand;
             }
+
             return new BoundUnaryExpression(boundOperator, boundOperand);
         }
 
@@ -110,9 +154,11 @@ namespace complier.CodeAnalysis.Binding
             // BindBinaryOperatorKind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
             if (boundOperator == null)
             {
-                _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type); 
+                _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text,
+                    boundLeft.Type, boundRight.Type);
                 return boundLeft;
             }
+
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
         }
 
@@ -138,7 +184,7 @@ namespace complier.CodeAnalysis.Binding
 
 //                    case SyntaxKind.BangToken:
 //                        return BoundUnaryOperatorKind.LogicalNegation;
-                    
+
 //                }
 //            }
 
@@ -173,14 +219,10 @@ namespace complier.CodeAnalysis.Binding
 //                }
 //            }
 
-         
-//                return null;
-            
 
+//                return null;
 
 
 //        }
-
-
     }
 }
