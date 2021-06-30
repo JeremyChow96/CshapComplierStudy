@@ -12,7 +12,7 @@ namespace Test.CodeAnalysis
     public class EvaluationTests
     {
         [Theory]
-        [InlineData("1",1)]
+        [InlineData("1", 1)]
         [InlineData("-1", -1)]
         [InlineData("+--1", 1)]
         [InlineData("1 + 2", 3)]
@@ -21,8 +21,7 @@ namespace Test.CodeAnalysis
         [InlineData("6 / 2", 3)]
         [InlineData("(1 + 3) * 3", 12)]
         [InlineData("var a=12", 12)]
-        //[InlineData(" (a=10) * a", 100)]
-
+        [InlineData(" { var a = 10  a = a * a}", 100)]
         [InlineData("true == true", true)]
         [InlineData("true == false", false)]
         [InlineData("false == false", true)]
@@ -31,7 +30,91 @@ namespace Test.CodeAnalysis
         [InlineData("!true", false)]
         [InlineData("false", false)]
         [InlineData("!false", true)]
-        public void SyntaxFact_GetText_RoundTrips(string text,object expectedReuslt)
+        public void SyntaxFact_GetText_RoundTrips(string text, object expectedReuslt)
+        {
+            AssertValue(text, expectedReuslt);
+        }
+
+      
+        [Fact]
+        public void Evaluator_VariableDeclaration_Reports_Redeclaration()
+        {
+            var text = @"
+                {
+                    var x = 10
+                    var y = 100
+                    {
+                        var x = 10
+                    }
+                    var [x] = 5
+                }
+                ";
+
+            var diagnostics = @"Variable 'x' is already declared. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+        [Fact]
+        public void Evaluator_Name_Reports_Undefined()
+        {
+            var text = @"[x] * 10";
+            
+            var diagnostics = @"Variable 'x' doesn't exist. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        [Fact]
+        public void Evaluator_Assigned_Reports_Undefined()
+        {
+            var text = @"{
+                            let x = 10
+                            x [=] 15
+                        }"
+                ;
+            
+            var diagnostics = @"Variable 'x' is read-only and cannot be assigned to. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+        
+             
+        [Fact]
+        public void Evaluator_Assigned_Reports_CannotConvert()
+        {
+            var text = @"{
+                            var x = 10
+                            x = [true]
+                        }"
+                ;
+            
+            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+        
+        
+        [Fact]
+        public void Evaluator_Unary_Reports_Undefined()
+        {
+            var text = @"[+]true";
+            
+            var diagnostics = @"Unary operator '+' is not defined for type 'System.Boolean'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+        
+        [Fact]
+        public void Evaluator_Binary_Reports_Undefined()
+        {
+            var text = @"12 [*] true";
+            
+            var diagnostics = @"Binary operator '*' is not defined for type 'System.Int32' and 'System.Boolean'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        private static void AssertValue(string text, object expectedReuslt)
         {
             var syntaxTree = SyntaxTree.Parse(text);
             var compliation = new Compilation(syntaxTree);
@@ -41,7 +124,33 @@ namespace Test.CodeAnalysis
 
             Assert.Empty(result.Diagnostics);
             Assert.Equal(expectedReuslt, result.Value);
+        }
+
+        private void AssertDiagnostics(string text, string diagnosticsText)
+        {
+            var annotateText = AnnotateTest.Parse(text);
+            var syntaxTree = SyntaxTree.Parse(annotateText.Text);
+            var compilation = new Compilation(syntaxTree);
+            var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
+
+            var expectedDiagnostics = AnnotateTest.UnindentLines(diagnosticsText);
+
+            
+            Assert.Equal(annotateText.Spans.Length,expectedDiagnostics.Length);
           
+
+            for (int i = 0; i < expectedDiagnostics.Length; i++)
+            {
+                var expectedMessage = expectedDiagnostics[i];
+                var actualMessage = result.Diagnostics[i].Message;
+
+                Assert.Equal(expectedMessage, actualMessage);
+                
+                var expectedSpan = annotateText.Spans[i];
+                var actualSpan = result.Diagnostics[i].Span;
+                Assert.Equal(expectedSpan, actualSpan);
+
+            }
         }
     }
 }

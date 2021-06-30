@@ -14,7 +14,7 @@ namespace complier.CodeAnalysis
         public Compilation(SyntaxTree syntax) :
             this(null, syntax)
         {
-            SyntaxTree = syntax;
+   
         }
 
         private Compilation(Compilation previous, SyntaxTree syntax)
