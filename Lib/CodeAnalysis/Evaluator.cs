@@ -93,6 +93,10 @@ namespace complier.CodeAnalysis
                 BoundBinaryOperatorKind.Division => (int) left / (int) right,
                 BoundBinaryOperatorKind.LogicalAnd => (bool) left && (bool) right,
                 BoundBinaryOperatorKind.LogicalOr => (bool) left || (bool) right,
+                BoundBinaryOperatorKind.LessThan => (int)left < (int)right,
+                BoundBinaryOperatorKind.LessThanOrEquals => (int)left <= (int)right,
+                BoundBinaryOperatorKind.GreaterThan => (int)left > (int)right,
+                BoundBinaryOperatorKind.GreaterThanOrEquals => (int)left >= (int)right,
                 BoundBinaryOperatorKind.Equals => Equals(left, right),
                 BoundBinaryOperatorKind.NotEquals => !Equals(left, right),
 

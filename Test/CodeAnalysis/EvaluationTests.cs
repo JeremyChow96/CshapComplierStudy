@@ -22,6 +22,15 @@ namespace Test.CodeAnalysis
         [InlineData("(1 + 3) * 3", 12)]
         [InlineData("var a=12", 12)]
         [InlineData(" { var a = 10  a = a * a}", 100)]
+
+        [InlineData("3 > 4 ", false)]
+        [InlineData("2 >= 2", true)]
+        [InlineData("6 <= 3", false)]
+        [InlineData("2 < 8", true)]
+        [InlineData("2 <= 2", true)]
+        [InlineData("(2 * 9) <= 6", false)]
+        [InlineData("(2 * 9) >= (3 * 9)", false)]
+
         [InlineData("true == true", true)]
         [InlineData("true == false", false)]
         [InlineData("false == false", true)]

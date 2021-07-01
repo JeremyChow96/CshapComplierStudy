@@ -10,5 +10,9 @@
         LogicalAnd,
         Equals,
         NotEquals,
+        LessThan,
+        LessThanOrEquals,
+        GreaterThan,
+        GreaterThanOrEquals,
     }
 }

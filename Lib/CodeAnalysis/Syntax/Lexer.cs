@@ -105,6 +105,32 @@ namespace complier.CodeAnalysis.Syntax
                         _kind = SyntaxKind.BangEqualsToken;
                     }
 
+                    break;               
+                case '>':
+                    _position++;
+                    if (Current != '=')
+                    {
+                        _kind = SyntaxKind.GreaterToken;
+                    }
+                    else
+                    {
+                        _position++;
+                        _kind = SyntaxKind.GreaterOrEqualsToken;
+                    }
+
+                    break;              
+                case '<':
+                    _position++;
+                    if (Current != '=')
+                    {
+                        _kind = SyntaxKind.LessToken;
+                    }
+                    else
+                    {
+                        _position++;
+                        _kind = SyntaxKind.LessOrEqualsToken;
+                    }
+
                     break;
                 case '=':
                     _position++;
@@ -117,7 +143,6 @@ namespace complier.CodeAnalysis.Syntax
                         _position++;
                         _kind = SyntaxKind.EqualsEqualsToken;
                     }
-
                     break;
                 default:
                     if (char.IsDigit(Current))

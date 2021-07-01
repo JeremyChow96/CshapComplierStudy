@@ -40,6 +40,14 @@ namespace complier.CodeAnalysis.Binding
             new BoundBinaryOpertor(SyntaxKind.EqualsEqualsToken,BoundBinaryOperatorKind.Equals,typeof(int),typeof(bool)),
             new BoundBinaryOpertor(SyntaxKind.BangEqualsToken,BoundBinaryOperatorKind.NotEquals,typeof(int),typeof(bool)),
 
+
+            new BoundBinaryOpertor(SyntaxKind.LessToken,BoundBinaryOperatorKind.LessThan,typeof(int),typeof(bool)),
+            new BoundBinaryOpertor(SyntaxKind.LessOrEqualsToken,BoundBinaryOperatorKind.LessThanOrEquals,typeof(int),typeof(bool)),
+
+            new BoundBinaryOpertor(SyntaxKind.GreaterToken,BoundBinaryOperatorKind.GreaterThan,typeof(int),typeof(bool)),
+            new BoundBinaryOpertor(SyntaxKind.GreaterOrEqualsToken,BoundBinaryOperatorKind.GreaterThanOrEquals,typeof(int),typeof(bool)),
+
+
             new BoundBinaryOpertor(SyntaxKind.AmpersandAmpersandToken,BoundBinaryOperatorKind.LogicalAnd,typeof(bool)),
             new BoundBinaryOpertor(SyntaxKind.PipePipeToken,BoundBinaryOperatorKind.LogicalOr,typeof(bool)),
                         new BoundBinaryOpertor(SyntaxKind.EqualsEqualsToken,BoundBinaryOperatorKind.Equals,typeof(bool)),

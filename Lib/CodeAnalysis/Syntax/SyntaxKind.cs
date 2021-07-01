@@ -46,6 +46,10 @@
         ExpressionStatement,
 
         VariableDeclaration,
+        GreaterToken,
+        GreaterOrEqualsToken,
+        LessToken,
+        LessOrEqualsToken,
     }
 
 }
