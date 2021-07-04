@@ -63,6 +63,7 @@ namespace complier.CodeAnalysis.Syntax
                 "else"=> SyntaxKind.ElseKeyword,
                 "let" => SyntaxKind.LetKeyword,
                 "var" => SyntaxKind.VarKeyword,
+                "while" => SyntaxKind.WhileKeyword,
                 _ => SyntaxKind.IdentifierToken,
             };
         }
@@ -143,6 +144,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "if";
                 case SyntaxKind.ElseKeyword:
                     return "else";
+                case SyntaxKind.WhileKeyword:
+                    return "while";
                 default:
                     return null;
             }

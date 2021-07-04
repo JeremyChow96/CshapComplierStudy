@@ -22,6 +22,11 @@
         IdentifierToken,
         OpenBraceToken,
         CloseBraceToken,
+        GreaterToken,
+        GreaterOrEqualsToken,
+        LessToken,
+        LessOrEqualsToken,
+
 
         //Keyword  boolean use
         TrueKeyword,
@@ -30,6 +35,7 @@
         VarKeyword,
         IfKeyword,
         ElseKeyword,
+        WhileKeyword,
 
         //Expressions
         LiteralExpression,
@@ -42,20 +48,15 @@
 
         //nodes
         CompliationUnit,
-        
-        //statements
-        BlockStatement,
-        ExpressionStatement,
-        IfStatement,
         ElseClause,
 
 
+        //statements
+        ExpressionStatement,
+        BlockStatement,
+        IfStatement,
+        WhileStatement,
         VariableDeclaration,
-        GreaterToken,
-        GreaterOrEqualsToken,
-        LessToken,
-        LessOrEqualsToken,
-
 
     }
 
