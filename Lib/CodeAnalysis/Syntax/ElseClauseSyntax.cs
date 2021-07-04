@@ -15,10 +15,11 @@ namespace complier.CodeAnalysis.Syntax
         public SyntaxToken ElseKeyword { get; }
         public StatementSyntax ElseStatement { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return ElseKeyword;
-            yield return ElseStatement;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return ElseKeyword;
+        //    yield return ElseStatement;
+        //}
+
     }
 }

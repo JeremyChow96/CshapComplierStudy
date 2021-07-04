@@ -17,11 +17,11 @@ namespace complier.CodeAnalysis.Syntax
         public ExpressionSyntax Expression { get; }
         public SyntaxToken ClosedParenthesisToken { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return OpenParenthesisToken;
-            yield return Expression;
-            yield return ClosedParenthesisToken;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return OpenParenthesisToken;
+        //    yield return Expression;
+        //    yield return ClosedParenthesisToken;
+        //}
     }
 }

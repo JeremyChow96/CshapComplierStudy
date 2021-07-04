@@ -37,17 +37,18 @@ namespace complier.CodeAnalysis
                 case BoundNodeKind.VariableDeclaration:
                     EvaluateVariableDeclaration((BoundVariableDeclaration) node);
                     break;
+                case BoundNodeKind.IfStatement:
+                    EvaluateIfStatement((BoundIfStatement)node);
+                    break;
+                case BoundNodeKind.WhileStatement:
+                    EvaluateWhileStatement((BoundWhileStatement)node);
+                    break;
                 default:
                     throw new Exception($"Unexpected node {node.Kind}");
             }
         }
 
-        private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
-        {
-            var value = EvaluateExpression(node.Initializer);
-            _variables[node.Variable] = value;
-            _lastValue = value;
-        }
+        
 
         private void EvaluateBlockStatement(BoundBlockStatement node)
         {
@@ -62,8 +63,36 @@ namespace complier.CodeAnalysis
         {
             _lastValue = EvaluateExpression(node.Expression);
         }
+        private void EvaluateVariableDeclaration(BoundVariableDeclaration node)
+        {
+            var value = EvaluateExpression(node.Initializer);
+            _variables[node.Variable] = value;
+            _lastValue = value;
+        }
 
-      
+
+        private void EvaluateIfStatement(BoundIfStatement node)
+        {
+            var condition = (bool)EvaluateExpression(node.Condition);
+            if (condition)
+            {
+                EvaluateStatement(node.ThenStatement);
+            }
+            else if (node.ElseStatement != null)
+            {
+                EvaluateStatement(node.ElseStatement);
+            }
+
+        }
+
+        private void EvaluateWhileStatement(BoundWhileStatement node)
+        {
+           // var condition = (bool)EvaluateExpression(node.Condition);
+            while ((bool)EvaluateExpression(node.Condition))
+            {
+                EvaluateStatement(node.Body);
+            }
+        }
 
         private object EvaluateExpression(BoundExpression node)
         {

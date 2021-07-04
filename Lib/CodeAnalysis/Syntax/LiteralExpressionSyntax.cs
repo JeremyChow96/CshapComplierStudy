@@ -21,10 +21,10 @@ namespace complier.CodeAnalysis.Syntax
 
         public override SyntaxKind Kind => SyntaxKind.LiteralExpression;
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return LiteralToken;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return LiteralToken;
+        //}
     }
 
 }

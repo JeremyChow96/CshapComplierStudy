@@ -13,9 +13,9 @@ namespace complier.CodeAnalysis.Syntax
         }
 
         public override SyntaxKind Kind => SyntaxKind.ExpressionStatement;
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return Expression;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return Expression;
+        //}
     }
 }

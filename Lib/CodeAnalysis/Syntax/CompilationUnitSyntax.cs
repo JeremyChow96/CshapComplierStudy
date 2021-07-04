@@ -15,10 +15,10 @@ namespace complier.CodeAnalysis.Syntax
 
         public override SyntaxKind Kind => SyntaxKind.CompliationUnit;
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return Statement;
-            yield return EndOfFileToken;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return Statement;
+        //    yield return EndOfFileToken;
+        //}
     }
 }

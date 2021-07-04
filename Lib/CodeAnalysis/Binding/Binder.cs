@@ -70,9 +70,20 @@ namespace complier.CodeAnalysis.Binding
                     return BindExpressionStatement((ExpressionStatementSyntax) syntax);
                 case SyntaxKind.VariableDeclaration:
                     return BindVariableDeclaration((VariableDeclarationSyntax) syntax);
+                case SyntaxKind.IfStatement:
+                    return BindIfStatement((IfStatementSyntax)syntax);
+                case SyntaxKind.WhileStatement:
+                    return BindWhileStatement((WhileStatementSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
+        }
+
+        private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition);
+            var body = BindStatement(syntax.Body);
+            return new BoundWhileStatement(condition, body);
         }
 
         private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
@@ -103,15 +114,31 @@ namespace complier.CodeAnalysis.Binding
             return new BoundVariableDeclaration(variable, initializer);
         }
 
- 
-        
+        private BoundStatement BindIfStatement(IfStatementSyntax syntax)
+        {
+            var condition = BindExpression(syntax.Condition,typeof(bool));
+            var statement = BindStatement(syntax.ThenStatement);
+            var elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
+            return new BoundIfStatement(condition, statement, elseStatement);
+
+        }
+
         private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
         {
             var expression = BindExpression(syntax.Expression);
             return new BoundExpressionStatement(expression);
         }
+        private BoundExpression BindExpression(ExpressionSyntax syntax,Type targetType)
+        {
+            var result = BindExpression(syntax);
+            if(result.Type!=targetType)
+            {
+                _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
+            }
+            return result;
+        }
 
-        
+
         private BoundExpression BindExpression(ExpressionSyntax syntax)
         {
             switch (syntax.Kind)

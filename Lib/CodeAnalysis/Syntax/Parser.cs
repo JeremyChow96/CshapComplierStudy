@@ -78,14 +78,52 @@ namespace complier.CodeAnalysis.Syntax
             return new CompilationUnitSyntax(statement, endOfFileToken);
         }
 
-        private StatementSyntax ParseStatement() =>
-            Current.Kind switch
+        private StatementSyntax ParseStatement()
+        {
+            switch (Current.Kind)
             {
-                SyntaxKind.OpenBraceToken => ParseBlockStatement(),
-                SyntaxKind.LetKeyword => ParseVariableDeclaration(),
-                SyntaxKind.VarKeyword => ParseVariableDeclaration(),
-                _ => ParseExpressionStatement()
-            };
+                case SyntaxKind.OpenBraceToken:
+                    return ParseBlockStatement();
+                case SyntaxKind.LetKeyword:
+                case SyntaxKind.VarKeyword:
+                    return ParseVariableDeclaration();
+                case SyntaxKind.IfKeyword:
+                    return ParseIfStatement();
+                case SyntaxKind.WhileKeyword:
+                    return ParseWhileStatement();
+                default:
+                    return ParseExpressionStatement();
+            }
+        }
+
+        private StatementSyntax ParseWhileStatement()
+        {
+            var keyword = MatchToken(SyntaxKind.WhileKeyword);
+            var condition = ParseExpression();
+            var body = ParseStatement();
+            return new WhileStatementSyntax(keyword, condition, body);
+        }
+
+        private StatementSyntax ParseIfStatement()
+        {
+            var ifKeyword = MatchToken(SyntaxKind.IfKeyword);
+            var condition = ParseExpression();
+            var statement = ParseStatement();
+            var elseClause = ParseElseClause();
+            return new IfStatementSyntax(ifKeyword, condition, statement, elseClause);
+        }
+
+        private ElseClauseSyntax ParseElseClause()
+        {
+            if (Current.Kind != SyntaxKind.ElseKeyword)
+            {
+                return null;
+            }
+            var keyword = NextToken();
+            var statement = ParseStatement();
+            return new ElseClauseSyntax(keyword, statement);
+
+        }
 
         private StatementSyntax ParseVariableDeclaration()
         {

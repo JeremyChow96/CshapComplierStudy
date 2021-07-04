@@ -17,12 +17,12 @@ namespace complier.CodeAnalysis.Syntax
 
         public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return Identifier;
-            yield return EqualToken;
-            yield return Expression;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return Identifier;
+        //    yield return EqualToken;
+        //    yield return Expression;
+        //}
     }
 
 }

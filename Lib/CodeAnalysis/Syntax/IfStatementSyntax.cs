@@ -18,13 +18,21 @@ namespace complier.CodeAnalysis.Syntax
             ElseClause = elseClause;
         }
         public override SyntaxKind Kind => SyntaxKind.IfStatement;
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return IfKeyword;
-            yield return Condition;
-            yield return ThenStatement;
-            yield return ElseClause;
 
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return IfKeyword;
+        //    yield return Condition;
+        //    yield return ThenStatement;
+        //    if (ElseClause !=null )
+        //    {
+        //        yield return ElseClause;
+        //    }
+        //    else
+        //    {
+        //        yield break; 
+        //    } 
+        //}
+
     }
 }
