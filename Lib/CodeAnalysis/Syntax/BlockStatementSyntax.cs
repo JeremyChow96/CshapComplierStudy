@@ -18,15 +18,16 @@ namespace complier.CodeAnalysis.Syntax
         }
      
         public override SyntaxKind Kind => SyntaxKind.BlockStatement;
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return OpenBraceToken;
-            foreach (var statement in Statements)
-            {
-                yield return statement;
-            }
-            yield return CloseToken;
+
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return OpenBraceToken;
+        //    foreach (var statement in Statements)
+        //    {
+        //        yield return statement;
+        //    }
+        //    yield return CloseToken;
             
-        }
+        //}
     }
 }

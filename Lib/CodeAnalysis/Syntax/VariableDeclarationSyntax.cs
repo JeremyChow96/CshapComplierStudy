@@ -22,12 +22,12 @@ namespace complier.CodeAnalysis.Syntax
         }
 
         public override SyntaxKind Kind => SyntaxKind.VariableDeclaration;
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return Keyword;
-            yield return Identifier;
-            yield return EqualsToken;
-            yield return Initializer;
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    yield return Keyword;
+        //    yield return Identifier;
+        //    yield return EqualsToken;
+        //    yield return Initializer;
+        //}
     }
 }

@@ -28,6 +28,8 @@
         FalseKeyword,
         LetKeyword,
         VarKeyword,
+        IfKeyword,
+        ElseKeyword,
 
         //Expressions
         LiteralExpression,
@@ -44,12 +46,17 @@
         //statements
         BlockStatement,
         ExpressionStatement,
+        IfStatement,
+        ElseClause,
+
 
         VariableDeclaration,
         GreaterToken,
         GreaterOrEqualsToken,
         LessToken,
         LessOrEqualsToken,
+
+
     }
 
 }

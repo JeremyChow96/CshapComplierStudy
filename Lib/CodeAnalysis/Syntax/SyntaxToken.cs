@@ -24,10 +24,10 @@ namespace complier.CodeAnalysis.Syntax
         public object Value { get; }
         public override TextSpan Span => new TextSpan(Position, Text?.Length ?? 0);
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            return Enumerable.Empty<SyntaxNode>();
-        }
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
+        //    return Enumerable.Empty<SyntaxNode>();
+        //}
     }
 
 }

@@ -15,11 +15,11 @@ namespace complier.CodeAnalysis.Syntax
         public SyntaxToken OperatorToken { get; }
         public ExpressionSyntax Operand { get; }
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
+        //public override IEnumerable<SyntaxNode> GetChildren()
+        //{
            
-            yield return OperatorToken;
-            yield return Operand;
-        }
+        //    yield return OperatorToken;
+        //    yield return Operand;
+        //}
     }
 }
