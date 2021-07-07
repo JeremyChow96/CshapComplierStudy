@@ -13,6 +13,7 @@
         ExpressionStatement,
         VariableDeclaration,
         IfStatement,
-        WhileStatement
+        WhileStatement,
+        ForStatement
     }
 }
