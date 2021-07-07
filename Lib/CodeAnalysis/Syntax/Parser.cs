@@ -156,11 +156,27 @@ namespace complier.CodeAnalysis.Syntax
 
 
             var openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
+            var startToken = Current;
+            
+            
             while (Current.Kind != SyntaxKind.EndOfFileToken &&
                    Current.Kind != SyntaxKind.CloseBraceToken)
             {
                 var statement = ParseStatement();
                 statements.Add(statement);
+
+              
+                // If ParseStatement did not consume any tokens,
+                // skip curret token and continue in order to avoid
+                // an infinite loop.
+                // We don't need  to report and error.
+                // because we'll already tried to parse
+                // an  expression statement and report.
+                if (Current ==startToken)
+                {
+                     NextToken();
+                }
+                startToken = Current;
             }
 
             var clopseBraceToken = MatchToken(SyntaxKind.CloseBraceToken);

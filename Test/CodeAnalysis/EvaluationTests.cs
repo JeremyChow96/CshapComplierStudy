@@ -71,6 +71,19 @@ namespace Test.CodeAnalysis
 
             AssertDiagnostics(text, diagnostics);
         }
+
+        //[Fact]
+        //public void Evaluator_BlockStatement_Reports_NoInfiniteLoop()
+        //{
+        //    var text = @"{
+        //                [)]
+        //               "
+        //        ;
+
+        //    var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+
+        //    AssertDiagnostics(text, diagnostics);
+        //}
         [Fact]
         public void Evaluator_NameExpression_Reports_Undefined()
         {
@@ -80,6 +93,18 @@ namespace Test.CodeAnalysis
 
             AssertDiagnostics(text, diagnostics);
         }
+
+        [Fact]
+        public void Evaluator_NameExpression_Reports_NoErrorForInsertedToken()
+        {
+            var text = @"[]";
+
+            var diagnostics = @"Unexpected token <EndOfFileToken>, expected <IdentifierToken>. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+
 
         [Fact]
         public void Evaluator_AssignmentExpression_Reports_Undefined()
@@ -202,15 +227,17 @@ namespace Test.CodeAnalysis
 
         private void AssertDiagnostics(string text, string diagnosticsText)
         {
-            var annotateText = AnnotateTest.Parse(text);
-            var syntaxTree = SyntaxTree.Parse(annotateText.Text);
+            var annotatedText = AnnotateTest.Parse(text);
+            var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
             var compilation = new Compilation(syntaxTree);
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
             var expectedDiagnostics = AnnotateTest.UnindentLines(diagnosticsText);
 
-            
-            Assert.Equal(annotateText.Spans.Length,expectedDiagnostics.Length);
+            if (annotatedText.Spans.Length != expectedDiagnostics.Length)
+                throw new Exception("ERROR: Must mark as many spans as there are expected diagnostics");
+
+            Assert.Equal(annotatedText.Spans.Length,expectedDiagnostics.Length);
           
 
             for (int i = 0; i < expectedDiagnostics.Length; i++)
@@ -220,7 +247,7 @@ namespace Test.CodeAnalysis
 
                 Assert.Equal(expectedMessage, actualMessage);
                 
-                var expectedSpan = annotateText.Spans[i];
+                var expectedSpan = annotatedText.Spans[i];
                 var actualSpan = result.Diagnostics[i].Span;
                 Assert.Equal(expectedSpan, actualSpan);
 
