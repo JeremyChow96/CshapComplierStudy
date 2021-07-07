@@ -128,7 +128,7 @@ namespace complier.CodeAnalysis.Syntax
                     return ">=";
                 case SyntaxKind.OpenParenthesisToken:
                     return "(";
-                case SyntaxKind.CloseParentesisToken:
+                case SyntaxKind.CloseParenthesisToken:
                     return ")";
                 case SyntaxKind.OpenBraceToken:
                     return "{";

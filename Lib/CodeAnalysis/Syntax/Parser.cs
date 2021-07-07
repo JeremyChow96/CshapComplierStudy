@@ -172,7 +172,7 @@ namespace complier.CodeAnalysis.Syntax
                 // We don't need  to report and error.
                 // because we'll already tried to parse
                 // an  expression statement and report.
-                if (Current ==startToken)
+                if (Current == startToken)
                 {
                      NextToken();
                 }
@@ -286,7 +286,7 @@ namespace complier.CodeAnalysis.Syntax
         {
             var left = MatchToken(SyntaxKind.OpenParenthesisToken);
             var exprssion = ParseExpression();
-            var right = MatchToken(SyntaxKind.CloseParentesisToken);
+            var right = MatchToken(SyntaxKind.CloseParenthesisToken);
             return new ParenthesizedExpressionSyntax(left, exprssion, right);
         }
 

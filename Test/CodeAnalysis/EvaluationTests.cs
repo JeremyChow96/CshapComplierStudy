@@ -67,29 +67,34 @@ namespace Test.CodeAnalysis
                 }
                 ";
 
-            var diagnostics = @"Variable 'x' is already declared. ";
+            var diagnostics = @"Variable 'x' is already declared.";
 
             AssertDiagnostics(text, diagnostics);
         }
 
-        //[Fact]
-        //public void Evaluator_BlockStatement_Reports_NoInfiniteLoop()
-        //{
-        //    var text = @"{
-        //                [)]
-        //               "
-        //        ;
+        [Fact]
+        public void Evaluator_BlockStatement_Reports_NoInfiniteLoop()
+        {
+            var text = @"
+                {
+                [)][]
+            ";
 
-        //    var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+            var diagnostics = @"
+                Unexpected token <CloseParenthesisToken>, expected <IdentifierToken>.
+                Unexpected token <EndOfFileToken>, expected <CloseBraceToken>.
+            ";
 
-        //    AssertDiagnostics(text, diagnostics);
-        //}
+            AssertDiagnostics(text, diagnostics);
+        }
+
+
         [Fact]
         public void Evaluator_NameExpression_Reports_Undefined()
         {
             var text = @"[x] * 10";
             
-            var diagnostics = @"Variable 'x' doesn't exist. ";
+            var diagnostics = @"Variable 'x' doesn't exist.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -99,7 +104,7 @@ namespace Test.CodeAnalysis
         {
             var text = @"[]";
 
-            var diagnostics = @"Unexpected token <EndOfFileToken>, expected <IdentifierToken>. ";
+            var diagnostics = @"Unexpected token <EndOfFileToken>, expected <IdentifierToken>.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -114,7 +119,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
             
-            var diagnostics = @"Variable 'x' doesn't exist. ";
+            var diagnostics = @"Variable 'x' doesn't exist.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -128,7 +133,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Variable 'x' is read-only and cannot be assigned to. ";
+            var diagnostics = @"Variable 'x' is read-only and cannot be assigned to.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -141,7 +146,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
             
-            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'. ";
+            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -157,7 +162,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -173,7 +178,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -188,7 +193,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'. ";
+            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -198,7 +203,7 @@ namespace Test.CodeAnalysis
         {
             var text = @"[+]true";
             
-            var diagnostics = @"Unary operator '+' is not defined for type 'System.Boolean'. ";
+            var diagnostics = @"Unary operator '+' is not defined for type 'System.Boolean'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -208,7 +213,7 @@ namespace Test.CodeAnalysis
         {
             var text = @"12 [*] true";
             
-            var diagnostics = @"Binary operator '*' is not defined for type 'System.Int32' and 'System.Boolean'. ";
+            var diagnostics = @"Binary operator '*' is not defined for type 'System.Int32' and 'System.Boolean'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -225,20 +230,23 @@ namespace Test.CodeAnalysis
             Assert.Equal(expectedReuslt, result.Value);
         }
 
-        private void AssertDiagnostics(string text, string diagnosticsText)
+        private void AssertDiagnostics(string text, string diagnosticText)
         {
-            var annotatedText = AnnotateTest.Parse(text);
+            var annotatedText = AnnotatedText.Parse(text);
             var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
             var compilation = new Compilation(syntaxTree);
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
-            var expectedDiagnostics = AnnotateTest.UnindentLines(diagnosticsText);
+      
+
+            var expectedDiagnostics = AnnotatedText.UnindentLines(diagnosticText);
 
             if (annotatedText.Spans.Length != expectedDiagnostics.Length)
                 throw new Exception("ERROR: Must mark as many spans as there are expected diagnostics");
 
-            Assert.Equal(annotatedText.Spans.Length,expectedDiagnostics.Length);
-          
+            var diagnostics = result.Diagnostics;
+            Assert.Equal(expectedDiagnostics.Length, diagnostics.Length);
+
 
             for (int i = 0; i < expectedDiagnostics.Length; i++)
             {

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace complier.CodeAnalysis.Syntax
 {
-    //[DebuggerDisplay("kind : {Kind}  Text : {Text} ")]
+    [DebuggerDisplay(" {Kind} - {Text} : {Value} ")]
    public sealed  class SyntaxToken : SyntaxNode
     {
         public SyntaxToken(SyntaxKind kind, int position, string text, object value)
@@ -16,8 +16,6 @@ namespace complier.CodeAnalysis.Syntax
         }
 
         public override SyntaxKind Kind { get; }
-
-
 
         public int Position { get; }
         public string Text { get; }
