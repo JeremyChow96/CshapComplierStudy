@@ -103,7 +103,7 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
-            var condition = BindExpression(syntax.Condition);
+            var condition = BindExpression(syntax.Condition,typeof(bool));
             var body = BindStatement(syntax.Body);
             return new BoundWhileStatement(condition, body);
         }

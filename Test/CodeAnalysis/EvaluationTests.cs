@@ -72,7 +72,7 @@ namespace Test.CodeAnalysis
             AssertDiagnostics(text, diagnostics);
         }
         [Fact]
-        public void Evaluator_Name_Reports_Undefined()
+        public void Evaluator_NameExpression_Reports_Undefined()
         {
             var text = @"[x] * 10";
             
@@ -82,22 +82,33 @@ namespace Test.CodeAnalysis
         }
 
         [Fact]
-        public void Evaluator_Assigned_Reports_Undefined()
+        public void Evaluator_AssignmentExpression_Reports_Undefined()
+        {
+            var text = @"{
+                             [x] = 10                 
+                        }"
+                ;
+            
+            var diagnostics = @"Variable 'x' doesn't exist. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        [Fact]
+        public void Evaluator_AssignmentExpression_Reports_CannotAssign()
         {
             var text = @"{
                             let x = 10
                             x [=] 15
                         }"
                 ;
-            
+
             var diagnostics = @"Variable 'x' is read-only and cannot be assigned to. ";
 
             AssertDiagnostics(text, diagnostics);
         }
-        
-             
         [Fact]
-        public void Evaluator_Assigned_Reports_CannotConvert()
+        public void Evaluator_AssignmentExpression_Reports_CannotConvert()
         {
             var text = @"{
                             var x = 10
@@ -109,10 +120,56 @@ namespace Test.CodeAnalysis
 
             AssertDiagnostics(text, diagnostics);
         }
-        
-        
+
+
         [Fact]
-        public void Evaluator_Unary_Reports_Undefined()
+        public void Evaluator_IfStatement_Reports_CannotConvert()
+        {
+            var text = @"{
+                            var x = 10
+                            if [10]
+                                x = 12
+                        }"
+                ;
+
+            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+
+        [Fact]
+        public void Evaluator_WhileStatement_Reports_CannotConvert()
+        {
+            var text = @"{
+                            var x = 10
+                            while [10]
+                                x = 12
+                        }"
+                ;
+
+            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        [Fact]
+        public void Evaluator_ForStatement_Reports_CannotConvert()
+        {
+            var text = @"{
+                            var r = 0
+                            for i = [false] to 10 
+                                 r =  r + i
+                        }"
+                ;
+
+            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'. ";
+
+            AssertDiagnostics(text, diagnostics);
+        }
+
+        [Fact]
+        public void Evaluator_UnaryExpression_Reports_Undefined()
         {
             var text = @"[+]true";
             
@@ -122,7 +179,7 @@ namespace Test.CodeAnalysis
         }
         
         [Fact]
-        public void Evaluator_Binary_Reports_Undefined()
+        public void Evaluator_BinaryExpression_Reports_Undefined()
         {
             var text = @"12 [*] true";
             

@@ -2,11 +2,12 @@
 {
     public sealed class ForStatmentSyntax : StatementSyntax
     {
-        public ForStatmentSyntax(SyntaxToken forKeyword, SyntaxToken identifier, SyntaxToken equals, ExpressionSyntax lowerBound, SyntaxToken toKeyword, ExpressionSyntax upperBound, StatementSyntax body)
+        public ForStatmentSyntax(SyntaxToken forKeyword, SyntaxToken identifier, SyntaxToken equalsToken, ExpressionSyntax lowerBound, SyntaxToken toKeyword, ExpressionSyntax upperBound, StatementSyntax body)
         {
             ForKeyword = forKeyword;
             Identifier = identifier;
-            Equals = equals;
+            EqualsToken = equalsToken;
+            EqualsToken = equalsToken;
             LowerBound = lowerBound;
             ToKeyword = toKeyword;
             UpperBound = upperBound;
@@ -16,7 +17,7 @@
 
         public SyntaxToken ForKeyword { get; }
         public SyntaxToken Identifier { get; }
-        public SyntaxToken Equals { get; }
+        public SyntaxToken EqualsToken { get; }
         public ExpressionSyntax LowerBound { get; }
         public SyntaxToken ToKeyword { get; }
         public ExpressionSyntax UpperBound { get; }
