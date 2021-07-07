@@ -18,7 +18,7 @@
         EqualsEqualsToken,
         BangEqualsToken,
         OpenParenthesisToken,
-        CloseParentesisToken,
+        CloseParenthesisToken,
         IdentifierToken,
         OpenBraceToken,
         CloseBraceToken,
@@ -36,6 +36,8 @@
         IfKeyword,
         ElseKeyword,
         WhileKeyword,
+        ForKeyword,
+        ToKeyword,
 
         //Expressions
         LiteralExpression,
@@ -57,7 +59,7 @@
         IfStatement,
         WhileStatement,
         VariableDeclaration,
-
+        ForStatment,
     }
 
 }

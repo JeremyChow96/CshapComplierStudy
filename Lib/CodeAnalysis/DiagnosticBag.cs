@@ -43,44 +43,44 @@ namespace complier.CodeAnalysis
 
         public void ReportUnexpectedToken(TextSpan span, SyntaxKind actualKind, SyntaxKind expectedKind)
         {
-            var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>. ";
+            var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>.";
             Report(span, message);
         }
 
         public void ReportUndefinedUnaryOperator(TextSpan span, string text, Type type)
         {
-            var message = $"Unary operator '{text}' is not defined for type '{type}'. ";
+            var message = $"Unary operator '{text}' is not defined for type '{type}'.";
             Report(span, message);
         }
 
         public void ReportUndefinedBinaryOperator(TextSpan span, string text, Type leftType, Type rightType)
         {
-            var message = $"Binary operator '{text}' is not defined for type '{leftType}' and '{rightType}'. ";
+            var message = $"Binary operator '{text}' is not defined for type '{leftType}' and '{rightType}'.";
             Report(span, message);
         }
 
         public void ReportUndefinedName(TextSpan span, string name)
         {
-            var message = $"Variable '{name}' doesn't exist. ";
+            var message = $"Variable '{name}' doesn't exist.";
             Report(span, message);
 
         }
 
         public void ReportVariableAlreadyDeclared(TextSpan span, string name)
         {
-            var message = $"Variable '{name}' is already declared. ";
+            var message = $"Variable '{name}' is already declared.";
             Report(span, message);
         }
 
         public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
         {
-            var message = $"Cannot convert type '{fromType}' to '{toType}'. ";
+            var message = $"Cannot convert type '{fromType}' to '{toType}'.";
             Report(span, message);
         }
 
         public void ReportCannotAssign(TextSpan span, string name)
         {
-            var message = $"Variable '{name}' is read-only and cannot be assigned to. ";
+            var message = $"Variable '{name}' is read-only and cannot be assigned to.";
             Report(span, message);
         }
     }

@@ -66,7 +66,7 @@ namespace complier.CodeAnalysis.Syntax
                     _position++;
                     break;
                 case ')':
-                    _kind = SyntaxKind.CloseParentesisToken;
+                    _kind = SyntaxKind.CloseParenthesisToken;
                     _position++;
                     break;
                 case '{':

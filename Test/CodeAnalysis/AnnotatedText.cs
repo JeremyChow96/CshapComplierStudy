@@ -7,18 +7,18 @@ using complier.CodeAnalysis;
 
 namespace Test.CodeAnalysis
 {
-    internal sealed class AnnotateTest
+    internal sealed class AnnotatedText
     {
         public string Text { get; }
         public ImmutableArray<TextSpan> Spans { get; }
 
-        public AnnotateTest(string text, ImmutableArray<TextSpan> spans)
+        public AnnotatedText(string text, ImmutableArray<TextSpan> spans)
         {
             Text = text;
             Spans = spans;
         }
 
-        public static AnnotateTest Parse(string text)
+        public static AnnotatedText Parse(string text)
         {
             text = Unindent(text);
 
@@ -60,7 +60,7 @@ namespace Test.CodeAnalysis
             }
 
 
-            return new AnnotateTest(textBuilder.ToString(), spanBuilder.ToImmutable());
+            return new AnnotatedText(textBuilder.ToString(), spanBuilder.ToImmutable());
         }
 
         private static string Unindent(string text)
@@ -95,21 +95,21 @@ namespace Test.CodeAnalysis
                 minIndentation = Math.Min(minIndentation, indentataion);
             }
 
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines[i].Length == 0)
-                {
-                    continue;
-                }
 
-                lines[i].Substring(minIndentation);
+            for (var i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Trim().Length == 0)
+                    continue;
+                
+                lines[i] = lines[i].Substring(minIndentation);
+               // lines[i] = lines[i].TrimStart();
             }
 
-            while (lines.Count > 0 && lines[0].Length == 0)
+            while (lines.Count > 0 && lines[0].Trim().Length == 0)
                 lines.RemoveAt(0);
 
             // lines.Count-1
-            while (lines.Count > 0 && lines[^1].Length == 0)
+            while (lines.Count > 0 && lines[^1].Trim().Length == 0)
                 lines.RemoveAt(lines.Count - 1);
             return lines.ToArray();
         }

@@ -74,14 +74,36 @@ namespace complier.CodeAnalysis.Binding
                     return BindIfStatement((IfStatementSyntax)syntax);
                 case SyntaxKind.WhileStatement:
                     return BindWhileStatement((WhileStatementSyntax)syntax);
+                case SyntaxKind.ForStatment:
+                    return BindForStatment((ForStatmentSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
         }
 
+        private BoundStatement BindForStatment(ForStatmentSyntax syntax)
+        {
+            var lowerBound = BindExpression(syntax.LowerBound,typeof(int));
+            var upperBound = BindExpression(syntax.UpperBound, typeof(int));
+
+            _scope = new BoundScope(_scope);
+            var name = syntax.Identifier.Text;
+
+            var variable = new VariableSymbol(name, false, typeof(int));
+
+            if (!_scope.TryDeclare(variable))
+            {
+                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);         
+            }
+            var body = BindStatement(syntax.Body);
+            _scope = _scope.Parent;
+
+            return new BoundForStatement(variable, lowerBound, upperBound, body);
+        }
+
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
-            var condition = BindExpression(syntax.Condition);
+            var condition = BindExpression(syntax.Condition,typeof(bool));
             var body = BindStatement(syntax.Body);
             return new BoundWhileStatement(condition, body);
         }
@@ -163,7 +185,12 @@ namespace complier.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-
+            if (string.IsNullOrEmpty(name))
+            {
+                // This means the token was inserted by the parser. We already
+                // reported an error so we can just return an error expression
+                return new BoundLiteralExpression(0);
+            }
 
             if (!_scope.TryLookup(name, out var variable))
             {

@@ -91,9 +91,24 @@ namespace complier.CodeAnalysis.Syntax
                     return ParseIfStatement();
                 case SyntaxKind.WhileKeyword:
                     return ParseWhileStatement();
+                case SyntaxKind.ForKeyword:
+                    return ParseForStatement();
                 default:
                     return ParseExpressionStatement();
             }
+        }
+
+        private StatementSyntax ParseForStatement()
+        {
+            var keyword = MatchToken(SyntaxKind.ForKeyword);
+            var identifier = MatchToken(SyntaxKind.IdentifierToken);
+            var equals = MatchToken(SyntaxKind.EqualsToken);
+            var lowerBound = ParseExpression();
+            var toKeyword = MatchToken(SyntaxKind.ToKeyword);
+            var upperBound = ParseExpression();
+            var body = ParseStatement();
+
+            return new ForStatmentSyntax(keyword, identifier, equals, lowerBound, toKeyword, upperBound, body);
         }
 
         private StatementSyntax ParseWhileStatement()
@@ -141,11 +156,27 @@ namespace complier.CodeAnalysis.Syntax
 
 
             var openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
+            var startToken = Current;
+            
+            
             while (Current.Kind != SyntaxKind.EndOfFileToken &&
                    Current.Kind != SyntaxKind.CloseBraceToken)
             {
                 var statement = ParseStatement();
                 statements.Add(statement);
+
+              
+                // If ParseStatement did not consume any tokens,
+                // skip curret token and continue in order to avoid
+                // an infinite loop.
+                // We don't need  to report and error.
+                // because we'll already tried to parse
+                // an  expression statement and report.
+                if (Current == startToken)
+                {
+                     NextToken();
+                }
+                startToken = Current;
             }
 
             var clopseBraceToken = MatchToken(SyntaxKind.CloseBraceToken);
@@ -255,7 +286,7 @@ namespace complier.CodeAnalysis.Syntax
         {
             var left = MatchToken(SyntaxKind.OpenParenthesisToken);
             var exprssion = ParseExpression();
-            var right = MatchToken(SyntaxKind.CloseParentesisToken);
+            var right = MatchToken(SyntaxKind.CloseParenthesisToken);
             return new ParenthesizedExpressionSyntax(left, exprssion, right);
         }
 
