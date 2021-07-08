@@ -35,7 +35,12 @@ namespace Test.CodeAnalysis
         [InlineData("true == false", false)]
         [InlineData("false == false", true)]
         [InlineData("false != false", false)]
-        [InlineData("true", true)]
+        [InlineData("true", true)]       
+        [InlineData("true&&false", false)]
+        [InlineData("true&&true", true)]
+        [InlineData("true||false", true)]
+        [InlineData("false||false", false)]
+
         [InlineData("!true", false)]
         [InlineData("false", false)]
         [InlineData("!false", true)]
