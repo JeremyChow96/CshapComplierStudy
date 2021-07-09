@@ -12,6 +12,10 @@
         StarToken,
         SlashToken,
         BangToken,
+        AmpersandToken,
+        PipeToken,
+        HatToken,
+        TildeToken,
         EqualsToken,
         PipePipeToken,
         AmpersandAmpersandToken,
@@ -49,7 +53,7 @@
 
 
         //nodes
-        CompliationUnit,
+        CompilationUnit,
         ElseClause,
 
 
@@ -59,7 +63,8 @@
         IfStatement,
         WhileStatement,
         VariableDeclaration,
-        ForStatment,
+        ForStatement,
+ 
     }
 
 }

@@ -45,6 +45,24 @@ namespace Test.CodeAnalysis
         [InlineData("false", false)]
         [InlineData("!false", true)]
 
+        [InlineData("1|1", 1)]
+        [InlineData("1|2", 3)]  
+        [InlineData("true|true", true)]  
+        [InlineData("true|false", true)]  
+        
+        [InlineData("1&1", 1)]
+        [InlineData("1&0", 0)]
+        [InlineData("true&true", true)]  
+        [InlineData("true&false", false)]  
+        [InlineData("1|3", 3)]
+        [InlineData("1^1", 0)]
+        [InlineData("1^2", 3)]
+        [InlineData("3^2", 1)]
+        [InlineData("true^true", false)]  
+        [InlineData("true^false", true)]  
+        [InlineData("~3", -4)]  
+
+
         [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]
         [InlineData(" { var a = 0 if a == 4 a = 10  a}", 0)]
         [InlineData(" { var a = 0 if a == 0 a = 10 else a = 5 a}", 10)]

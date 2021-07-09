@@ -13,7 +13,7 @@ namespace complier.CodeAnalysis.Syntax
         public StatementSyntax Statement { get; }
         public SyntaxToken EndOfFileToken { get; }
 
-        public override SyntaxKind Kind => SyntaxKind.CompliationUnit;
+        public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
 
         //public override IEnumerable<SyntaxNode> GetChildren()
         //{

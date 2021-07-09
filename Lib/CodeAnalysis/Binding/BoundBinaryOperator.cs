@@ -37,6 +37,11 @@ namespace complier.CodeAnalysis.Binding
             new BoundBinaryOpertor(SyntaxKind.StarToken,BoundBinaryOperatorKind.Multiplication,typeof(int)),
             new BoundBinaryOpertor(SyntaxKind.SlashToken,BoundBinaryOperatorKind.Division,typeof(int)),
 
+           new BoundBinaryOpertor(SyntaxKind.AmpersandToken,BoundBinaryOperatorKind.BitwiseAnd,typeof(int)),
+            new BoundBinaryOpertor(SyntaxKind.PipeToken,BoundBinaryOperatorKind.BitwiseOr,typeof(int)),
+            new BoundBinaryOpertor(SyntaxKind.HatToken,BoundBinaryOperatorKind.BitwiseXor,typeof(int)),
+
+
             new BoundBinaryOpertor(SyntaxKind.EqualsEqualsToken,BoundBinaryOperatorKind.Equals,typeof(int),typeof(bool)),
             new BoundBinaryOpertor(SyntaxKind.BangEqualsToken,BoundBinaryOperatorKind.NotEquals,typeof(int),typeof(bool)),
 
@@ -47,6 +52,9 @@ namespace complier.CodeAnalysis.Binding
             new BoundBinaryOpertor(SyntaxKind.GreaterToken,BoundBinaryOperatorKind.GreaterThan,typeof(int),typeof(bool)),
             new BoundBinaryOpertor(SyntaxKind.GreaterOrEqualsToken,BoundBinaryOperatorKind.GreaterThanOrEquals,typeof(int),typeof(bool)),
 
+            new BoundBinaryOpertor(SyntaxKind.AmpersandToken,BoundBinaryOperatorKind.BitwiseAnd,typeof(bool)),
+            new BoundBinaryOpertor(SyntaxKind.PipeToken,BoundBinaryOperatorKind.BitwiseOr,typeof(bool)),
+            new BoundBinaryOpertor(SyntaxKind.HatToken,BoundBinaryOperatorKind.BitwiseXor,typeof(bool)),
 
             new BoundBinaryOpertor(SyntaxKind.AmpersandAmpersandToken,BoundBinaryOperatorKind.LogicalAnd,typeof(bool)),
             new BoundBinaryOpertor(SyntaxKind.PipePipeToken,BoundBinaryOperatorKind.LogicalOr,typeof(bool)),

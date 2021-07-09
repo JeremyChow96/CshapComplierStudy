@@ -123,25 +123,19 @@ namespace Test.CodeAnalysis.Syntax
             var t1IsKeyword = t1Kind.ToString().EndsWith("Keyword");
             var t2IsKeyword = t2Kind.ToString().EndsWith("Keyword");
 
-            if (t1Kind ==SyntaxKind.IdentifierToken &&t2Kind== SyntaxKind.IdentifierToken)
+            switch (t1Kind)
             {
-                return true;
+                case SyntaxKind.IdentifierToken when t2Kind== SyntaxKind.IdentifierToken:
+                case SyntaxKind.NumberToken when t2Kind == SyntaxKind.NumberToken:
+                    return true;
             }
 
-            if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.NumberToken)
+            switch (t1IsKeyword)
             {
-                return true;
-            }
-
-            if (t1IsKeyword && t2IsKeyword)
-            {
-                return true;
-            }
-
-            // falseabc why this is ok?
-            if (t1IsKeyword && t2Kind == SyntaxKind.IdentifierToken)
-            {
-                return true;
+                case true when t2IsKeyword:
+                // falseabc why this is ok?
+                case true when t2Kind == SyntaxKind.IdentifierToken:
+                    return true;
             }
 
             // abcture
@@ -185,6 +179,22 @@ namespace Test.CodeAnalysis.Syntax
                 return true;
             }
             if (t1Kind == SyntaxKind.GreaterToken && t2Kind == SyntaxKind.EqualsEqualsToken)
+            {
+                return true;
+            }
+            if (t1Kind == SyntaxKind.AmpersandToken && t2Kind == SyntaxKind.AmpersandToken)
+            {
+                return true;
+            }
+            if (t1Kind == SyntaxKind.AmpersandToken && t2Kind == SyntaxKind.AmpersandAmpersandToken)
+            {
+                return true;
+            }
+            if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.PipeToken)
+            {
+                return true;
+            }
+            if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.PipePipeToken)
             {
                 return true;
             }
