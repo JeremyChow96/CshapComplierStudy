@@ -67,13 +67,14 @@ namespace complier.CodeAnalysis.Syntax
             //└─
             //│
             var marker = islast ? "└───" : "├───";
-            writer.Write(indent);
             if (isConsoleOut)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
             }
+            
+            writer.Write(indent);
             writer.Write(marker);
-            Console.ResetColor();
+         
 
             if (isConsoleOut)
             {
@@ -81,22 +82,22 @@ namespace complier.CodeAnalysis.Syntax
                 writer.Write(node.Kind);
             }
 
-
             if (node is SyntaxToken t && t.Value != null)
             {
                 writer.Write(" ");
                 writer.Write(t.Value);
             }
-
+            
             if (isConsoleOut)
             {
                 Console.ResetColor();
             }
-
             writer.WriteLine();
-
             indent += islast ? "    " : "│    ";
 
+         
+            
+            
             var lastChild = node.GetChildren().LastOrDefault();
 
             foreach (var child in node.GetChildren())

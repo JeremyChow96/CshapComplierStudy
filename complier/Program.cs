@@ -16,6 +16,7 @@ namespace complier
         {
 
             var showTree = false;
+            var showProgram = false;
             var variables = new Dictionary<VariableSymbol,object>();
             var textBuilder = new StringBuilder();
             Compilation previous = null;
@@ -41,6 +42,12 @@ namespace complier
                     {
                         showTree = !showTree;
                         Console.WriteLine(showTree ? "Showing parse tree" : "Not showing parse tree");
+                        continue;
+                    }
+                    else if (input == "#showProgram")
+                    {
+                        showProgram = !showProgram;
+                        Console.WriteLine(showProgram ? "Showing bound tree" : "Not showing bound tree");
                         continue;
                     }
                     else if (input == "#cls")
@@ -75,11 +82,12 @@ namespace complier
            
                 if (showTree)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
                     syntaxTree.Root.WriteTo(Console.Out);
-                    Console.ResetColor();
                 }
-
+                if (showProgram)
+                {
+                    compilation.EmitTree(Console.Out);
+                }
 
                 if (!diagnostics.Any())
                 {
