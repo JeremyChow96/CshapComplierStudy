@@ -43,9 +43,9 @@ namespace complier.CodeAnalysis
                 case BoundNodeKind.WhileStatement:
                     EvaluateWhileStatement((BoundWhileStatement) node);
                     break;
-                case BoundNodeKind.ForStatement:
-                    EvaluateForStatement((BoundForStatement) node);
-                    break;
+                // case BoundNodeKind.ForStatement:
+                //     EvaluateForStatement((BoundForStatement) node);
+                //     break;
                 default:
                     throw new Exception($"Unexpected node {node.Kind}");
             }

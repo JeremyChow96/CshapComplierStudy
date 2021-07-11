@@ -74,7 +74,7 @@ namespace Lib.CodeAnalysis.Binding
         {
             var variable = node.Variable;
             var initializer = RewriteExpression(node.Initializer);
-            if (initializer==initializer)
+            if (initializer==node.Initializer)
             {
                 return node;
             }
