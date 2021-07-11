@@ -75,10 +75,8 @@ namespace complier
                     ? new Compilation(syntaxTree)
                     : previous.ContinueWith(syntaxTree);
                 
-                var result = compilation.Evaluate(variables);
 
 
-                var diagnostics = result.Diagnostics;
            
                 if (showTree)
                 {
@@ -88,6 +86,10 @@ namespace complier
                 {
                     compilation.EmitTree(Console.Out);
                 }
+                
+                var result = compilation.Evaluate(variables);
+                var diagnostics = result.Diagnostics;
+
 
                 if (!diagnostics.Any())
                 {

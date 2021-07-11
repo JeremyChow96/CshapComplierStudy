@@ -22,9 +22,37 @@ namespace Lib.CodeAnalysis.Binding
                     return RewriteWhileStatement((BoundWhileStatement) node);
                 case BoundNodeKind.ForStatement:
                     return RewriteForStatement((BoundForStatement) node);
+                case BoundNodeKind.GotoStatement:
+                    return RewriteGotoStatement((BoundGotoStatement) node);
+                case BoundNodeKind.LabelStatement:
+                    return RewriteLabelStatement((BoundLabelStatement) node);
+                case BoundNodeKind.ConditionalGotoStatement:
+                    return RewriteConditionalGotoStatement((BoundConditionalGotoStatement) node);
                 default:
                     throw new Exception($"Unexpected node : {node.Kind}");
             }
+        }
+
+
+        protected virtual BoundStatement RewriteConditionalGotoStatement(BoundConditionalGotoStatement node)
+        {
+            var condition = RewriteExpression(node.Condition);
+            if (condition==node.Condition)
+            {
+                return node;
+            }
+
+            return new BoundConditionalGotoStatement(node.Label, node.Condition, node.JumpIfFalse);
+        }
+
+        protected virtual BoundStatement RewriteLabelStatement(BoundLabelStatement node)
+        {
+            return node;
+        }
+
+        protected virtual BoundStatement RewriteGotoStatement(BoundGotoStatement node)
+        {
+            return node;
         }
 
         protected virtual BoundStatement RewriteForStatement(BoundForStatement node)
@@ -32,9 +60,9 @@ namespace Lib.CodeAnalysis.Binding
             var lower = RewriteExpression(node.LowerBound);
             var upper = RewriteExpression(node.UpperBound);
             var body = RewriteStatement(node.Body);
-            if (lower == node.LowerBound && 
+            if (lower == node.LowerBound &&
                 upper == node.UpperBound &&
-                body ==node.Body)
+                body == node.Body)
             {
                 return node;
             }
@@ -46,8 +74,8 @@ namespace Lib.CodeAnalysis.Binding
         {
             var condition = RewriteExpression(node.Condition);
             var body = RewriteStatement(node.Body);
-            if (condition == node.Condition&&
-                body ==node.Body)
+            if (condition == node.Condition &&
+                body == node.Body)
             {
                 return node;
             }
@@ -60,7 +88,7 @@ namespace Lib.CodeAnalysis.Binding
             var condition = RewriteExpression(node.Condition);
             var thenStatement = RewriteStatement(node.ThenStatement);
             var elseStatement = node.ElseStatement == null ? null : RewriteStatement(node.ElseStatement);
-            if (condition == node.Condition && 
+            if (condition == node.Condition &&
                 thenStatement == node.ThenStatement &&
                 elseStatement == node.ElseStatement)
             {
@@ -74,7 +102,7 @@ namespace Lib.CodeAnalysis.Binding
         {
             var variable = node.Variable;
             var initializer = RewriteExpression(node.Initializer);
-            if (initializer==node.Initializer)
+            if (initializer == node.Initializer)
             {
                 return node;
             }
@@ -85,7 +113,7 @@ namespace Lib.CodeAnalysis.Binding
         protected virtual BoundStatement RewriteExpressionStatement(BoundExpressionStatement node)
         {
             var expression = RewriteExpression(node.Expression);
-            if (expression==node.Expression)
+            if (expression == node.Expression)
             {
                 return node;
             }
@@ -101,9 +129,9 @@ namespace Lib.CodeAnalysis.Binding
             {
                 var oldStatement = node.Statements[i];
                 var newStatement = RewriteStatement(oldStatement);
-                if (newStatement !=oldStatement)
+                if (newStatement != oldStatement)
                 {
-                    if (builder ==null)
+                    if (builder == null)
                     {
                         builder = ImmutableArray.CreateBuilder<BoundStatement>(node.Statements.Length);
                         for (int j = 0; j < i; j++)
@@ -113,19 +141,18 @@ namespace Lib.CodeAnalysis.Binding
                     }
                 }
 
-                if (builder!=null)
+                if (builder != null)
                 {
                     builder.Add(newStatement);
                 }
             }
 
-            if (builder==null)
+            if (builder == null)
             {
                 return node;
             }
 
             return new BoundBlockStatement(builder.MoveToImmutable());
-
         }
 
         public virtual BoundExpression RewriteExpression(BoundExpression node)
