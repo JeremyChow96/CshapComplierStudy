@@ -2,9 +2,9 @@
 {
     internal enum BoundNodeKind
     {
-        UnaryExpreesion,
+        UnaryExpression,
         LiteralExpression,
-        BinaryExpreesion,
+        BinaryExpression,
         VariableExpression,
         AssignmentExpression,
         

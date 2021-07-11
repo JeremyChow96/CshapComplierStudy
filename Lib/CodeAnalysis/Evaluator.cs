@@ -114,8 +114,8 @@ namespace complier.CodeAnalysis
                 BoundNodeKind.LiteralExpression => EvaluateLiteralExpression((BoundLiteralExpression) node),
                 BoundNodeKind.VariableExpression => EvaluateVariableExpression((BoundVariableExpression) node),
                 BoundNodeKind.AssignmentExpression => EvaluateAssignmentExpression((BoundAssignmentExpression) node),
-                BoundNodeKind.UnaryExpreesion => EvaluateUnaryExpression((BoundUnaryExpression) node),
-                BoundNodeKind.BinaryExpreesion => EvaluateBinaryExpression((BoundBinaryExpression) node),
+                BoundNodeKind.UnaryExpression => EvaluateUnaryExpression((BoundUnaryExpression) node),
+                BoundNodeKind.BinaryExpression => EvaluateBinaryExpression((BoundBinaryExpression) node),
                 _ => throw new Exception($"Unexpected node {node.Kind}")
             };
         }
