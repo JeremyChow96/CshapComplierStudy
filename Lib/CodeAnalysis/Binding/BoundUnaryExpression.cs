@@ -15,6 +15,6 @@ namespace complier.CodeAnalysis.Binding
 
         public override Type Type => Op.ResultType;
 
-        public override BoundNodeKind Kind => BoundNodeKind.UnaryExpreesion;
+        public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
     }
 }

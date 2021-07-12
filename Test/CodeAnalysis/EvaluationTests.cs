@@ -35,21 +35,45 @@ namespace Test.CodeAnalysis
         [InlineData("true == false", false)]
         [InlineData("false == false", true)]
         [InlineData("false != false", false)]
-        [InlineData("true", true)]
+        [InlineData("true", true)]       
+        [InlineData("true&&false", false)]
+        [InlineData("true&&true", true)]
+        [InlineData("true||false", true)]
+        [InlineData("false||false", false)]
+
         [InlineData("!true", false)]
         [InlineData("false", false)]
         [InlineData("!false", true)]
+
+        [InlineData("1|1", 1)]
+        [InlineData("1|2", 3)]  
+        [InlineData("true|true", true)]  
+        [InlineData("true|false", true)]  
+        
+        [InlineData("1&1", 1)]
+        [InlineData("1&0", 0)]
+        [InlineData("true&true", true)]  
+        [InlineData("true&false", false)]  
+        [InlineData("1|3", 3)]
+        [InlineData("1^1", 0)]
+        [InlineData("1^2", 3)]
+        [InlineData("3^2", 1)]
+        [InlineData("true^true", false)]  
+        [InlineData("true^false", true)]  
+        [InlineData("~3", -4)]  
+
 
         [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]
         [InlineData(" { var a = 0 if a == 4 a = 10  a}", 0)]
         [InlineData(" { var a = 0 if a == 0 a = 10 else a = 5 a}", 10)]
         [InlineData(" { var a = 0 if a == 4 a = 10 else a = 5 a}", 5)]
         [InlineData(" { var i = 10  var result = 0  while i> 0 {result = result + i i = i - 1}   result }", 55)]
-        [InlineData(" { var result = 0  for i = 1 to 10  result = result + i }", 55)]
+        [InlineData(" { var result = 0  for i = 1 to 10  result = result + i  result }", 55)]
+        [InlineData(" { var a = 10  for i = 1 to (a =a -1) {} a }", 9)]
 
-        public void SyntaxFact_GetText_RoundTrips(string text, object expectedReuslt)
+        public void SyntaxFact_GetText_RoundTrips(string text, object expectedResult)
         {
-            AssertValue(text, expectedReuslt);
+            AssertValue(text, expectedResult);
         }
 
       

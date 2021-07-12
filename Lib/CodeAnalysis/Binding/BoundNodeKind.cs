@@ -2,9 +2,9 @@
 {
     internal enum BoundNodeKind
     {
-        UnaryExpreesion,
+        UnaryExpression,
         LiteralExpression,
-        BinaryExpreesion,
+        BinaryExpression,
         VariableExpression,
         AssignmentExpression,
         
@@ -14,6 +14,9 @@
         VariableDeclaration,
         IfStatement,
         WhileStatement,
-        ForStatement
+        ForStatement,
+        GotoStatement,
+        LabelStatement,
+        ConditionalGotoStatement
     }
 }

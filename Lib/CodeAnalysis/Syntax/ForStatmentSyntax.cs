@@ -13,7 +13,7 @@
             UpperBound = upperBound;
             Body = body;
         }
-        public override SyntaxKind Kind => SyntaxKind.ForStatment;
+        public override SyntaxKind Kind => SyntaxKind.ForStatement;
 
         public SyntaxToken ForKeyword { get; }
         public SyntaxToken Identifier { get; }

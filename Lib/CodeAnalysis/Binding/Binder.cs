@@ -74,7 +74,7 @@ namespace complier.CodeAnalysis.Binding
                     return BindIfStatement((IfStatementSyntax)syntax);
                 case SyntaxKind.WhileStatement:
                     return BindWhileStatement((WhileStatementSyntax)syntax);
-                case SyntaxKind.ForStatment:
+                case SyntaxKind.ForStatement:
                     return BindForStatment((ForStatmentSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
