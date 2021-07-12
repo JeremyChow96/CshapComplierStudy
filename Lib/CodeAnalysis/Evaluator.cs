@@ -51,8 +51,7 @@ namespace complier.CodeAnalysis
                     case BoundNodeKind.ConditionalGotoStatement:
                         var cgs = (BoundConditionalGotoStatement) s;
                         var condtion = (bool)EvaluateExpression(cgs.Condition);
-                        if (condtion&& !cgs.JumpIfFalse||
-                            !condtion&& cgs.JumpIfFalse)
+                        if (condtion==cgs.JumpIfTrue)
                         {
                             index = labelToIndex[cgs.Label];
                         }

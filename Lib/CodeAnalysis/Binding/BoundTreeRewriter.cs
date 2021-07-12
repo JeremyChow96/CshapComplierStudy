@@ -42,7 +42,7 @@ namespace Lib.CodeAnalysis.Binding
                 return node;
             }
 
-            return new BoundConditionalGotoStatement(node.Label, node.Condition, node.JumpIfFalse);
+            return new BoundConditionalGotoStatement(node.Label, node.Condition, node.JumpIfTrue);
         }
 
         protected virtual BoundStatement RewriteLabelStatement(BoundLabelStatement node)
