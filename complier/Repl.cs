@@ -252,6 +252,11 @@ namespace complier
 
         private void UpdateDocumentFromHistory(ObservableCollection<string> document, SubmissionView view)
         {
+            if (_submissionHistory.Count == 0)
+            {
+                return;
+            }
+            
             document.Clear();
             var historyItem = _submissionHistory[_submissionHistoryIndex];
             var lines = historyItem.Split(Environment.NewLine);
@@ -325,7 +330,6 @@ namespace complier
                 view.CurrentLine--;
                 document[view.CurrentLine] = previousLine + currentLine;
                 view.CurrentCharacter = previousLine.Length;
-                return;
             }
             else
             {
