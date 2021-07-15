@@ -1,3 +1,4 @@
+using complier.CodeAnalysis;
 using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,27 @@ namespace Test.CodeAnalysis.Syntax
 
     public class LexerTest
     {
+        [Fact]
+        public void Lexer_Lexes_UnterminatedStringLiteral()
+        {
+
+            var Text = "\"test";
+            var tokens = SyntaxTree.ParseTokens(Text, out var diagnostics); 
+
+            var token = Assert.Single(tokens);
+
+
+            Assert.Equal(SyntaxKind.StringToken, token.Kind);
+            Assert.Equal(Text, token.Text);
+
+            var diagnostic = Assert.Single(diagnostics);
+            Assert.Equal(new TextSpan(0, 1), diagnostic.Span);
+            Assert.Equal("Unterminated string literal.", diagnostic.Message);
+
+        }
+
+
+
         [Fact]
         public void Lexer_Covers_AllTokens()
         {
@@ -28,6 +50,23 @@ namespace Test.CodeAnalysis.Syntax
 
    
         }
+
+        [Theory]
+        [MemberData(nameof(GetTokensData))]
+        public void Lexer_Lexes_Token(SyntaxKind kind, string text)
+        {
+   
+            var tokens = SyntaxTree.ParseTokens(text);
+
+
+            var token = Assert.Single(tokens);
+
+ 
+            Assert.Equal(kind, token.Kind);
+            Assert.Equal(text, token.Text);
+
+        }
+
 
         [Theory]
         [MemberData(nameof(GetTokenPairsData))]
