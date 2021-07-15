@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
+using complier.CodeAnalysis;
+using complier.CodeAnalysis.Syntax;
 
-namespace complier.CodeAnalysis.Syntax
+namespace Lib.CodeAnalysis.Syntax
 {
     [DebuggerDisplay(" {Kind} - {Text} : {Value} ")]
    public sealed  class SyntaxToken : SyntaxNode
@@ -22,10 +22,9 @@ namespace complier.CodeAnalysis.Syntax
         public object Value { get; }
         public override TextSpan Span => new TextSpan(Position, Text?.Length ?? 0);
 
-        //public override IEnumerable<SyntaxNode> GetChildren()
-        //{
-        //    return Enumerable.Empty<SyntaxNode>();
-        //}
+
+
+        public bool IsMissing => Text == null;
     }
 
 }

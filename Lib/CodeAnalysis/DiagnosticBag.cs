@@ -33,6 +33,11 @@ namespace complier.CodeAnalysis
             Report(span, message);
 
         }
+        public void ReportUnterminatedString(TextSpan span)
+        {
+            var message = $"Unterminated string literal.";
+            Report(span, message);
+        }
 
         public void AddRange(DiagnosticBag diagnostics)
         {
@@ -83,6 +88,8 @@ namespace complier.CodeAnalysis
             var message = $"Variable '{name}' is read-only and cannot be assigned to.";
             Report(span, message);
         }
+
+    
     }
 
 }

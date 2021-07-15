@@ -4,6 +4,7 @@ using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lib.CodeAnalysis.Syntax;
 
 internal sealed class MinskRepl : Repl
 {
@@ -20,11 +21,20 @@ internal sealed class MinskRepl : Repl
         {
             var isKeyword = token.Kind.ToString().EndsWith("Keyword");
             var isNumber = token.Kind == SyntaxKind.NumberToken;
+            var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
             if (isKeyword)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
-            else if (!isNumber)
+            else if (isIdentifier)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+            }
+            else if (isNumber)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+            }
+            else
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -139,9 +149,14 @@ internal sealed class MinskRepl : Repl
         var syntaxTree = SyntaxTree.Parse(text);
         if (syntaxTree.Diagnostics.Any())
         {
-            return false;
+            if (syntaxTree.Root.Statement.GetLastToken().IsMissing)
+            {
+                return false;
+            }
         }
         return true;
     }
+
+
 }
 

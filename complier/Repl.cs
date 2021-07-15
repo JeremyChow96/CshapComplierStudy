@@ -301,10 +301,17 @@ namespace complier
             var lineIndex = view.CurrentLine;
             var line = document[lineIndex];
             var start = view.CurrentCharacter;
-
-
+            
             if (start >= line.Length)
             {
+                if (view.CurrentLine == document.Count-1)
+                {
+                    return;
+                }
+
+                var nextLine = document[view.CurrentLine + 1];
+                document[view.CurrentLine] += nextLine;
+                document.RemoveAt(view.CurrentLine+1);
                 return;
             }
      

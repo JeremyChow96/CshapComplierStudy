@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lib.CodeAnalysis.Syntax;
 using Xunit;
 
 namespace Test.CodeAnalysis.Syntax

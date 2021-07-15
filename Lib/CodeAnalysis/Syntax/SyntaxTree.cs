@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Lib.CodeAnalysis.Syntax;
 
 namespace complier.CodeAnalysis.Syntax
 {
