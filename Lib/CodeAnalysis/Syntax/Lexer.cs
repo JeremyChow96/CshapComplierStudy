@@ -221,6 +221,16 @@ namespace complier.CodeAnalysis.Syntax
                         done = true;
                         break;
                     case '"':
+                        if (Lookahead =='"')
+                        {
+                            sb.Append(Current);
+                            _position += 2;
+                        }
+                        else
+                        {
+                            _position++;
+                            done = true;
+                        }
                         break;
                     default:
                         sb.Append(Current);
@@ -230,6 +240,7 @@ namespace complier.CodeAnalysis.Syntax
             }
 
             _kind = SyntaxKind.StringToken;
+            _value = sb.ToString();
         }
 
         private void ReadWhitespace()

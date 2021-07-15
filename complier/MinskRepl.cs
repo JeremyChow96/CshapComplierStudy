@@ -65,7 +65,7 @@ internal sealed class MinskRepl : Repl
             case "#reset":
                 _previous = null;
                 _variables.Clear();
-
+                ClearHistory();
                 break;
             default:
                 base.EvaluateMetaCommand(input);
@@ -146,6 +146,18 @@ internal sealed class MinskRepl : Repl
         {
             return true;
         }
+
+        var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
+            .Reverse()
+            .TakeWhile(c => string.IsNullOrEmpty(c))
+            .Take(2)
+            .Count() == 2;
+        if (lastTwoLinesAreBlank)
+        {
+            return true;
+        }
+
+
         var syntaxTree = SyntaxTree.Parse(text);
         if (syntaxTree.Diagnostics.Any())
         {

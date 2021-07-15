@@ -61,6 +61,9 @@ namespace Test.CodeAnalysis
         [InlineData("true^true", false)]  
         [InlineData("true^false", true)]  
         [InlineData("~3", -4)]  
+        [InlineData("\"test\"", "test")]  
+        [InlineData("\"te\"\"st\"", "te\"st")]  
+
 
 
         [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]

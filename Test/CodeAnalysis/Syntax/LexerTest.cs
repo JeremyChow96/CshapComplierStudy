@@ -10,7 +10,7 @@ namespace Test.CodeAnalysis.Syntax
     public class LexerTest
     {
         [Fact]
-        public void Lexer_Lexes_AllTokens()
+        public void Lexer_Covers_AllTokens()
         {
             var tokenKinds = Enum.GetValues<SyntaxKind>().
                 Where(k => k.ToString().EndsWith("Keyword") || k.ToString().EndsWith("Token")).
@@ -99,7 +99,10 @@ namespace Test.CodeAnalysis.Syntax
            {
                 (SyntaxKind.NumberToken,"1") ,
                 (SyntaxKind.NumberToken,"123") ,
-               (SyntaxKind.IdentifierToken,"a"),
+                (SyntaxKind.IdentifierToken,"a"),
+                (SyntaxKind.IdentifierToken,"abc"),
+                (SyntaxKind.StringToken,"\"test\""),
+                (SyntaxKind.StringToken,"\"te\"\"st\""),
             };
             return fixedTokens.Concat(dynamciToken);
 
@@ -195,6 +198,10 @@ namespace Test.CodeAnalysis.Syntax
                 return true;
             }
             if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.PipePipeToken)
+            {
+                return true;
+            }
+            if (t1Kind == SyntaxKind.StringToken && t2Kind == SyntaxKind.StringToken)
             {
                 return true;
             }
