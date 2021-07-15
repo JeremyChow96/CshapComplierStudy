@@ -13,7 +13,6 @@ namespace complier.CodeAnalysis.Binding
         }
 
 
-
         public override TypeSymbol Type => Op.ResultType;
 
         public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;

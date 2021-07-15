@@ -189,17 +189,17 @@ namespace complier.CodeAnalysis.Binding
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
             var name = syntax.IdentifierToken.Text;
-            if (string.IsNullOrEmpty(name))
+            if (syntax.IdentifierToken.IsMissing)
             {
                 // This means the token was inserted by the parser. We already
                 // reported an error so we can just return an error expression
-                return new BoundLiteralExpression(0);
+                return new BoundErrorExpression();
             }
 
             if (!_scope.TryLookup(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
-                return new BoundLiteralExpression(0);
+                return new BoundErrorExpression();
             }
 
 
@@ -211,6 +211,8 @@ namespace complier.CodeAnalysis.Binding
             var name = syntax.Identifier.Text;
             var boundExpresion = BindExpression(syntax.Expression);
 
+            
+            
             if (!_scope.TryLookup(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.Identifier.Span, name);
@@ -251,12 +253,17 @@ namespace complier.CodeAnalysis.Binding
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax syntax)
         {
             var boundOperand = BindExpression(syntax.Operand);
+            if (boundOperand.Type == TypeSymbol.Error)
+            {
+                return new BoundErrorExpression();
+            }
+            
             var boundOperator = BoundUnaryOperator.Bind(syntax.OperatorToken.Kind, boundOperand.Type);
             if (boundOperator == null)
             {
                 _diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text,
                     boundOperand.Type);
-                return boundOperand;
+                return new BoundErrorExpression();
             }
 
             return new BoundUnaryExpression(boundOperator, boundOperand);
@@ -267,13 +274,20 @@ namespace complier.CodeAnalysis.Binding
         {
             var boundLeft = BindExpression(syntax.Left);
             var boundRight = BindExpression(syntax.Right);
+            if (boundLeft.Type == TypeSymbol.Error ||
+                boundRight.Type == TypeSymbol.Error)
+            {
+             
+                return new BoundErrorExpression();
+            }
+            
             var boundOperator = BoundBinaryOpertor.Bind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
-            // BindBinaryOperatorKind(syntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
+           
             if (boundOperator == null)
             {
                 _diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text,
                     boundLeft.Type, boundRight.Type);
-                return boundLeft;
+                return new BoundErrorExpression();
             }
 
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
