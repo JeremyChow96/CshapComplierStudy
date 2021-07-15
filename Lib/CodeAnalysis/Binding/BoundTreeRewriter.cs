@@ -159,6 +159,8 @@ namespace Lib.CodeAnalysis.Binding
         {
             switch (node.Kind)
             {
+                case BoundNodeKind.ErrorExpression:
+                    return RewriteErrorExpression((BoundErrorExpression) node);
                 case BoundNodeKind.UnaryExpression:
                     return RewriteUnaryExpression((BoundUnaryExpression) node);
                 case BoundNodeKind.LiteralExpression:
@@ -172,6 +174,11 @@ namespace Lib.CodeAnalysis.Binding
                 default:
                     throw new Exception($"Unexpected node : {node.Kind}");
             }
+        }
+
+        protected virtual BoundExpression RewriteErrorExpression(BoundErrorExpression node)
+        {
+            return node;
         }
 
 
