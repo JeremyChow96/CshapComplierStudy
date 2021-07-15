@@ -1,4 +1,5 @@
 ﻿using System;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis.Binding
 {
@@ -12,8 +13,7 @@ namespace complier.CodeAnalysis.Binding
         }
 
 
-
-        public override Type Type => Op.ResultType;
+        public override TypeSymbol Type => Op.ResultType;
 
         public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
 

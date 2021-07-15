@@ -1,4 +1,5 @@
 ﻿using System;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis.Binding
 {
@@ -12,7 +13,7 @@ namespace complier.CodeAnalysis.Binding
             Expresion = expression;
         }
 
-        public override Type Type => Expresion.Type;
+        public override TypeSymbol Type => Expresion.Type;
 
         public override BoundNodeKind Kind => BoundNodeKind.AssignmentExpression;
 

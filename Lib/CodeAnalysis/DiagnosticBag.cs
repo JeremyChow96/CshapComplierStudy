@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis
 {
@@ -20,7 +21,7 @@ namespace complier.CodeAnalysis
             _diagnostics.Add(diagonstic);
         }
 
-        public void ReportInvalidNumber(TextSpan span, string text, Type type)
+        public void ReportInvalidNumber(TextSpan span, string text, TypeSymbol type)
         {
             var message = $"The number {text} isn't valid {type}.";
             Report(span, message);
@@ -32,6 +33,11 @@ namespace complier.CodeAnalysis
             var message = $"Bad character input: '{current}'.";
             Report(span, message);
 
+        }
+        public void ReportUnterminatedString(TextSpan span)
+        {
+            var message = $"Unterminated string literal.";
+            Report(span, message);
         }
 
         public void AddRange(DiagnosticBag diagnostics)
@@ -47,13 +53,13 @@ namespace complier.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportUndefinedUnaryOperator(TextSpan span, string text, Type type)
+        public void ReportUndefinedUnaryOperator(TextSpan span, string text, TypeSymbol type)
         {
             var message = $"Unary operator '{text}' is not defined for type '{type}'.";
             Report(span, message);
         }
 
-        public void ReportUndefinedBinaryOperator(TextSpan span, string text, Type leftType, Type rightType)
+        public void ReportUndefinedBinaryOperator(TextSpan span, string text, TypeSymbol leftType, TypeSymbol rightType)
         {
             var message = $"Binary operator '{text}' is not defined for type '{leftType}' and '{rightType}'.";
             Report(span, message);
@@ -72,7 +78,7 @@ namespace complier.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
+        public void ReportCannotConvert(TextSpan span, TypeSymbol fromType, TypeSymbol toType)
         {
             var message = $"Cannot convert type '{fromType}' to '{toType}'.";
             Report(span, message);
@@ -83,6 +89,8 @@ namespace complier.CodeAnalysis
             var message = $"Variable '{name}' is read-only and cannot be assigned to.";
             Report(span, message);
         }
+
+    
     }
 
 }

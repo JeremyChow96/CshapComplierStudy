@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lib.CodeAnalysis.Symbols;
 using Xunit;
 
 namespace Test.CodeAnalysis
@@ -61,6 +62,9 @@ namespace Test.CodeAnalysis
         [InlineData("true^true", false)]  
         [InlineData("true^false", true)]  
         [InlineData("~3", -4)]  
+        [InlineData("\"test\"", "test")]  
+        [InlineData("\"te\"\"st\"", "te\"st")]  
+
 
 
         [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]
@@ -170,7 +174,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
             
-            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'.";
+            var diagnostics = @"Cannot convert type 'bool' to 'int'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -186,7 +190,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'.";
+            var diagnostics = @"Cannot convert type 'int' to 'bool'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -202,7 +206,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Int32' to 'System.Boolean'.";
+            var diagnostics = @"Cannot convert type 'int' to 'bool'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -217,7 +221,7 @@ namespace Test.CodeAnalysis
                         }"
                 ;
 
-            var diagnostics = @"Cannot convert type 'System.Boolean' to 'System.Int32'.";
+            var diagnostics = @"Cannot convert type 'bool' to 'int'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -227,7 +231,7 @@ namespace Test.CodeAnalysis
         {
             var text = @"[+]true";
             
-            var diagnostics = @"Unary operator '+' is not defined for type 'System.Boolean'.";
+            var diagnostics = @"Unary operator '+' is not defined for type 'bool'.";
 
             AssertDiagnostics(text, diagnostics);
         }
@@ -237,7 +241,7 @@ namespace Test.CodeAnalysis
         {
             var text = @"12 [*] true";
             
-            var diagnostics = @"Binary operator '*' is not defined for type 'System.Int32' and 'System.Boolean'.";
+            var diagnostics = @"Binary operator '*' is not defined for type 'int' and 'bool'.";
 
             AssertDiagnostics(text, diagnostics);
         }

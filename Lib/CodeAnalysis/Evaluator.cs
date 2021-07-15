@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using complier.CodeAnalysis.Syntax;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis
 {
@@ -20,7 +21,7 @@ namespace complier.CodeAnalysis
 
         public object Evaluate()
         {
-            var labelToIndex = new Dictionary<LabelSymbol, int>();
+            var labelToIndex = new Dictionary<BoundLabel, int>();
             for (int i = 0; i < _root.Statements.Length; i++)
             {
                 if (_root.Statements[i] is BoundLabelStatement l)
@@ -134,27 +135,7 @@ namespace complier.CodeAnalysis
         }
 
 
-        // private void EvaluateIfStatement(BoundIfStatement node)
-        // {
-        //     var condition = (bool) EvaluateExpression(node.Condition);
-        //     if (condition)
-        //     {
-        //         EvaluateStatement(node.ThenStatement);
-        //     }
-        //     else if (node.ElseStatement != null)
-        //     {
-        //         EvaluateStatement(node.ElseStatement);
-        //     }
-        // }
-
-        // private void EvaluateWhileStatement(BoundWhileStatement node)
-        // {
-        //     // var condition = (bool)EvaluateExpression(node.Condition);
-        //     while ((bool) EvaluateExpression(node.Condition))
-        //     {
-        //         EvaluateStatement(node.Body);
-        //     }
-        // }
+       
 
         private object EvaluateExpression(BoundExpression node)
         {
@@ -175,42 +156,66 @@ namespace complier.CodeAnalysis
             var left = EvaluateExpression(b.Left);
             var right = EvaluateExpression(b.Right);
 
-            return b.Op.Kind switch
+            switch (b.Op.Kind)
             {
-                BoundBinaryOperatorKind.Addition => (int) left + (int) right,
-                BoundBinaryOperatorKind.Substraction => (int) left - (int) right,
-                BoundBinaryOperatorKind.Multiplication => (int) left * (int) right,
-                BoundBinaryOperatorKind.Division => (int) left / (int) right,
-                BoundBinaryOperatorKind.LogicalAnd => (bool) left && (bool) right,
-                BoundBinaryOperatorKind.LogicalOr => (bool) left || (bool) right,
-                BoundBinaryOperatorKind.BitwiseAnd when b.Type == typeof(bool) => (bool) left & (bool) right,
-                BoundBinaryOperatorKind.BitwiseAnd => (int) left & (int) right,
-                BoundBinaryOperatorKind.BitwiseOr when b.Type == typeof(bool) => (bool) left | (bool) right,
-                BoundBinaryOperatorKind.BitwiseOr => (int) left | (int) right,
-                BoundBinaryOperatorKind.BitwiseXor when b.Type == typeof(bool) => (bool) left ^ (bool) right,
-                BoundBinaryOperatorKind.BitwiseXor => (int) left ^ (int) right,
-                BoundBinaryOperatorKind.LessThan => (int) left < (int) right,
-                BoundBinaryOperatorKind.LessThanOrEquals => (int) left <= (int) right,
-                BoundBinaryOperatorKind.GreaterThan => (int) left > (int) right,
-                BoundBinaryOperatorKind.GreaterThanOrEquals => (int) left >= (int) right,
-                BoundBinaryOperatorKind.Equals => Equals(left, right),
-                BoundBinaryOperatorKind.NotEquals => !Equals(left, right),
-                _ => throw new Exception($"Unexpected binary operator {b.Op.Kind}")
-            };
+                case BoundBinaryOperatorKind.Addition:
+                    return (int) left + (int) right;
+                case BoundBinaryOperatorKind.Substraction:
+                    return (int) left - (int) right;
+                case BoundBinaryOperatorKind.Multiplication:
+                    return (int) left * (int) right;
+                case BoundBinaryOperatorKind.Division:
+                    return (int) left / (int) right;
+                case BoundBinaryOperatorKind.LogicalAnd:
+                    return (bool) left && (bool) right;
+                case BoundBinaryOperatorKind.LogicalOr:
+                    return (bool) left || (bool) right;
+                case BoundBinaryOperatorKind.BitwiseAnd when b.Type == TypeSymbol.Bool:
+                    return (bool) left & (bool) right;
+                case BoundBinaryOperatorKind.BitwiseAnd:
+                    return (int) left & (int) right;
+                case BoundBinaryOperatorKind.BitwiseOr when b.Type == TypeSymbol.Bool:
+                    return (bool) left | (bool) right;
+                case BoundBinaryOperatorKind.BitwiseOr:
+                    return (int) left | (int) right;
+                case BoundBinaryOperatorKind.BitwiseXor when b.Type == TypeSymbol.Bool:
+                    return (bool) left ^ (bool) right;
+                case BoundBinaryOperatorKind.BitwiseXor:
+                    return (int) left ^ (int) right;
+                case BoundBinaryOperatorKind.LessThan:
+                    return (int) left < (int) right;
+                case BoundBinaryOperatorKind.LessThanOrEquals:
+                    return (int) left <= (int) right;
+                case BoundBinaryOperatorKind.GreaterThan:
+                    return (int) left > (int) right;
+                case BoundBinaryOperatorKind.GreaterThanOrEquals:
+                    return (int) left >= (int) right;
+                case BoundBinaryOperatorKind.Equals:
+                    return Equals(left, right);
+                case BoundBinaryOperatorKind.NotEquals:
+                    return !Equals(left, right);
+                default:
+                    throw new Exception($"Unexpected binary operator {b.Op.Kind}");
+            }
         }
 
         private object EvaluateUnaryExpression(BoundUnaryExpression u)
         {
             var operand = EvaluateExpression(u.Operand);
 
-            return u.Op.Kind switch
+            switch (u.Op.Kind)
             {
-                BoundUnaryOperatorKind.Identity => (int) operand,
-                BoundUnaryOperatorKind.Negation => -(int) operand,
-                BoundUnaryOperatorKind.LogicalNegation => !(bool) operand,
-                BoundUnaryOperatorKind.OnesComplement => ~(int) operand,
-                _ => throw new Exception($"Unexpected unary operator {u.Op}")
-            };
+                case BoundUnaryOperatorKind.Identity:
+                    return (int) operand;
+                case BoundUnaryOperatorKind.Negation:
+                    return -(int) operand;
+                case BoundUnaryOperatorKind.LogicalNegation:
+                    return !(bool) operand;
+                case BoundUnaryOperatorKind.OnesComplement:
+                    return ~(int) operand;
+                default:
+                    throw new Exception($"Unexpected unary operator {u.Op}");
+            }
         }
 
         private object EvaluateAssignmentExpression(BoundAssignmentExpression a)

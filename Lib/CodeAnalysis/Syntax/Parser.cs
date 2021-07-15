@@ -1,6 +1,7 @@
 ﻿using Lib.CodeAnalysis.Text;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Lib.CodeAnalysis.Syntax;
 
 namespace complier.CodeAnalysis.Syntax
 {
@@ -134,10 +135,10 @@ namespace complier.CodeAnalysis.Syntax
             {
                 return null;
             }
+
             var keyword = NextToken();
             var statement = ParseStatement();
             return new ElseClauseSyntax(keyword, statement);
-
         }
 
         private StatementSyntax ParseVariableDeclaration()
@@ -157,15 +158,15 @@ namespace complier.CodeAnalysis.Syntax
 
             var openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
             var startToken = Current;
-            
-            
+
+
             while (Current.Kind != SyntaxKind.EndOfFileToken &&
                    Current.Kind != SyntaxKind.CloseBraceToken)
             {
                 var statement = ParseStatement();
                 statements.Add(statement);
 
-              
+
                 // If ParseStatement did not consume any tokens,
                 // skip curret token and continue in order to avoid
                 // an infinite loop.
@@ -174,8 +175,9 @@ namespace complier.CodeAnalysis.Syntax
                 // an  expression statement and report.
                 if (Current == startToken)
                 {
-                     NextToken();
+                    NextToken();
                 }
+
                 startToken = Current;
             }
 
@@ -270,12 +272,13 @@ namespace complier.CodeAnalysis.Syntax
 
                 case SyntaxKind.TrueKeyword:
                 case SyntaxKind.FalseKeyword:
-
                     return ParseBooleanLiteral();
 
 
                 case SyntaxKind.NumberToken:
                     return ParseNumberLiteral();
+                case SyntaxKind.StringToken:
+                    return ParseStringLiteral();
                 case SyntaxKind.IdentifierToken:
                 default:
                     return ParseNameExpression();
@@ -296,6 +299,13 @@ namespace complier.CodeAnalysis.Syntax
             var isTure = Current.Kind == SyntaxKind.TrueKeyword;
             var keywordToken = isTure ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
             return new LiteralExpressionSyntax(keywordToken, isTure);
+        }
+
+        
+        private ExpressionSyntax ParseStringLiteral()
+        {
+            var stringLiteral = MatchToken(SyntaxKind.StringToken);
+            return new LiteralExpressionSyntax(stringLiteral);
         }
 
         private ExpressionSyntax ParseNumberLiteral()

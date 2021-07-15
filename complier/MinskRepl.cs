@@ -4,6 +4,8 @@ using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lib.CodeAnalysis.Symbols;
+using Lib.CodeAnalysis.Syntax;
 
 internal sealed class MinskRepl : Repl
 {
@@ -20,11 +22,20 @@ internal sealed class MinskRepl : Repl
         {
             var isKeyword = token.Kind.ToString().EndsWith("Keyword");
             var isNumber = token.Kind == SyntaxKind.NumberToken;
+            var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
             if (isKeyword)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
-            else if (!isNumber)
+            else if (isIdentifier)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+            }
+            else if (isNumber)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+            }
+            else
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -55,7 +66,7 @@ internal sealed class MinskRepl : Repl
             case "#reset":
                 _previous = null;
                 _variables.Clear();
-
+                ClearHistory();
                 break;
             default:
                 base.EvaluateMetaCommand(input);
@@ -136,12 +147,29 @@ internal sealed class MinskRepl : Repl
         {
             return true;
         }
+
+        var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
+            .Reverse()
+            .TakeWhile(c => string.IsNullOrEmpty(c))
+            .Take(2)
+            .Count() == 2;
+        if (lastTwoLinesAreBlank)
+        {
+            return true;
+        }
+
+
         var syntaxTree = SyntaxTree.Parse(text);
         if (syntaxTree.Diagnostics.Any())
         {
-            return false;
+            if (syntaxTree.Root.Statement.GetLastToken().IsMissing)
+            {
+                return false;
+            }
         }
         return true;
     }
+
+
 }
 

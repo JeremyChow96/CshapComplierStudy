@@ -1,4 +1,6 @@
-﻿namespace complier.CodeAnalysis.Syntax
+﻿using Lib.CodeAnalysis.Syntax;
+
+namespace complier.CodeAnalysis.Syntax
 {
     public sealed class WhileStatementSyntax : StatementSyntax
     {

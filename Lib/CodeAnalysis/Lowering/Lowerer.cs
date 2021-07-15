@@ -5,6 +5,7 @@ using complier.CodeAnalysis;
 using complier.CodeAnalysis.Binding;
 using complier.CodeAnalysis.Syntax;
 using Lib.CodeAnalysis.Binding;
+using Lib.CodeAnalysis.Symbols;
 
 namespace Lib.CodeAnalysis.Lowering
 {
@@ -16,10 +17,10 @@ namespace Lib.CodeAnalysis.Lowering
         {
         }
 
-        private LabelSymbol GenerateLabel()
+        private BoundLabel GenerateLabel()
         {
             var name = $"Label{++_labelCount}";
-            return new LabelSymbol(name);
+            return new BoundLabel(name);
         }
 
         public static BoundBlockStatement Lower(BoundStatement statement)
@@ -164,12 +165,12 @@ namespace Lib.CodeAnalysis.Lowering
 
             var variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
             var variableExpression = new BoundVariableExpression(node.Variable);
-            var upperBoundSymbol = new VariableSymbol("upperBound", true, typeof(int));
+            var upperBoundSymbol = new VariableSymbol("upperBound", true, TypeSymbol.Int);
             var upperBoundDeclaration = new BoundVariableDeclaration(upperBoundSymbol, node.UpperBound);
             
             var condition = new BoundBinaryExpression(
                 variableExpression,
-                BoundBinaryOpertor.Bind(SyntaxKind.LessOrEqualsToken, typeof(int), typeof(int)),
+                BoundBinaryOpertor.Bind(SyntaxKind.LessOrEqualsToken, TypeSymbol.Int, TypeSymbol.Int),
                 new BoundVariableExpression(upperBoundSymbol));
 
 
@@ -178,7 +179,7 @@ namespace Lib.CodeAnalysis.Lowering
                     node.Variable,
                     new BoundBinaryExpression(
                         variableExpression,
-                        BoundBinaryOpertor.Bind(SyntaxKind.PlusToken, typeof(int), typeof(int)),
+                        BoundBinaryOpertor.Bind(SyntaxKind.PlusToken, TypeSymbol.Int, TypeSymbol.Int),
                         new BoundLiteralExpression(1)
                     )
                 )

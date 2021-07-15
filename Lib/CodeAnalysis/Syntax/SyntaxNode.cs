@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Lib.CodeAnalysis.Syntax;
+
 namespace complier.CodeAnalysis.Syntax
 {
     public abstract class SyntaxNode
@@ -19,7 +21,15 @@ namespace complier.CodeAnalysis.Syntax
             }
         }
 
+        public  SyntaxToken GetLastToken()
+        {
+            if (this is SyntaxToken token)
+            {
+                return token;
+            }
 
+            return GetChildren().Last().GetLastToken();
+        }
 
         public IEnumerable<SyntaxNode> GetChildren()
         {

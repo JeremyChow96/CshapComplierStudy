@@ -30,6 +30,8 @@
         GreaterOrEqualsToken,
         LessToken,
         LessOrEqualsToken,
+        StringToken,
+
 
 
         //Keyword  boolean use
@@ -64,7 +66,7 @@
         WhileStatement,
         VariableDeclaration,
         ForStatement,
- 
+
     }
 
 }
