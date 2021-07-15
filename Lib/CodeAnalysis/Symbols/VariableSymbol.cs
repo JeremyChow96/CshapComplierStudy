@@ -4,7 +4,7 @@ namespace Lib.CodeAnalysis.Symbols
 {
     public sealed class VariableSymbol :Symbol
     {
-        public VariableSymbol(string name, bool isReadOnly, Type type) : base(name)
+        public VariableSymbol(string name, bool isReadOnly, TypeSymbol type) : base(name)
         {
          
             IsReadOnly = isReadOnly;
@@ -12,8 +12,9 @@ namespace Lib.CodeAnalysis.Symbols
         }
         
         public bool IsReadOnly { get; }
-        public Type Type { get; }
-        public override string ToString() => Name;
+        public TypeSymbol Type { get; }
+    
 
+        public override SymbolKind Kind => SymbolKind.Variable;
     }
 }

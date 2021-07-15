@@ -4,6 +4,7 @@ using complier.CodeAnalysis.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lib.CodeAnalysis.Symbols;
 using Lib.CodeAnalysis.Syntax;
 
 internal sealed class MinskRepl : Repl

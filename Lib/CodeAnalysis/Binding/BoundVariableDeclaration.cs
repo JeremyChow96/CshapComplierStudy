@@ -1,4 +1,6 @@
-﻿namespace complier.CodeAnalysis.Binding
+﻿using Lib.CodeAnalysis.Symbols;
+
+namespace complier.CodeAnalysis.Binding
 {
     internal sealed class BoundVariableDeclaration : BoundStatement
     {

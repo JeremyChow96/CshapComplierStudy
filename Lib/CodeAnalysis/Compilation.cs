@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Lib.CodeAnalysis.Lowering;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis
 {

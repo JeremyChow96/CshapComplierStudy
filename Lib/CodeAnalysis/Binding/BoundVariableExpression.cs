@@ -1,4 +1,5 @@
 ﻿using System;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis.Binding
 {
@@ -14,6 +15,6 @@ namespace complier.CodeAnalysis.Binding
 
         public VariableSymbol Variable { get; }
 
-        public override Type Type => Variable.Type;
+        public override TypeSymbol Type => Variable.Type;
     }
 }

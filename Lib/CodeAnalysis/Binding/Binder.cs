@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Lib.CodeAnalysis.Symbols;
 
 namespace complier.CodeAnalysis.Binding
 {
@@ -23,27 +24,27 @@ namespace complier.CodeAnalysis.Binding
             var statement = binder.BindStatement(syntax.Statement);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics.ToImmutableArray();
-            if (previous!=null)
+            if (previous != null)
             {
                 diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
             }
-            
+
             return new BoundGlobalScope(previous, diagnostics, variables, statement);
         }
 
         private static BoundScope CreateParentScope(BoundGlobalScope previous)
         {
             var stack = new Stack<BoundGlobalScope>();
-            while (previous!=null)
+            while (previous != null)
             {
                 stack.Push(previous);
                 previous = previous.Previous;
             }
 
             BoundScope parent = null;
-            
-            while (stack.Count>0)
-            { 
+
+            while (stack.Count > 0)
+            {
                 previous = stack.Pop();
                 var scope = new BoundScope(parent);
                 foreach (var v in previous.Variable)
@@ -71,11 +72,11 @@ namespace complier.CodeAnalysis.Binding
                 case SyntaxKind.VariableDeclaration:
                     return BindVariableDeclaration((VariableDeclarationSyntax) syntax);
                 case SyntaxKind.IfStatement:
-                    return BindIfStatement((IfStatementSyntax)syntax);
+                    return BindIfStatement((IfStatementSyntax) syntax);
                 case SyntaxKind.WhileStatement:
-                    return BindWhileStatement((WhileStatementSyntax)syntax);
+                    return BindWhileStatement((WhileStatementSyntax) syntax);
                 case SyntaxKind.ForStatement:
-                    return BindForStatment((ForStatmentSyntax)syntax);
+                    return BindForStatment((ForStatmentSyntax) syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
@@ -83,18 +84,19 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundStatement BindForStatment(ForStatmentSyntax syntax)
         {
-            var lowerBound = BindExpression(syntax.LowerBound,typeof(int));
-            var upperBound = BindExpression(syntax.UpperBound, typeof(int));
+            var lowerBound = BindExpression(syntax.LowerBound, TypeSymbol.Int);
+            var upperBound = BindExpression(syntax.UpperBound, TypeSymbol.Int);
 
             _scope = new BoundScope(_scope);
             var name = syntax.Identifier.Text;
 
-            var variable = new VariableSymbol(name, false, typeof(int));
+            var variable = new VariableSymbol(name, false, TypeSymbol.Int);
 
             if (!_scope.TryDeclare(variable))
             {
-                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);         
+                _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
             }
+
             var body = BindStatement(syntax.Body);
             _scope = _scope.Parent;
 
@@ -103,7 +105,7 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundStatement BindWhileStatement(WhileStatementSyntax syntax)
         {
-            var condition = BindExpression(syntax.Condition,typeof(bool));
+            var condition = BindExpression(syntax.Condition, TypeSymbol.Bool);
             var body = BindStatement(syntax.Body);
             return new BoundWhileStatement(condition, body);
         }
@@ -121,6 +123,7 @@ namespace complier.CodeAnalysis.Binding
             _scope = _scope.Parent;
             return new BoundBlockStatement(statements.ToImmutable());
         }
+
         private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax)
         {
             var name = syntax.Identifier.Text;
@@ -138,11 +141,10 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundStatement BindIfStatement(IfStatementSyntax syntax)
         {
-            var condition = BindExpression(syntax.Condition,typeof(bool));
+            var condition = BindExpression(syntax.Condition, TypeSymbol.Bool);
             var statement = BindStatement(syntax.ThenStatement);
             var elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
             return new BoundIfStatement(condition, statement, elseStatement);
-
         }
 
         private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
@@ -150,13 +152,15 @@ namespace complier.CodeAnalysis.Binding
             var expression = BindExpression(syntax.Expression);
             return new BoundExpressionStatement(expression);
         }
-        private BoundExpression BindExpression(ExpressionSyntax syntax,Type targetType)
+
+        private BoundExpression BindExpression(ExpressionSyntax syntax, TypeSymbol targetType)
         {
             var result = BindExpression(syntax);
-            if(result.Type!=targetType)
+            if (result.Type != targetType)
             {
                 _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
             }
+
             return result;
         }
 
@@ -207,7 +211,7 @@ namespace complier.CodeAnalysis.Binding
             var name = syntax.Identifier.Text;
             var boundExpresion = BindExpression(syntax.Expression);
 
-            if (!_scope.TryLookup(name,out var variable))
+            if (!_scope.TryLookup(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.Identifier.Span, name);
                 return boundExpresion;
@@ -215,18 +219,19 @@ namespace complier.CodeAnalysis.Binding
 
             if (variable.IsReadOnly)
             {
-                _diagnostics.ReportCannotAssign(syntax.EqualToken.Span, name);;
+                _diagnostics.ReportCannotAssign(syntax.EqualToken.Span, name);
+                ;
             }
-            
+
 
             if (boundExpresion.Type != variable.Type)
             {
                 _diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpresion.Type, variable.Type);
                 return boundExpresion;
             }
-         
-              //  _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
-         
+
+            //  _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+
 
             return new BoundAssignmentExpression(variable, boundExpresion);
         }
@@ -273,6 +278,5 @@ namespace complier.CodeAnalysis.Binding
 
             return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
         }
-        
     }
 }

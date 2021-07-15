@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Lib.CodeAnalysis.Symbols;
 using Lib.CodeAnalysis.Syntax;
 
 namespace complier.CodeAnalysis.Syntax
@@ -260,7 +261,7 @@ namespace complier.CodeAnalysis.Syntax
             var text = _text.ToString(_start, length);
             if (!int.TryParse(text, out var value))
             {
-                _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, typeof(int));
+                _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
             }
 
             _value = value;
