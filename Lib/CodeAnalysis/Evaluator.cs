@@ -159,7 +159,11 @@ namespace complier.CodeAnalysis
             switch (b.Op.Kind)
             {
                 case BoundBinaryOperatorKind.Addition:
-                    return (int) left + (int) right;
+                    if (b.Type== TypeSymbol.Int)
+                    {
+                        return (int) left + (int) right;
+                    }
+                    return (string) left + (string) right;
                 case BoundBinaryOperatorKind.Substraction:
                     return (int) left - (int) right;
                 case BoundBinaryOperatorKind.Multiplication:
