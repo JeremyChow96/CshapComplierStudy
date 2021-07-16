@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Lib.CodeAnalysis.Symbols;
-using Lib.CodeAnalysis.Syntax;
 
 internal sealed class MinskRepl : Repl
 {
@@ -23,6 +22,7 @@ internal sealed class MinskRepl : Repl
             var isKeyword = token.Kind.ToString().EndsWith("Keyword");
             var isNumber = token.Kind == SyntaxKind.NumberToken;
             var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
+            var isString = token.Kind == SyntaxKind.StringToken;
             if (isKeyword)
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -34,6 +34,10 @@ internal sealed class MinskRepl : Repl
             else if (isNumber)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
+            }
+            else if (isString)
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
             }
             else
             {
@@ -96,7 +100,7 @@ internal sealed class MinskRepl : Repl
         var diagnostics = result.Diagnostics;
         if (!diagnostics.Any())
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(result.Value);
             Console.ResetColor();
 
