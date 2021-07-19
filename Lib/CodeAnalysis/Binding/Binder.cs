@@ -207,6 +207,11 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundExpression BindCallExpression(CallExpressionSyntax syntax)
         {
+            if (syntax.Arguments.Count == 1 && LookupType(syntax.Identifier.Text) is TypeSymbol type)
+            {
+                return BindConversion(type, syntax.Arguments[0]);
+            }
+            
 
             var boundArguments = ImmutableArray.CreateBuilder<BoundExpression>();
             foreach (var argument in syntax.Arguments)
@@ -215,8 +220,6 @@ namespace complier.CodeAnalysis.Binding
                 boundArguments.Add(boundArgument);
             }
             
-            // var functions = BuiltinFunctions.GetAll();
-            // var function = functions.SingleOrDefault(f => f.Name == syntax.Identifier.Text);
             
             if (!_scope.TryLookupFunction(syntax.Identifier.Text,out var function))
             {
@@ -246,6 +249,7 @@ namespace complier.CodeAnalysis.Binding
             // _diagnostics.ReportBadCharater(syntax.Identifier.Span.Start,'X');
             return new BoundCallExpression(function, boundArguments.ToImmutable());
         }
+
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
         {
@@ -364,6 +368,30 @@ namespace complier.CodeAnalysis.Binding
             }
 
             return variable;
+        }
+
+        private BoundExpression BindConversion(TypeSymbol type, ExpressionSyntax syntax)
+        {
+            var expression = BindExpression(syntax);
+            var conversion = Conversion.Classify(expression.Type, type);
+            if (!conversion.Exist)
+            {
+                _diagnostics.ReportCannotConvert(syntax.Span,expression.Type,type);
+                return new BoundErrorExpression();
+            }
+
+            return new BoundConversionExpression(type,expression);
+        }
+
+        private TypeSymbol LookupType(string name)
+        {
+            switch (name)
+            {
+                case "bool": return TypeSymbol.Bool;
+                case "int": return TypeSymbol.Int;
+                case "string": return TypeSymbol.String;
+                default: return null;
+            }
         }
     }
 }

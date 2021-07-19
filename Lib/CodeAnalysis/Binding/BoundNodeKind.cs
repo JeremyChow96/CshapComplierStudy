@@ -19,6 +19,7 @@
         LabelStatement,
         ConditionalGotoStatement,
         ErrorExpression,
-        CallExpression
+        CallExpression,
+        ConversionExpression
     }
 }
