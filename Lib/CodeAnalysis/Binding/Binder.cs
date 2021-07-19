@@ -21,8 +21,10 @@ namespace complier.CodeAnalysis.Binding
 
         public static BoundGlobalScope BindGlobalScope(BoundGlobalScope previous, CompilationUnitSyntax syntax)
         {
-            var parent = CreateParentScope(previous);
-            var binder = new Binder(parent);
+            var parentScope = CreateParentScope(previous);
+         
+            
+            var binder = new Binder(parentScope);
             var statement = binder.BindStatement(syntax.Statement);
             var variables = binder._scope.GetDeclaredVariables();
             var diagnostics = binder.Diagnostics.ToImmutableArray();
@@ -43,7 +45,7 @@ namespace complier.CodeAnalysis.Binding
                 previous = previous.Previous;
             }
 
-            BoundScope parent = null;
+            var parent = CreateRootScope();
 
             while (stack.Count > 0)
             {
@@ -51,13 +53,24 @@ namespace complier.CodeAnalysis.Binding
                 var scope = new BoundScope(parent);
                 foreach (var v in previous.Variable)
                 {
-                    scope.TryDeclare(v);
+                    scope.TryDeclareVariable(v);
                 }
 
                 parent = scope;
             }
 
             return parent;
+        }
+
+        private static BoundScope CreateRootScope()
+        {
+            var result=  new BoundScope(null);
+            foreach (var f in BuiltinFunctions.GetAll())
+            {
+                result.TryDeclareFunction(f);
+            }
+
+            return result;
         }
 
         public DiagnosticBag Diagnostics => _diagnostics;
@@ -202,10 +215,10 @@ namespace complier.CodeAnalysis.Binding
                 boundArguments.Add(boundArgument);
             }
             
+            // var functions = BuiltinFunctions.GetAll();
+            // var function = functions.SingleOrDefault(f => f.Name == syntax.Identifier.Text);
             
-            var functions = BuiltinFunctions.GetAll();
-            var function = functions.SingleOrDefault(f => f.Name == syntax.Identifier.Text);
-            if (function == null)
+            if (!_scope.TryLookupFunction(syntax.Identifier.Text,out var function))
             {
                 _diagnostics.ReportUndefinedFunction(syntax.Identifier.Span, syntax.Identifier.Text);
                 return new BoundErrorExpression();
@@ -244,7 +257,7 @@ namespace complier.CodeAnalysis.Binding
                 return new BoundErrorExpression();
             }
 
-            if (!_scope.TryLookup(name, out var variable))
+            if (!_scope.TryLookupVariable(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundErrorExpression();
@@ -260,7 +273,7 @@ namespace complier.CodeAnalysis.Binding
             var boundExpresion = BindExpression(syntax.Expression);
 
 
-            if (!_scope.TryLookup(name, out var variable))
+            if (!_scope.TryLookupVariable(name, out var variable))
             {
                 _diagnostics.ReportUndefinedName(syntax.Identifier.Span, name);
                 return boundExpresion;
@@ -284,8 +297,6 @@ namespace complier.CodeAnalysis.Binding
 
             return new BoundAssignmentExpression(variable, boundExpresion);
         }
-
-
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
         {
             return BindExpression(syntax.Expression);
@@ -347,7 +358,7 @@ namespace complier.CodeAnalysis.Binding
 
             var variable = new VariableSymbol(name, isReadOnly, type);
 
-            if (declare && !_scope.TryDeclare(variable))
+            if (declare && !_scope.TryDeclareVariable(variable))
             {
                 _diagnostics.ReportVariableAlreadyDeclared(identifier.Span, name);
             }
