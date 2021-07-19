@@ -10,6 +10,7 @@ namespace complier.CodeAnalysis
     {
         private readonly BoundBlockStatement _root;
         private readonly Dictionary<VariableSymbol, object> _variables;
+        private Random _random;
 
         private object _lastValue;
 
@@ -113,6 +114,16 @@ namespace complier.CodeAnalysis
                 var message = (string) EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
+            }
+            else if (node.Function == BuiltinFunctions.Rnd)
+            {
+                var max = (int) EvaluateExpression(node.Arguments[0]);
+                if (_random== null)
+                {
+                    _random = new Random();
+                }
+
+                return _random.Next(max);
             }
             else
             {
