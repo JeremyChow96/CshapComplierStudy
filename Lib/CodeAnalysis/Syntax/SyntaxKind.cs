@@ -30,6 +30,7 @@
         GreaterOrEqualsToken,
         LessToken,
         LessOrEqualsToken,
+        CommaToken,
         StringToken,
 
 
@@ -67,6 +68,7 @@
         VariableDeclaration,
         ForStatement,
 
+        CallExpression,
     }
 
 }

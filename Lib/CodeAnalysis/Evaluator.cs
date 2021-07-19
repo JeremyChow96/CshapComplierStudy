@@ -51,8 +51,8 @@ namespace complier.CodeAnalysis
                         break;
                     case BoundNodeKind.ConditionalGotoStatement:
                         var cgs = (BoundConditionalGotoStatement) s;
-                        var condtion = (bool)EvaluateExpression(cgs.Condition);
-                        if (condtion==cgs.JumpIfTrue)
+                        var condtion = (bool) EvaluateExpression(cgs.Condition);
+                        if (condtion == cgs.JumpIfTrue)
                         {
                             index = labelToIndex[cgs.Label];
                         }
@@ -60,6 +60,7 @@ namespace complier.CodeAnalysis
                         {
                             index++;
                         }
+
                         break;
                     case BoundNodeKind.LabelStatement:
                         index++;
@@ -72,54 +73,6 @@ namespace complier.CodeAnalysis
 
             return _lastValue;
         }
-
-        // private void EvaluateStatement(BoundStatement node)
-        // {
-        //     switch (node.Kind)
-        //     {
-        //         case BoundNodeKind.BlockStatement:
-        //             EvaluateBlockStatement((BoundBlockStatement) node);
-        //             break;
-        //         case BoundNodeKind.ExpressionStatement:
-        //             EvaluateExpressionStatement((BoundExpressionStatement) node);
-        //             break;
-        //         case BoundNodeKind.VariableDeclaration:
-        //             EvaluateVariableDeclaration((BoundVariableDeclaration) node);
-        //             break;
-        //         case BoundNodeKind.IfStatement:
-        //             EvaluateIfStatement((BoundIfStatement) node);
-        //             break;
-        //         case BoundNodeKind.WhileStatement:
-        //             EvaluateWhileStatement((BoundWhileStatement) node);
-        //             break;
-        //
-        //         // case BoundNodeKind.ForStatement:
-        //         //     EvaluateForStatement((BoundForStatement) node);
-        //         //     break;
-        //         default:
-        //             throw new Exception($"Unexpected node {node.Kind}");
-        //     }
-        // }
-
-        // private void EvaluateForStatement(BoundForStatement node)
-        // {
-        //     var lowerBound = (int) EvaluateExpression(node.LowerBound);
-        //     var upperBound = (int) EvaluateExpression(node.UpperBound);
-        //     _variables[node.Variable] = lowerBound;
-        //     for (int i = lowerBound; i <= upperBound; i++)
-        //     {
-        //         _variables[node.Variable] = i;
-        //         EvaluateStatement(node.Body);
-        //     }
-        // }
-
-        // private void EvaluateBlockStatement(BoundBlockStatement node)
-        // {
-        //     foreach (var statement in node.Statements)
-        //     {
-        //         EvaluateStatement(statement);
-        //     }
-        // }
 
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
@@ -135,8 +88,6 @@ namespace complier.CodeAnalysis
         }
 
 
-       
-
         private object EvaluateExpression(BoundExpression node)
         {
             return node.Kind switch
@@ -146,8 +97,27 @@ namespace complier.CodeAnalysis
                 BoundNodeKind.AssignmentExpression => EvaluateAssignmentExpression((BoundAssignmentExpression) node),
                 BoundNodeKind.UnaryExpression => EvaluateUnaryExpression((BoundUnaryExpression) node),
                 BoundNodeKind.BinaryExpression => EvaluateBinaryExpression((BoundBinaryExpression) node),
+                BoundNodeKind.CallExpression => EvaluateCallExpression((BoundCallExpression) node),
                 _ => throw new Exception($"Unexpected node {node.Kind}")
             };
+        }
+
+        private object EvaluateCallExpression(BoundCallExpression node)
+        {
+            if (node.Function == BuiltinFunctions.Input)
+            {
+                return Console.ReadLine();
+            }
+            else if (node.Function == BuiltinFunctions.Print)
+            {
+                var message = (string) EvaluateExpression(node.Arguments[0]);
+                Console.WriteLine(message);
+                return null;
+            }
+            else
+            {
+                throw new Exception($"Unexpected function '{node.Function}'");
+            }
         }
 
 
@@ -159,10 +129,11 @@ namespace complier.CodeAnalysis
             switch (b.Op.Kind)
             {
                 case BoundBinaryOperatorKind.Addition:
-                    if (b.Type== TypeSymbol.Int)
+                    if (b.Type == TypeSymbol.Int)
                     {
                         return (int) left + (int) right;
                     }
+
                     return (string) left + (string) right;
                 case BoundBinaryOperatorKind.Substraction:
                     return (int) left - (int) right;

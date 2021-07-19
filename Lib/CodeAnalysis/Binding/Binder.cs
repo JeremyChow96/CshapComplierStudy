@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Lib.CodeAnalysis.Symbols;
 using Lib.CodeAnalysis.Syntax;
 
@@ -77,13 +78,13 @@ namespace complier.CodeAnalysis.Binding
                 case SyntaxKind.WhileStatement:
                     return BindWhileStatement((WhileStatementSyntax) syntax);
                 case SyntaxKind.ForStatement:
-                    return BindForStatment((ForStatmentSyntax) syntax);
+                    return BindForStatement((ForStatmentSyntax) syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
         }
 
-        private BoundStatement BindForStatment(ForStatmentSyntax syntax)
+        private BoundStatement BindForStatement(ForStatmentSyntax syntax)
         {
             var lowerBound = BindExpression(syntax.LowerBound, TypeSymbol.Int);
             var upperBound = BindExpression(syntax.UpperBound, TypeSymbol.Int);
@@ -139,7 +140,7 @@ namespace complier.CodeAnalysis.Binding
 
         private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax)
         {
-            var expression = BindExpression(syntax.Expression);
+            var expression = BindExpression(syntax.Expression,canBeVoid:true);
             return new BoundExpressionStatement(expression);
         }
 
@@ -156,8 +157,19 @@ namespace complier.CodeAnalysis.Binding
             return result;
         }
 
+        private BoundExpression BindExpression(ExpressionSyntax syntax, bool canBeVoid = false)
+        {
+            var result = BindExpressionInternal(syntax);
+            if (!canBeVoid && result.Type == TypeSymbol.Void)
+            {
+                _diagnostics.ReportExpressionMustHaveValue(syntax.Span);
+                return new BoundErrorExpression();
+            }
 
-        private BoundExpression BindExpression(ExpressionSyntax syntax)
+            return result;
+        }
+
+        private BoundExpression BindExpressionInternal(ExpressionSyntax syntax)
         {
             switch (syntax.Kind)
             {
@@ -173,9 +185,53 @@ namespace complier.CodeAnalysis.Binding
                     return BindNameExpression((NameExpressionSyntax) syntax);
                 case SyntaxKind.AssignmentExpression:
                     return BindAssignmentExpression((AssignmentExpressionSyntax) syntax);
+                case SyntaxKind.CallExpression:
+                    return BindCallExpression((CallExpressionSyntax) syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
+        }
+
+        private BoundExpression BindCallExpression(CallExpressionSyntax syntax)
+        {
+
+            var boundArguments = ImmutableArray.CreateBuilder<BoundExpression>();
+            foreach (var argument in syntax.Arguments)
+            {
+                var boundArgument = BindExpression(argument);
+                boundArguments.Add(boundArgument);
+            }
+            
+            
+            var functions = BuiltinFunctions.GetAll();
+            var function = functions.SingleOrDefault(f => f.Name == syntax.Identifier.Text);
+            if (function == null)
+            {
+                _diagnostics.ReportUndefinedFunction(syntax.Identifier.Span, syntax.Identifier.Text);
+                return new BoundErrorExpression();
+            }
+
+            if (syntax.Arguments.Count != function.Parameter.Length)
+            {
+                _diagnostics.ReportWrongArguementCount(syntax.Span,function.Name,function.Parameter.Length,syntax.Arguments.Count);
+                return new BoundErrorExpression();
+            }
+
+            for (int i = 0; i < syntax.Arguments.Count; i++)
+            {
+                var boundArgument = boundArguments[i];
+                var parameter = function.Parameter[i];
+
+                // parameter type check
+                if (boundArgument.Type != parameter.Type)
+                {
+                    _diagnostics.ReportWrongArguementType(syntax.Span,parameter.Name,parameter.Type,boundArgument.Type);
+                    return new BoundErrorExpression();
+                }
+            }
+            
+            // _diagnostics.ReportBadCharater(syntax.Identifier.Span.Start,'X');
+            return new BoundCallExpression(function, boundArguments.ToImmutable());
         }
 
         private BoundExpression BindNameExpression(NameExpressionSyntax syntax)

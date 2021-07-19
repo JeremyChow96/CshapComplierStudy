@@ -37,7 +37,7 @@ namespace Lib.CodeAnalysis.Binding
         protected virtual BoundStatement RewriteConditionalGotoStatement(BoundConditionalGotoStatement node)
         {
             var condition = RewriteExpression(node.Condition);
-            if (condition==node.Condition)
+            if (condition == node.Condition)
             {
                 return node;
             }
@@ -166,15 +166,18 @@ namespace Lib.CodeAnalysis.Binding
                 case BoundNodeKind.LiteralExpression:
                     return RewriteLiteralExpression((BoundLiteralExpression) node);
                 case BoundNodeKind.BinaryExpression:
-                    return RewriteBinaryExpreesion((BoundBinaryExpression) node);
+                    return RewriteBinaryExpression((BoundBinaryExpression) node);
                 case BoundNodeKind.VariableExpression:
                     return RewriteVariableExpression((BoundVariableExpression) node);
                 case BoundNodeKind.AssignmentExpression:
                     return RewriteAssignmentExpression((BoundAssignmentExpression) node);
+                case BoundNodeKind.CallExpression:
+                    return RewriteCallExpression((BoundCallExpression) node);
                 default:
                     throw new Exception($"Unexpected node : {node.Kind}");
             }
         }
+
 
         protected virtual BoundExpression RewriteErrorExpression(BoundErrorExpression node)
         {
@@ -198,7 +201,7 @@ namespace Lib.CodeAnalysis.Binding
             return node;
         }
 
-        protected virtual BoundExpression RewriteBinaryExpreesion(BoundBinaryExpression node)
+        protected virtual BoundExpression RewriteBinaryExpression(BoundBinaryExpression node)
         {
             var left = RewriteExpression(node.Left);
             var right = RewriteExpression(node.Right);
@@ -225,6 +228,40 @@ namespace Lib.CodeAnalysis.Binding
             }
 
             return new BoundUnaryExpression(node.Op, operand);
+        }
+
+        protected virtual BoundExpression RewriteCallExpression(BoundCallExpression node)
+        {
+            ImmutableArray<BoundExpression>.Builder builder = null;
+
+            for (int i = 0; i < node.Arguments.Length; i++)
+            {
+                var oldArgument = node.Arguments[i];
+                var newArgument = RewriteExpression(oldArgument);
+                if (newArgument != oldArgument)
+                {
+                    if (builder == null)
+                    {
+                        builder = ImmutableArray.CreateBuilder<BoundExpression>(node.Arguments.Length);
+                        for (int j = 0; j < i; j++)
+                        {
+                            builder.Add(node.Arguments[j]);
+                        }
+                    }
+                }
+
+                if (builder != null)
+                {
+                    builder.Add(newArgument);
+                }
+            }
+
+            if (builder == null)
+            {
+                return node;
+            }
+
+            return new BoundCallExpression(node.Function,builder.MoveToImmutable());
         }
     }
 }

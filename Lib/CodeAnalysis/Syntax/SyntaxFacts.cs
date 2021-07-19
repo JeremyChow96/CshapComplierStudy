@@ -138,6 +138,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "{";
                 case SyntaxKind.CloseBraceToken:
                     return "}";
+                case SyntaxKind.CommaToken:
+                    return ",";
                 case SyntaxKind.TrueKeyword:
                     return "true";
                 case SyntaxKind.FalseKeyword:
