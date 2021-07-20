@@ -4,13 +4,13 @@ namespace Lib.CodeAnalysis.Symbols
 {
     public sealed class FunctionSymbol : Symbol
     {
-        internal FunctionSymbol(string name, ImmutableArray<ParameterSymbol> parameter, TypeSymbol type) : base(name)
+        internal FunctionSymbol(string name, ImmutableArray<ParameterSymbol> parameters, TypeSymbol type) : base(name)
         {
-            Parameter = parameter;
+            Parameters = parameters;
             Type = type;
         }
 
-        public ImmutableArray<ParameterSymbol> Parameter { get; }
+        public ImmutableArray<ParameterSymbol> Parameters { get; }
         public TypeSymbol Type { get; }
 
 

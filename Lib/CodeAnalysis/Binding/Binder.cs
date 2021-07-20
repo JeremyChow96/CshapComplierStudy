@@ -227,16 +227,16 @@ namespace complier.CodeAnalysis.Binding
                 return new BoundErrorExpression();
             }
 
-            if (syntax.Arguments.Count != function.Parameter.Length)
+            if (syntax.Arguments.Count != function.Parameters.Length)
             {
-                _diagnostics.ReportWrongArguementCount(syntax.Span,function.Name,function.Parameter.Length,syntax.Arguments.Count);
+                _diagnostics.ReportWrongArguementCount(syntax.Span,function.Name,function.Parameters.Length,syntax.Arguments.Count);
                 return new BoundErrorExpression();
             }
 
             for (int i = 0; i < syntax.Arguments.Count; i++)
             {
                 var boundArgument = boundArguments[i];
-                var parameter = function.Parameter[i];
+                var parameter = function.Parameters[i];
 
                 // parameter type check
                 if (boundArgument.Type != parameter.Type)
