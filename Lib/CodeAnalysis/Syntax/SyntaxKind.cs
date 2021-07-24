@@ -32,6 +32,7 @@
         LessOrEqualsToken,
         CommaToken,
         StringToken,
+        ColonToken,
 
 
 
@@ -69,6 +70,7 @@
         ForStatement,
 
         CallExpression,
+
     }
 
 }
