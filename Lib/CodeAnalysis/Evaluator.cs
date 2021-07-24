@@ -10,6 +10,7 @@ namespace complier.CodeAnalysis
     {
         private readonly BoundBlockStatement _root;
         private readonly Dictionary<VariableSymbol, object> _variables;
+        private Random _random;
 
         private object _lastValue;
 
@@ -51,8 +52,8 @@ namespace complier.CodeAnalysis
                         break;
                     case BoundNodeKind.ConditionalGotoStatement:
                         var cgs = (BoundConditionalGotoStatement) s;
-                        var condtion = (bool)EvaluateExpression(cgs.Condition);
-                        if (condtion==cgs.JumpIfTrue)
+                        var condtion = (bool) EvaluateExpression(cgs.Condition);
+                        if (condtion == cgs.JumpIfTrue)
                         {
                             index = labelToIndex[cgs.Label];
                         }
@@ -60,6 +61,7 @@ namespace complier.CodeAnalysis
                         {
                             index++;
                         }
+
                         break;
                     case BoundNodeKind.LabelStatement:
                         index++;
@@ -72,54 +74,6 @@ namespace complier.CodeAnalysis
 
             return _lastValue;
         }
-
-        // private void EvaluateStatement(BoundStatement node)
-        // {
-        //     switch (node.Kind)
-        //     {
-        //         case BoundNodeKind.BlockStatement:
-        //             EvaluateBlockStatement((BoundBlockStatement) node);
-        //             break;
-        //         case BoundNodeKind.ExpressionStatement:
-        //             EvaluateExpressionStatement((BoundExpressionStatement) node);
-        //             break;
-        //         case BoundNodeKind.VariableDeclaration:
-        //             EvaluateVariableDeclaration((BoundVariableDeclaration) node);
-        //             break;
-        //         case BoundNodeKind.IfStatement:
-        //             EvaluateIfStatement((BoundIfStatement) node);
-        //             break;
-        //         case BoundNodeKind.WhileStatement:
-        //             EvaluateWhileStatement((BoundWhileStatement) node);
-        //             break;
-        //
-        //         // case BoundNodeKind.ForStatement:
-        //         //     EvaluateForStatement((BoundForStatement) node);
-        //         //     break;
-        //         default:
-        //             throw new Exception($"Unexpected node {node.Kind}");
-        //     }
-        // }
-
-        // private void EvaluateForStatement(BoundForStatement node)
-        // {
-        //     var lowerBound = (int) EvaluateExpression(node.LowerBound);
-        //     var upperBound = (int) EvaluateExpression(node.UpperBound);
-        //     _variables[node.Variable] = lowerBound;
-        //     for (int i = lowerBound; i <= upperBound; i++)
-        //     {
-        //         _variables[node.Variable] = i;
-        //         EvaluateStatement(node.Body);
-        //     }
-        // }
-
-        // private void EvaluateBlockStatement(BoundBlockStatement node)
-        // {
-        //     foreach (var statement in node.Statements)
-        //     {
-        //         EvaluateStatement(statement);
-        //     }
-        // }
 
 
         private void EvaluateExpressionStatement(BoundExpressionStatement node)
@@ -135,8 +89,6 @@ namespace complier.CodeAnalysis
         }
 
 
-       
-
         private object EvaluateExpression(BoundExpression node)
         {
             return node.Kind switch
@@ -146,11 +98,12 @@ namespace complier.CodeAnalysis
                 BoundNodeKind.AssignmentExpression => EvaluateAssignmentExpression((BoundAssignmentExpression) node),
                 BoundNodeKind.UnaryExpression => EvaluateUnaryExpression((BoundUnaryExpression) node),
                 BoundNodeKind.BinaryExpression => EvaluateBinaryExpression((BoundBinaryExpression) node),
+                BoundNodeKind.CallExpression => EvaluateCallExpression((BoundCallExpression) node),
+                BoundNodeKind.ConversionExpression => EvaluateConversionExpression((BoundConversionExpression) node),
                 _ => throw new Exception($"Unexpected node {node.Kind}")
             };
         }
-
-
+        
         private object EvaluateBinaryExpression(BoundBinaryExpression b)
         {
             var left = EvaluateExpression(b.Left);
@@ -159,7 +112,12 @@ namespace complier.CodeAnalysis
             switch (b.Op.Kind)
             {
                 case BoundBinaryOperatorKind.Addition:
-                    return (int) left + (int) right;
+                    if (b.Type == TypeSymbol.Int)
+                    {
+                        return (int) left + (int) right;
+                    }
+
+                    return (string) left + (string) right;
                 case BoundBinaryOperatorKind.Substraction:
                     return (int) left - (int) right;
                 case BoundBinaryOperatorKind.Multiplication:
@@ -228,6 +186,56 @@ namespace complier.CodeAnalysis
         private object EvaluateVariableExpression(BoundVariableExpression v)
         {
             return _variables[v.Variable];
+        }
+        
+        private object EvaluateCallExpression(BoundCallExpression node)
+        {
+            if (node.Function == BuiltinFunctions.Input)
+            {
+                return Console.ReadLine();
+            }
+            else if (node.Function == BuiltinFunctions.Print)
+            {
+                var message = (string) EvaluateExpression(node.Arguments[0]);
+                Console.WriteLine(message);
+                return null;
+            }
+            else if (node.Function == BuiltinFunctions.Rnd)
+            {
+                var max = (int) EvaluateExpression(node.Arguments[0]);
+                if (_random== null)
+                {
+                    _random = new Random();
+                }
+
+                return _random.Next(max);
+            }
+            else
+            {
+                throw new Exception($"Unexpected function '{node.Function}'");
+            }
+        }
+
+        
+        private object EvaluateConversionExpression(BoundConversionExpression node)
+        {
+            var value = EvaluateExpression(node.Expression);
+            if (node.Type == TypeSymbol.Bool)
+            {
+                return Convert.ToBoolean(value);
+            }
+            else if (node.Type == TypeSymbol.Int)
+            {
+                return Convert.ToInt32(value);
+            }
+            else if (node.Type ==TypeSymbol.String)
+            {
+                return Convert.ToString(value);
+            }
+            else
+            {
+                throw new Exception($"Unexpected type '{node.Type}'");
+            }
         }
 
         private static object EvaluateLiteralExpression(BoundLiteralExpression n)

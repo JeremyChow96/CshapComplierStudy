@@ -6,7 +6,7 @@ bin
 
 *.user
 *.suo
-
+ToDolist.md
 /.vs/*
 /.vscode/
 /.idea/.idea.complier/.idea

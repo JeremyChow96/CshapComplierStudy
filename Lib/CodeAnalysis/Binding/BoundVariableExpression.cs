@@ -12,9 +12,9 @@ namespace complier.CodeAnalysis.Binding
         
 
         public override BoundNodeKind Kind => BoundNodeKind.VariableExpression;
-
+        public override TypeSymbol Type => Variable.Type;
         public VariableSymbol Variable { get; }
 
-        public override TypeSymbol Type => Variable.Type;
+
     }
 }
