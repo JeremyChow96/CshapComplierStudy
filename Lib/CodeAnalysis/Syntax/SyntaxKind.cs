@@ -59,7 +59,7 @@
         //nodes
         CompilationUnit,
         ElseClause,
-
+        TypeClause,
 
         //statements
         ExpressionStatement,
@@ -70,6 +70,7 @@
         ForStatement,
 
         CallExpression,
+
 
     }
 

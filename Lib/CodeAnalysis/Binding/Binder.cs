@@ -137,10 +137,32 @@ namespace complier.CodeAnalysis.Binding
         private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax)
         {
             var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
+            var type = BindTypeClause(syntax.TypeClause);
             var initializer = BindExpression(syntax.Initializer);
+            var variableType = type ?? initializer.Type;
+            //check if the target can be converted from the initializer's type 
+            var convertedInitializer = BindConversion(syntax.Initializer.Span,initializer,variableType);
+        
             var variable = BindVariable(syntax.Identifier, isReadOnly, initializer.Type);
             
-            return new BoundVariableDeclaration(variable, initializer);
+            return new BoundVariableDeclaration(variable, convertedInitializer);
+        }
+
+        private TypeSymbol BindTypeClause(TypeClauseSyntax syntax)
+        {
+            if (syntax ==null)
+            {
+                return null;
+            }
+
+            var type = LookupType(syntax.Identifier.Text);
+            if (type ==null)
+            {
+                _diagnostics.ReportUndefinedType(syntax.Identifier.Span, syntax.Identifier.Text);
+                return null;
+            }
+
+            return type;
         }
 
         private BoundStatement BindIfStatement(IfStatementSyntax syntax)
@@ -201,7 +223,7 @@ namespace complier.CodeAnalysis.Binding
         {
             if (syntax.Arguments.Count == 1 && LookupType(syntax.Identifier.Text) is TypeSymbol type)
             {
-                return BindConversion(syntax.Arguments[0], type);
+                return BindConversion(syntax.Arguments[0], type,allowExplicit:true);
             }
             
 
@@ -282,7 +304,7 @@ namespace complier.CodeAnalysis.Binding
 
             var convertedExpression = BindConversion(syntax.Expression.Span, boundExpresion, variable.Type);
 
-            return new BoundAssignmentExpression(variable, boundExpresion);
+            return new BoundAssignmentExpression(variable, convertedExpression);
         }
         private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
         {
@@ -353,15 +375,15 @@ namespace complier.CodeAnalysis.Binding
             return variable;
         }
 
-        private BoundExpression BindConversion(ExpressionSyntax syntax,TypeSymbol type )
+        private BoundExpression BindConversion(ExpressionSyntax syntax,TypeSymbol type ,bool allowExplicit =false)
         {
             var expression = BindExpression(syntax);
-            TextSpan diagnosticSpan = syntax.Span;
+            var diagnosticSpan = syntax.Span;
 
-            return BindConversion(diagnosticSpan, expression, type);
+            return BindConversion(diagnosticSpan, expression, type,allowExplicit);
         }
 
-        private BoundExpression BindConversion(TextSpan diagnosticSpan,BoundExpression expression, TypeSymbol type )
+        private BoundExpression BindConversion(TextSpan diagnosticSpan,BoundExpression expression, TypeSymbol type ,bool allowExplicit =false)
         {
             var conversion = Conversion.Classify(expression.Type, type);
 
@@ -369,13 +391,16 @@ namespace complier.CodeAnalysis.Binding
             {
                 if (expression.Type != TypeSymbol.Error && type != TypeSymbol.Error)
                 {
-
                     _diagnostics.ReportCannotConvert(diagnosticSpan, expression.Type, type);
                 }
                 return new BoundErrorExpression();
             }
 
-
+            if (!allowExplicit &&conversion.IsExplicit)
+            {
+                _diagnostics.ReportCannotConvertImplicitly(diagnosticSpan, expression.Type, type);
+            }
+            
             if (conversion.IsIdentity)
             {
                 return expression;

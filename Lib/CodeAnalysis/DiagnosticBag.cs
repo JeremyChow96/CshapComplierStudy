@@ -72,6 +72,11 @@ namespace complier.CodeAnalysis
 
         }
 
+        public void ReportUndefinedType(TextSpan span, string name)
+        {
+            var message = $"Type '{name}' doesn't exist.";
+            Report(span, message);
+        }
         public void ReportVariableAlreadyDeclared(TextSpan span, string name)
         {
             var message = $"Variable '{name}' is already declared.";
@@ -83,7 +88,13 @@ namespace complier.CodeAnalysis
             var message = $"Cannot convert type '{fromType}' to '{toType}'.";
             Report(span, message);
         }
-
+        public void ReportCannotConvertImplicitly(TextSpan span, TypeSymbol fromType, TypeSymbol toType)
+        {
+            var x = 1.0;
+     
+            var message = $"Cannot implicitly convert type '{fromType}' to '{toType}'. An explicit conversion exists (are you missing a cast?)";
+            Report(span, message);
+        }
         public void ReportCannotAssign(TextSpan span, string name)
         {
             var message = $"Variable '{name}' is read-only and cannot be assigned to.";
@@ -114,6 +125,9 @@ namespace complier.CodeAnalysis
             var message = $"Expression must have a value";
             Report(span, message);
         }
+
+
+    
     }
 
 }

@@ -44,6 +44,7 @@ namespace Test.CodeAnalysis.Syntax
             untestedTokenKinds.ExceptWith(testedTokenKinds);
             untestedTokenKinds.Remove(SyntaxKind.BadToken);
             untestedTokenKinds.Remove(SyntaxKind.EndOfFileToken);
+          //  untestedTokenKinds.Remove(SyntaxKind.ColonToken);
 
 
             Assert.Empty(untestedTokenKinds);
@@ -132,7 +133,9 @@ namespace Test.CodeAnalysis.Syntax
         }
         private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
         {
-            var fixedTokens = Enum.GetValues<SyntaxKind>().Select(k=>(kind:k,text: SyntaxFacts.GetText(k))).Where(t=>t.text!=null);
+            var fixedTokens = Enum.GetValues<SyntaxKind>()
+                .Select(k=>(kind:k,text: SyntaxFacts.GetText(k)))
+                .Where(t=>t.text!=null);
 
             var dynamciToken = new[]
            {

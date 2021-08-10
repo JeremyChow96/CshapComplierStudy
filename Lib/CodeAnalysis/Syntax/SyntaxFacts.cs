@@ -114,6 +114,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "!";
                 case SyntaxKind.EqualsToken:
                     return "=";
+                case SyntaxKind.ColonToken:
+                    return ":";
                 case SyntaxKind.PipePipeToken:
                     return "||";
                 case SyntaxKind.AmpersandAmpersandToken:
