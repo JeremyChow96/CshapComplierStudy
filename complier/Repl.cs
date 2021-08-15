@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text;
+using Microsoft.VisualBasic.FileIO;
 
 namespace complier
 {
@@ -268,8 +269,9 @@ namespace complier
 
         private void HandleEscape(ObservableCollection<string> document, SubmissionView view)
         {
-            document[view.CurrentLine] = string.Empty;
-            view.CurrentCharacter = 0;
+            document.Clear();
+            document.Add(string.Empty);
+            view.CurrentLine = 0;
         }
 
         private void HandleTab(ObservableCollection<string> document, SubmissionView view)
