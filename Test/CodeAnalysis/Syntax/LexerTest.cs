@@ -44,7 +44,7 @@ namespace Test.CodeAnalysis.Syntax
             untestedTokenKinds.ExceptWith(testedTokenKinds);
             untestedTokenKinds.Remove(SyntaxKind.BadToken);
             untestedTokenKinds.Remove(SyntaxKind.EndOfFileToken);
-          //  untestedTokenKinds.Remove(SyntaxKind.ColonToken);
+        
 
 
             Assert.Empty(untestedTokenKinds);

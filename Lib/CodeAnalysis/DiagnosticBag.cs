@@ -77,12 +77,19 @@ namespace complier.CodeAnalysis
             var message = $"Type '{name}' doesn't exist.";
             Report(span, message);
         }
-        public void ReportVariableAlreadyDeclared(TextSpan span, string name)
+        public void ReportSymbolAlreadyDeclared(TextSpan span, string name)
         {
-            var message = $"Variable '{name}' is already declared.";
+            var message = $"'{name}' is already declared.";
             Report(span, message);
         }
-
+        public void ReportParameterAlreadyDeclared(TextSpan span, string parameterName)
+        {
+            var message = $"a parameter with the name  '{parameterName}' already exists.";
+            Report(span, message);
+        }
+        
+        
+  
         public void ReportCannotConvert(TextSpan span, TypeSymbol fromType, TypeSymbol toType)
         {
             var message = $"Cannot convert type '{fromType}' to '{toType}'.";
@@ -90,8 +97,6 @@ namespace complier.CodeAnalysis
         }
         public void ReportCannotConvertImplicitly(TextSpan span, TypeSymbol fromType, TypeSymbol toType)
         {
-            var x = 1.0;
-     
             var message = $"Cannot implicitly convert type '{fromType}' to '{toType}'. An explicit conversion exists (are you missing a cast?)";
             Report(span, message);
         }
@@ -127,7 +132,13 @@ namespace complier.CodeAnalysis
         }
 
 
-    
+        public void XXX_ReportFunctionAreUnsupported(TextSpan span)
+        {
+            var message = $"Functions with return values are unsupported.";
+            Report(span, message);
+        }
+
+   
     }
 
 }

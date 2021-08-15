@@ -46,6 +46,7 @@
         WhileKeyword,
         ForKeyword,
         ToKeyword,
+        FunctionKeyword,
 
         //Expressions
         LiteralExpression,
@@ -54,12 +55,16 @@
         ParenthesizedExpression,
         NameExpression,
         AssignmentExpression,
+        CallExpression,
 
 
         //nodes
         CompilationUnit,
         ElseClause,
         TypeClause,
+        GlobalStatement,
+        Parameter,
+        FunctionDeclaration,
 
         //statements
         ExpressionStatement,
@@ -68,8 +73,6 @@
         WhileStatement,
         VariableDeclaration,
         ForStatement,
-
-        CallExpression,
 
 
     }
