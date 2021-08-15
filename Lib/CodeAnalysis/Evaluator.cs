@@ -9,8 +9,10 @@ namespace complier.CodeAnalysis
 {
     internal class Evaluator
     {
-        private readonly ImmutableDictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
-        private readonly BoundBlockStatement _root;
+        // private readonly ImmutableDictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
+        // private readonly BoundBlockStatement _root;
+
+        private readonly BoundProgram _program;
         private readonly Dictionary<VariableSymbol, object> _globalVariables;
 
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new();
@@ -18,20 +20,20 @@ namespace complier.CodeAnalysis
 
         private object _lastValue;
 
-        public Evaluator(ImmutableDictionary<FunctionSymbol, BoundBlockStatement> functionBodies,
-            BoundBlockStatement root, Dictionary<VariableSymbol, object> globalVariables)
+        public Evaluator(BoundProgram program  ,Dictionary<VariableSymbol, object> globalVariables)
         {
-            _functionBodies = functionBodies;
-            _root = root;
+            _program = program;
             _globalVariables = globalVariables;
+            _locals.Push(new Dictionary<VariableSymbol, object>());
         }
 
+     
         public object Evaluate()
         {
-            return EvaluateStatament(_root);
+            return EvaluateStatement(_program.Statement);
         }
 
-        private object EvaluateStatament(BoundBlockStatement body)
+        private object EvaluateStatement(BoundBlockStatement body)
         {
             var labelToIndex = new Dictionary<BoundLabel, int>();
             for (int i = 0; i < body.Statements.Length; i++)
@@ -239,16 +241,16 @@ namespace complier.CodeAnalysis
                 var locals = new Dictionary<VariableSymbol, object>();
                 for (int i = 0; i < node.Arguments.Length; i++)
                 {
-                    var paramter = node.Function.Parameters[i];
+                    var parameter = node.Function.Parameters[i];
                     var value = EvaluateExpression(node.Arguments[i]);
-                    locals.Add(paramter, value);
+                    locals.Add(parameter, value);
                 }
 
                 _locals.Push(locals);
 
-                var statement = _functionBodies[node.Function];
+                var statement = _program.FunctionBodies[node.Function];
 
-                var result = EvaluateStatament(statement);
+                var result = EvaluateStatement(statement);
                 _locals.Pop();
 
                 return result;

@@ -5,15 +5,15 @@ namespace complier.CodeAnalysis.Binding
 {
     internal sealed class BoundProgram
     {
-        public BoundGlobalScope GlobalScope { get; }
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
         public ImmutableDictionary<FunctionSymbol, BoundBlockStatement> FunctionBodies { get; }
-        public DiagnosticBag Diagnostics { get; }
+        public BoundBlockStatement Statement { get; }
 
-        public BoundProgram(BoundGlobalScope globalScope, ImmutableDictionary<FunctionSymbol, BoundBlockStatement> functionBodies, DiagnosticBag diagnostics)
+        public BoundProgram(ImmutableArray<Diagnostic> diagnostics, ImmutableDictionary<FunctionSymbol,BoundBlockStatement> functionBodies, BoundBlockStatement statement)
         {
-            GlobalScope = globalScope;
-            FunctionBodies = functionBodies;
             Diagnostics = diagnostics;
+            FunctionBodies = functionBodies;
+            Statement = statement;
         }
     }
 }

@@ -41,14 +41,14 @@ namespace complier.CodeAnalysis.Binding
                 binder.BindFunctionDeclaration(function);
             }
 
-            var statementBuilder = ImmutableArray.CreateBuilder<BoundStatement>();
+            var statements = ImmutableArray.CreateBuilder<BoundStatement>();
             foreach (var globalStatement in syntax.Members.OfType<GlobalStatementSyntax>())
             {
-                var s = binder.BindStatement(globalStatement.Statement);
-                statementBuilder.Add(s);
+                var statement = binder.BindStatement(globalStatement.Statement);
+                statements.Add(statement);
             }
 
-            var statement = new BoundBlockStatement(statementBuilder.ToImmutable());
+         
 
             var functions = binder._scope.GetDeclaredFunctions();
             var variables = binder._scope.GetDeclaredVariables();
@@ -58,11 +58,11 @@ namespace complier.CodeAnalysis.Binding
                 diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
             }
 
-            return new BoundGlobalScope(previous, diagnostics, functions,variables, statement);
+            return new BoundGlobalScope(previous, diagnostics, functions,variables, statements.ToImmutable());
         }
 
         /// <summary>
-        /// Register function's bodies. walk through the whole scope (multiple submissions)
+        /// bind the program information including statement,function bodies and diagnostics 
         /// </summary>
         /// <param name="globalScope"></param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace complier.CodeAnalysis.Binding
         {
             var parentScope = CreateParentScope(globalScope);
             var functionBodies = ImmutableDictionary.CreateBuilder<FunctionSymbol, BoundBlockStatement>();
-            var diagnostics = new DiagnosticBag();
+            var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 
 
             // walk through the whole scope! make sure the body in  two different submissions!
@@ -89,11 +89,10 @@ namespace complier.CodeAnalysis.Binding
 
                 scope = scope.Previous;
             }
-            
-        
 
-            var boundProgram = new BoundProgram(globalScope, functionBodies.ToImmutable(), diagnostics);
-            return boundProgram;
+            var statement = Lowerer.Lower(new BoundBlockStatement(globalScope.Statement));
+
+            return new BoundProgram(diagnostics.ToImmutable(), functionBodies.ToImmutable(), statement);
         }
         
         

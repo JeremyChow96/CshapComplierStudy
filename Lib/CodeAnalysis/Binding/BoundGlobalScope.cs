@@ -9,13 +9,14 @@ namespace complier.CodeAnalysis.Binding
         public ImmutableArray<Diagnostic> Diagnostics { get; }
         public ImmutableArray<FunctionSymbol> Functions { get; }
         public ImmutableArray<VariableSymbol> Variable { get; }
-        public BoundStatement Statement { get; }
+        public ImmutableArray<BoundStatement> Statement { get; }
+
 
         public BoundGlobalScope(BoundGlobalScope previous,
             ImmutableArray<Diagnostic> diagnostics,
             ImmutableArray<FunctionSymbol> functions,
             ImmutableArray<VariableSymbol> variable,
-            BoundStatement statement)
+            ImmutableArray<BoundStatement> statement)
         {
             Previous = previous;
             Diagnostics = diagnostics;
