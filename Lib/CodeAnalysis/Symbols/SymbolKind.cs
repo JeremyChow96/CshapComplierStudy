@@ -5,6 +5,8 @@
         Variable,
         Type,
         Function,
-        ParameterSymbol
+        Parameter,
+        GlobalVariable,
+        LocalVariable
     }
 }

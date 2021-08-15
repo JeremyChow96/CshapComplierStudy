@@ -70,6 +70,7 @@ namespace complier.CodeAnalysis.Syntax
                 "while" => SyntaxKind.WhileKeyword,
                 "for" => SyntaxKind.ForKeyword,
                 "to" => SyntaxKind.ToKeyword,
+                "function" => SyntaxKind.FunctionKeyword,
                 _ => SyntaxKind.IdentifierToken,
             };
         }
@@ -114,6 +115,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "!";
                 case SyntaxKind.EqualsToken:
                     return "=";
+                case SyntaxKind.ColonToken:
+                    return ":";
                 case SyntaxKind.PipePipeToken:
                     return "||";
                 case SyntaxKind.AmpersandAmpersandToken:
@@ -156,6 +159,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "while";
                 case SyntaxKind.ForKeyword:
                     return "for";
+                case SyntaxKind.FunctionKeyword:
+                    return "function";
                 case SyntaxKind.ToKeyword:
                     return "to";
                 case SyntaxKind.PipeToken:

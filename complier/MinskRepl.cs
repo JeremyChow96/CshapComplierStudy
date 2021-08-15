@@ -166,13 +166,20 @@ internal sealed class MinskRepl : Repl
 
 
         var syntaxTree = SyntaxTree.Parse(text);
-        if (syntaxTree.Diagnostics.Any())
+        
+        //use member because we need to exclude the EndOfFileToken
+        if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing)
         {
-            if (syntaxTree.Root.Statement.GetLastToken().IsMissing)
-            {
-                return false;
-            }
+            return false;
         }
+        
+        // if (syntaxTree.Diagnostics.Any())
+        // {
+        //     if (syntaxTree.Root.Statement.GetLastToken().IsMissing)
+        //     {
+        //         return false;
+        //     }
+        // }
 
         return true;
     }

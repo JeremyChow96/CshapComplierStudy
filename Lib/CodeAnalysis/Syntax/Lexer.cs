@@ -1,6 +1,4 @@
 ﻿using Lib.CodeAnalysis.Text;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using Lib.CodeAnalysis.Symbols;
 using Lib.CodeAnalysis.Syntax;
@@ -91,6 +89,10 @@ namespace complier.CodeAnalysis.Syntax
                     break;
                 case '^':
                     _kind = SyntaxKind.HatToken;
+                    _position++;
+                    break;
+                case ':':
+                    _kind = SyntaxKind.ColonToken;
                     _position++;
                     break;
                 case '~':
