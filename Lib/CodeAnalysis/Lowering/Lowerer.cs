@@ -19,7 +19,7 @@ namespace Lib.CodeAnalysis.Lowering
 
         private BoundLabel GenerateLabel()
         {
-            var name = $"Label{++_labelCount}";
+            var name = $"Label_{++_labelCount}";
             return new BoundLabel(name);
         }
 
@@ -128,21 +128,21 @@ namespace Lib.CodeAnalysis.Lowering
             //     gotoTrue <condition> continue
             //   end:
 
-            var checkLabel = GenerateLabel();
             var continueLabel = GenerateLabel();
-            var endLabel = GenerateLabel();
+            var checkLabel = GenerateLabel();
+            //var endLabel = GenerateLabel();
             var gotoCheck = new BoundGotoStatement(checkLabel);
             var continueLabelStatement = new BoundLabelStatement(continueLabel);
             var checkLabelStatement = new BoundLabelStatement(checkLabel);
             var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition);
-            var endLabelStatement = new BoundLabelStatement(endLabel);
+          //  var endLabelStatement = new BoundLabelStatement(endLabel);
             var result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
                 gotoCheck,
                 continueLabelStatement,
                 node.Body,
                 checkLabelStatement,
-                gotoTrue,
-                endLabelStatement));
+                gotoTrue
+               /* endLabelStatement*/));
             return RewriteStatement(result);
         }
 
