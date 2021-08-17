@@ -14,6 +14,5 @@ namespace Lib.CodeAnalysis.Symbols
         public TypeSymbol Type { get; }
 
 
-        public override SymbolKind Kind => SymbolKind.Variable;
     }
 }

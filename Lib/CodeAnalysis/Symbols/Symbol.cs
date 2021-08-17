@@ -1,4 +1,6 @@
-﻿namespace Lib.CodeAnalysis.Symbols
+﻿using System.IO;
+
+namespace Lib.CodeAnalysis.Symbols
 {
     public abstract class Symbol
     {
@@ -8,7 +10,18 @@
         }
         public string Name { get; }
         public abstract SymbolKind Kind { get; }
-        public override string ToString() => Name;
+        public void WriteTo(TextWriter writer)
+        {
+            SymbolPrinter.WriteTo(this,writer);
+        }
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                WriteTo(writer);
+                return writer.ToString();
+            }
+        }
 
     }
 }
