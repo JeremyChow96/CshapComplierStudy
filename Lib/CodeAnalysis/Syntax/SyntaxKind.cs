@@ -73,8 +73,10 @@
         WhileStatement,
         VariableDeclaration,
         ForStatement,
-
-
+        ContinueKeyword,
+        BreakKeyword,
+        ContinueStatement,
+        BreakStatement,
     }
 
 }
