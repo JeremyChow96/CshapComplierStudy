@@ -1,4 +1,5 @@
-﻿using System;
+﻿using complier.CodeAnalysis.Syntax;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
@@ -41,11 +42,20 @@ namespace Lib.CodeAnalysis.IO
             }
         }
 
+        public static void WriteKeyword(this TextWriter writer, SyntaxKind kind)
+        {
+            writer.WriteKeyword(SyntaxFacts.GetText(kind));
+        }
+
         public static void WriteKeyword(this TextWriter writer,string text)
         {
             writer.SetForeground(ConsoleColor.Blue);
             writer.Write(text);
             writer.ResetColor();
+        }
+        public static void WriteSpace(this TextWriter writer)
+        {
+            writer.WritePunctuation(" ");
         }
 
         public static void WriteIdentifier(this TextWriter writer, string text)
@@ -65,6 +75,11 @@ namespace Lib.CodeAnalysis.IO
             writer.SetForeground(ConsoleColor.Magenta);
             writer.Write(text);
             writer.ResetColor();
+        }
+
+        public static void WritePunctuation(this TextWriter writer, SyntaxKind kind)
+        {
+            writer.WritePunctuation(SyntaxFacts.GetText(kind));
         }
 
         public static void WritePunctuation(this TextWriter writer, string text)
