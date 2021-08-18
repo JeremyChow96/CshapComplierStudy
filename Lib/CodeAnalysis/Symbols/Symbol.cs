@@ -14,7 +14,14 @@ namespace Lib.CodeAnalysis.Symbols
             SymbolPrinter.WriteTo(this, writer);
         }
         public abstract SymbolKind Kind { get; }
-        public override string ToString() => Name;
+        public override string ToString()
+        {
+            using (var writer = new StringWriter())
+            {
+                WriteTo(writer);
+                return writer.ToString();
+            }
+        }
      
 
     }

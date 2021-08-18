@@ -10,7 +10,6 @@ namespace Lib.CodeAnalysis.Symbols
         {
             switch (symbol.Kind)
             {
-
                 case SymbolKind.Type:
                     WriteTypeTo((TypeSymbol)symbol, writer);
                     break;
