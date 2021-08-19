@@ -138,7 +138,11 @@ namespace complier.CodeAnalysis
             Report(span, message);
         }
 
-   
+        internal void ReportInvalidBreakOrContinue(TextSpan span, string text)
+        {
+            var message = $"the keyword '{text}' can only be used inside of loops.";
+            Report(span, message);
+        }
     }
 
 }

@@ -71,6 +71,8 @@ namespace complier.CodeAnalysis.Syntax
                 "for" => SyntaxKind.ForKeyword,
                 "to" => SyntaxKind.ToKeyword,
                 "function" => SyntaxKind.FunctionKeyword,
+                "break" => SyntaxKind.BreakKeyword,
+                "continue" => SyntaxKind.ContinueKeyword,
                 _ => SyntaxKind.IdentifierToken,
             };
         }
@@ -171,6 +173,10 @@ namespace complier.CodeAnalysis.Syntax
                     return "^";
                 case SyntaxKind.TildeToken:
                     return "~";
+                case SyntaxKind.BreakKeyword:
+                    return "break";
+                case SyntaxKind.ContinueKeyword:
+                    return "continue";
                 default:
                     return null;
             }

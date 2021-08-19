@@ -19,7 +19,7 @@ namespace Lib.CodeAnalysis.Lowering
 
         private BoundLabel GenerateLabel()
         {
-            var name = $"Label{++_labelCount}";
+            var name = $"Label_{++_labelCount}";
             return new BoundLabel(name);
         }
 
@@ -126,23 +126,21 @@ namespace Lib.CodeAnalysis.Lowering
             //      <body>
             //   check :
             //     gotoTrue <condition> continue
-            //   end:
+            //  break
 
             var checkLabel = GenerateLabel();
-            var continueLabel = GenerateLabel();
-            var endLabel = GenerateLabel();
             var gotoCheck = new BoundGotoStatement(checkLabel);
-            var continueLabelStatement = new BoundLabelStatement(continueLabel);
+            var continueLabelStatement = new BoundLabelStatement(node.ContinueLabel);
             var checkLabelStatement = new BoundLabelStatement(checkLabel);
-            var gotoTrue = new BoundConditionalGotoStatement(continueLabel, node.Condition);
-            var endLabelStatement = new BoundLabelStatement(endLabel);
+            var gotoTrue = new BoundConditionalGotoStatement(node.ContinueLabel, node.Condition);
+            var breakLabel = new BoundLabelStatement(node.BreakLabel);
             var result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
                 gotoCheck,
                 continueLabelStatement,
                 node.Body,
                 checkLabelStatement,
                 gotoTrue,
-                endLabelStatement));
+                breakLabel));
             return RewriteStatement(result);
         }
 
@@ -159,8 +157,10 @@ namespace Lib.CodeAnalysis.Lowering
             //    while(<var> <= <upper>)
             //     {
             //         <body>
+            //         continue:
             //         <var> = <var> + 1
             //     }
+            //     break
             // }
 
             var variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
@@ -172,7 +172,7 @@ namespace Lib.CodeAnalysis.Lowering
                 variableExpression,
                 BoundBinaryOpertor.Bind(SyntaxKind.LessOrEqualsToken, TypeSymbol.Int, TypeSymbol.Int),
                 new BoundVariableExpression(upperBoundSymbol));
-
+      
 
             var increment = new BoundExpressionStatement(
                 new BoundAssignmentExpression(
@@ -184,9 +184,9 @@ namespace Lib.CodeAnalysis.Lowering
                     )
                 )
             );
-
-            var whileBody = new BoundBlockStatement(ImmutableArray.Create(node.Body, increment));
-            var whileStatement = new BoundWhileStatement(condition, whileBody);
+            var continueLabel = new BoundLabelStatement(node.ContinueLabel);
+            var whileBody = new BoundBlockStatement(ImmutableArray.Create(node.Body, continueLabel, increment));
+            var whileStatement = new BoundWhileStatement(condition, whileBody,node.BreakLabel,GenerateLabel());
             var result =
                 new BoundBlockStatement(ImmutableArray.Create<BoundStatement>
                     (variableDeclaration,

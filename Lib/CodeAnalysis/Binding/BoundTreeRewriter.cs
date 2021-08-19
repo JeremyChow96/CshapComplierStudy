@@ -67,7 +67,7 @@ namespace Lib.CodeAnalysis.Binding
                 return node;
             }
 
-            return new BoundForStatement(node.Variable, lower, upper, body);
+            return new BoundForStatement(node.Variable, lower, upper, body,node.BreakLabel,node.ContinueLabel);
         }
 
         protected virtual BoundStatement RewriteWhileStatement(BoundWhileStatement node)
@@ -80,7 +80,7 @@ namespace Lib.CodeAnalysis.Binding
                 return node;
             }
 
-            return new BoundWhileStatement(condition, body);
+            return new BoundWhileStatement(condition, body,node.BreakLabel,node.ContinueLabel);
         }
 
         protected virtual BoundStatement RewriteIfStatement(BoundIfStatement node)

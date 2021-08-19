@@ -51,6 +51,8 @@ namespace complier.CodeAnalysis.Binding
                 TypeSymbol.Bool),
 
 
+
+
             new BoundBinaryOpertor(SyntaxKind.LessToken, BoundBinaryOperatorKind.LessThan, TypeSymbol.Int,
                 TypeSymbol.Bool),
             new BoundBinaryOpertor(SyntaxKind.LessOrEqualsToken, BoundBinaryOperatorKind.LessThanOrEquals,
@@ -70,7 +72,10 @@ namespace complier.CodeAnalysis.Binding
             new BoundBinaryOpertor(SyntaxKind.PipePipeToken, BoundBinaryOperatorKind.LogicalOr, TypeSymbol.Bool),
             new BoundBinaryOpertor(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, TypeSymbol.Bool),
             new BoundBinaryOpertor(SyntaxKind.BangEqualsToken, BoundBinaryOperatorKind.NotEquals, TypeSymbol.Bool),
+
             new BoundBinaryOpertor(SyntaxKind.PlusToken, BoundBinaryOperatorKind.Addition, TypeSymbol.String),
+            new BoundBinaryOpertor(SyntaxKind.EqualsEqualsToken, BoundBinaryOperatorKind.Equals, TypeSymbol.String,TypeSymbol.Bool),
+            new BoundBinaryOpertor(SyntaxKind.BangEqualsToken, BoundBinaryOperatorKind.NotEquals, TypeSymbol.String,TypeSymbol.Bool),
         };
 
 

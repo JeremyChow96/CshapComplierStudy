@@ -64,7 +64,7 @@ namespace Test.CodeAnalysis
         [InlineData("~3", -4)]  
         [InlineData("\"test\"", "test")]  
         [InlineData("\"te\"\"st\"", "te\"st")]  
-
+        [InlineData("\"test\"==\"test\"",true)]
 
 
         [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]
@@ -117,6 +117,9 @@ namespace Test.CodeAnalysis
         }
 
 
+       
+        
+        
         [Fact]
         public void Evaluator_NameExpression_Reports_Undefined()
         {

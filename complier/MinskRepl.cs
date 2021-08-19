@@ -112,7 +112,7 @@ internal sealed class MinskRepl : Repl
         }
         else
         {
-            foreach (var diagnostic in diagnostics)
+            foreach (var diagnostic in diagnostics.OrderBy(diag=>diag.Span,new TextSpanComparer()))
             {
                 var lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
                 var line = syntaxTree.Text.Lines[lineIndex];

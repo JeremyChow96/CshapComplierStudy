@@ -3,6 +3,7 @@ using complier.CodeAnalysis.Syntax;
 
 namespace Lib.CodeAnalysis.Symbols
 {
+
     public sealed class FunctionSymbol : Symbol
     {
         internal FunctionSymbol(string name, ImmutableArray<ParameterSymbol> parameters, TypeSymbol type,
