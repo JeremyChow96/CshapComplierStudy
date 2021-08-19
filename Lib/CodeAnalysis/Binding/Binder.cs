@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using Lib.CodeAnalysis.Lowering;
 using Lib.CodeAnalysis.Symbols;
 using Lib.CodeAnalysis.Syntax;
+using System.Linq;
 
 namespace complier.CodeAnalysis.Binding
 {
@@ -383,21 +384,51 @@ namespace complier.CodeAnalysis.Binding
 
             if (syntax.Arguments.Count != function.Parameters.Length)
             {
-                _diagnostics.ReportWrongArguementCount(syntax.Span,function.Name,function.Parameters.Length,syntax.Arguments.Count);
+                //_diagnostics.ReportWrongArguementCount(syntax.Span,function.Name,function.Parameters.Length,syntax.Arguments.Count);
+
+                TextSpan span;
+                if (syntax.Arguments.Count>function.Parameters.Length)
+                {
+                    SyntaxNode firstExceedingNode;
+                    if (function.Parameters.Length>0)
+                    {
+                        firstExceedingNode = syntax.Arguments.GetSeparator(function.Parameters.Length - 1);
+                    }
+                    else
+                    {
+                        firstExceedingNode = syntax.Arguments[0];
+                    }
+                    var lastExceedingArgument = syntax.Arguments.Last();
+                    span = TextSpan.FromBounds(firstExceedingNode.Span.Start, lastExceedingArgument.Span.End);
+                }
+                else
+                {
+                    span = syntax.CloseParenthesisToken.Span;
+                }
+                _diagnostics.ReportWrongArguementCount(span, function.Name, function.Parameters.Length, syntax.Arguments.Count);
                 return new BoundErrorExpression();
             }
 
+            bool hasErrors = false;
             for (int i = 0; i < syntax.Arguments.Count; i++)
             {
-                var boundArgument = boundArguments[i];
+                var argument = boundArguments[i];
                 var parameter = function.Parameters[i];
 
                 // parameter type check
-                if (boundArgument.Type != parameter.Type)
+                if (argument.Type != parameter.Type)
                 {
-                    _diagnostics.ReportWrongArguementType(syntax.Arguments[i].Span,parameter.Name,parameter.Type,boundArgument.Type);
+                    if (argument.Type!= TypeSymbol.Error)
+                    {
+                        _diagnostics.ReportWrongArguementType(syntax.Arguments[i].Span, parameter.Name, parameter.Type, argument.Type);
+                        hasErrors = true;
+                    }
                     return new BoundErrorExpression();
                 }
+            }
+            if (hasErrors)
+            {
+                return new BoundErrorExpression();
             }
             
             // _diagnostics.ReportBadCharater(syntax.Identifier.Span.Start,'X');
