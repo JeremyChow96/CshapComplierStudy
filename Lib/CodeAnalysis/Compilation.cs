@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using Lib.CodeAnalysis.Lowering;
 using Lib.CodeAnalysis.Symbols;
+using System;
 
 namespace complier.CodeAnalysis
 {
@@ -58,6 +59,25 @@ namespace complier.CodeAnalysis
             }
 
             var program = Binder.BindProgram(GlobalScope);
+
+
+            var appPath = Environment.GetCommandLineArgs()[0];
+            var appDirectory = Path.GetDirectoryName(appPath);
+            var cfgPath = Path.Combine(appDirectory, "cfg.dot");
+
+            var cfgStatements = !program.Statement.Statements.Any() && program.Functions.Any()
+                    ? program.Functions.Last().Value
+                    : program.Statement;
+
+            var cfg = ControlFlowGraph.Create(cfgStatements);
+            using (var streamWriter  = new StreamWriter(cfgPath))
+            {
+                cfg.WriteTo(streamWriter);
+            }
+
+
+
+
             if (program.Diagnostics.Any())
             {
                 return new EvaluationResult(program.Diagnostics.ToImmutableArray(), null);
@@ -80,7 +100,7 @@ namespace complier.CodeAnalysis
             }
             else
             {
-                foreach (var functionBody in program.FunctionBodies)
+                foreach (var functionBody in program.Functions)
                 {
                     if (!GlobalScope.Functions.Contains(functionBody.Key))
                     {

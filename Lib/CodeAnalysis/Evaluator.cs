@@ -252,7 +252,7 @@ namespace complier.CodeAnalysis
 
                 _locals.Push(locals);
 
-                var statement = _program.FunctionBodies[node.Function];
+                var statement = _program.Functions[node.Function];
 
                 var result = EvaluateStatement(statement);
                 _locals.Pop();
