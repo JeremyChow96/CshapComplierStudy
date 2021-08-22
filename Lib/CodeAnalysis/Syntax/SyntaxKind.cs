@@ -47,6 +47,8 @@
         ForKeyword,
         ToKeyword,
         FunctionKeyword,
+        ReturnKeyword,
+
 
         //Expressions
         LiteralExpression,
@@ -77,6 +79,7 @@
         BreakKeyword,
         ContinueStatement,
         BreakStatement,
+        ReturnStatement,
     }
 
 }

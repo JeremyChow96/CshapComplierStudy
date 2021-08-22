@@ -1,5 +1,6 @@
 ﻿namespace complier.CodeAnalysis.Binding
 {
+
     internal  sealed  class  BoundLabelStatement: BoundStatement
     {
         public BoundLabel Label { get; }

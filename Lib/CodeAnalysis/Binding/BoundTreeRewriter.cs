@@ -26,6 +26,8 @@ namespace Lib.CodeAnalysis.Binding
                     return RewriteGotoStatement((BoundGotoStatement) node);
                 case BoundNodeKind.LabelStatement:
                     return RewriteLabelStatement((BoundLabelStatement) node);
+                case BoundNodeKind.ReturnStatement:
+                    return RewriteReturnStatement((BoundReturnStatement)node);
                 case BoundNodeKind.ConditionalGotoStatement:
                     return RewriteConditionalGotoStatement((BoundConditionalGotoStatement) node);
                 default:
@@ -33,6 +35,15 @@ namespace Lib.CodeAnalysis.Binding
             }
         }
 
+        protected virtual BoundStatement RewriteReturnStatement(BoundReturnStatement node)
+        {
+            var expression = node.Expression == null ? null : RewriteExpression(node.Expression);
+            if (node.Expression == expression)
+            {
+                return node;
+            }
+            return new BoundReturnStatement(expression);
+        }
 
         protected virtual BoundStatement RewriteConditionalGotoStatement(BoundConditionalGotoStatement node)
         {

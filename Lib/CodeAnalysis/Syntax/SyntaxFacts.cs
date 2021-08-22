@@ -73,6 +73,7 @@ namespace complier.CodeAnalysis.Syntax
                 "function" => SyntaxKind.FunctionKeyword,
                 "break" => SyntaxKind.BreakKeyword,
                 "continue" => SyntaxKind.ContinueKeyword,
+                "return" => SyntaxKind.ReturnKeyword,
                 _ => SyntaxKind.IdentifierToken,
             };
         }
@@ -177,6 +178,8 @@ namespace complier.CodeAnalysis.Syntax
                     return "break";
                 case SyntaxKind.ContinueKeyword:
                     return "continue";
+                case SyntaxKind.ReturnKeyword:
+                    return "return";
                 default:
                     return null;
             }
