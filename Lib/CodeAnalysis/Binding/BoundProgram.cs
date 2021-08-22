@@ -6,13 +6,13 @@ namespace complier.CodeAnalysis.Binding
     internal sealed class BoundProgram
     {
         public ImmutableArray<Diagnostic> Diagnostics { get; }
-        public ImmutableDictionary<FunctionSymbol, BoundBlockStatement> FunctionBodies { get; }
+        public ImmutableDictionary<FunctionSymbol, BoundBlockStatement> Functions { get; }
         public BoundBlockStatement Statement { get; }
 
-        public BoundProgram(ImmutableArray<Diagnostic> diagnostics, ImmutableDictionary<FunctionSymbol,BoundBlockStatement> functionBodies, BoundBlockStatement statement)
+        public BoundProgram(ImmutableArray<Diagnostic> diagnostics, ImmutableDictionary<FunctionSymbol,BoundBlockStatement> functions, BoundBlockStatement statement)
         {
             Diagnostics = diagnostics;
-            FunctionBodies = functionBodies;
+            Functions = functions;
             Statement = statement;
         }
     }

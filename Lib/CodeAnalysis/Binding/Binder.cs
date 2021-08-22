@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace complier.CodeAnalysis.Binding
 {
+
     internal sealed class Binder
     {
         private readonly FunctionSymbol _function;
@@ -86,7 +87,15 @@ namespace complier.CodeAnalysis.Binding
                     var binder = new Binder(parentScope, function);
                     var body = binder.BindStatement(function.Declaration.Body);
                     var loweredBody = Lowerer.Lower(body);
+
+                    if (function.Type != TypeSymbol.Void&&!ControlFlowGraph.AllPathReturn(loweredBody))
+                    {
+                        binder._diagnostics.ReportAllPathMustReturn(function.Declaration.Identifier.Span);
+                    }
+
                     functionBodies.Add(function,loweredBody);
+
+
 
                     diagnostics.AddRange(binder.Diagnostics);
                 }
@@ -122,10 +131,10 @@ namespace complier.CodeAnalysis.Binding
 
             // for function result type
             var type = BindTypeClause(syntax.Type) ?? TypeSymbol.Void;
-            if (type !=TypeSymbol.Void)
-            {
-                _diagnostics.XXX_ReportFunctionAreUnsupported(syntax.Type.Span);
-            }
+            //if (type !=TypeSymbol.Void)
+            //{
+            //    _diagnostics.XXX_ReportFunctionAreUnsupported(syntax.Type.Span);
+            //}
 
             var function = new FunctionSymbol(syntax.Identifier.Text, parameters.ToImmutable(), type,syntax);
             if ( !_scope.TryDeclareFunction(function))
@@ -203,9 +212,49 @@ namespace complier.CodeAnalysis.Binding
                     return BindBreakStatement((BreakStatementSyntax)syntax);
                 case SyntaxKind.ContinueStatement:
                     return BindContinueStatement((ContinueStatementSyntax)syntax);
+                case SyntaxKind.ReturnStatement:
+                    return BindReturnStatement((ReturnStatmentSyntax)syntax);
                 default:
                     throw new Exception($"Unexpected syntax {syntax.Kind}");
             }
+        }
+
+        private BoundStatement BindReturnStatement(ReturnStatmentSyntax syntax)
+        {
+        
+
+
+            var expression = syntax.Expression == null ? null : BindExpression(syntax.Expression);
+            //Does the function have a return type?
+            //Does the return type match?
+            if (_function == null)
+            {
+                _diagnostics.ReportInvalidReturn(syntax.ReturnKeyword.Span);
+            }
+            else
+            {
+                if (_function.Type == TypeSymbol.Void)
+                {
+                    if (expression != null)
+                    {
+                        _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Span,_function.Name);
+                    }
+
+                }
+                else
+                {
+                    if (expression == null)
+                    {
+                        _diagnostics.ReportMissingReturnExpression(syntax.ReturnKeyword.Span,_function.Type);
+                    }
+                    expression = BindConversion(syntax.Expression.Span, expression, _function.Type);
+
+                }
+            }
+           
+
+
+            return new BoundReturnStatement(expression);
         }
 
         private BoundStatement BindContinueStatement(ContinueStatementSyntax syntax)

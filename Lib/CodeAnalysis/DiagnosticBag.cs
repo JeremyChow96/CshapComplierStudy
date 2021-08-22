@@ -106,6 +106,7 @@ namespace complier.CodeAnalysis
             Report(span, message);
         }
 
+       
 
         public void ReportUndefinedFunction(TextSpan span, string name)
         {
@@ -132,15 +133,38 @@ namespace complier.CodeAnalysis
         }
 
 
-        public void XXX_ReportFunctionAreUnsupported(TextSpan span)
+        //public void XXX_ReportFunctionAreUnsupported(TextSpan span)
+        //{
+        //    var message = $"Functions with return values are unsupported.";
+        //    Report(span, message);
+        //}
+
+        public void ReportInvalidBreakOrContinue(TextSpan span, string text)
         {
-            var message = $"Functions with return values are unsupported.";
+            var message = $"the keyword '{text}' can only be used inside of loops.";
             Report(span, message);
         }
 
-        internal void ReportInvalidBreakOrContinue(TextSpan span, string text)
+        public void ReportAllPathMustReturn(TextSpan span)
         {
-            var message = $"the keyword '{text}' can only be used inside of loops.";
+            var message = "Not all code paths return a value";
+            Report(span, message);
+        }
+        public void ReportInvalidReturn(TextSpan span)
+        {
+            var message = "The 'return' keyword can only be used inside of functions.";
+            Report(span, message);
+        }
+
+        public void ReportInvalidReturnExpression(TextSpan span,string functionName)
+        {
+            var message = $"Since the function '{functionName}' does not return a value. the 'return' cannot be followed by a expresion";
+            Report(span, message);
+        }
+
+        public void ReportMissingReturnExpression(TextSpan span,TypeSymbol returnType)
+        {
+            var message = $"An expression of type '{returnType}' expected.";
             Report(span, message);
         }
     }

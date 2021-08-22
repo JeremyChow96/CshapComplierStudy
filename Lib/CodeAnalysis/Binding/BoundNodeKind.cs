@@ -21,6 +21,6 @@
         GotoStatement,
         LabelStatement,
         ConditionalGotoStatement,
-  
+        ReturnStatement,
     }
 }

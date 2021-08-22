@@ -79,6 +79,10 @@ namespace complier.CodeAnalysis
                     case BoundNodeKind.LabelStatement:
                         index++;
                         break;
+                    case BoundNodeKind.ReturnStatement:
+                        var rs = (BoundReturnStatement)s;
+                        _lastValue= rs.Expression == null ? null : EvaluateExpression(rs.Expression);
+                        return _lastValue;
                     default:
                         throw new Exception($"Unexpected node {s.Kind}");
                 }
@@ -248,7 +252,7 @@ namespace complier.CodeAnalysis
 
                 _locals.Push(locals);
 
-                var statement = _program.FunctionBodies[node.Function];
+                var statement = _program.Functions[node.Function];
 
                 var result = EvaluateStatement(statement);
                 _locals.Pop();
