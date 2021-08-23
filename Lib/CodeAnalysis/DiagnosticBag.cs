@@ -65,11 +65,17 @@ namespace complier.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportUndefinedName(TextSpan span, string name)
+        public void ReportUndefinedVariable(TextSpan span, string name)
         {
             var message = $"Variable '{name}' doesn't exist.";
             Report(span, message);
 
+        }
+
+        public void ReportNotAVariable(TextSpan span, string name)
+        {
+            var message = $"'{name}' is not a variable.";
+            Report(span, message);
         }
 
         public void ReportUndefinedType(TextSpan span, string name)
@@ -77,6 +83,13 @@ namespace complier.CodeAnalysis
             var message = $"Type '{name}' doesn't exist.";
             Report(span, message);
         }
+
+        public void ReportNotAFunction(TextSpan span, string name)
+        {
+            var message = $"'{name}' is not a function.";
+            Report(span, message);
+        }
+
         public void ReportSymbolAlreadyDeclared(TextSpan span, string name)
         {
             var message = $"'{name}' is already declared.";
@@ -84,7 +97,7 @@ namespace complier.CodeAnalysis
         }
         public void ReportParameterAlreadyDeclared(TextSpan span, string parameterName)
         {
-            var message = $"a parameter with the name  '{parameterName}' already exists.";
+            var message = $"A parameter with the name '{parameterName}' already exists.";
             Report(span, message);
         }
         
@@ -128,7 +141,7 @@ namespace complier.CodeAnalysis
 
         public void ReportExpressionMustHaveValue(TextSpan span)
         {
-            var message = $"Expression must have a value";
+            var message = $"Expression must have a value.";
             Report(span, message);
         }
 
@@ -141,14 +154,14 @@ namespace complier.CodeAnalysis
 
         public void ReportInvalidBreakOrContinue(TextSpan span, string text)
         {
-            var message = $"the keyword '{text}' can only be used inside of loops.";
+            var message = $"The keyword '{text}' can only be used inside of loops.";
             Report(span, message);
         }
 
 
         public void ReportAllPathMustReturn(TextSpan span)
         {
-            var message = "Not all code paths return a value";
+            var message = "Not all code paths return a value.";
             Report(span, message);
         }
         
@@ -162,13 +175,13 @@ namespace complier.CodeAnalysis
 
         public void ReportInvalidReturnExpression(TextSpan span,string functionName)
         {
-            var message = $"Since the function '{functionName}' does not return a value. the 'return' cannot be followed by a expresion";
+            var message = $"Since the function '{functionName}' does not return a value. the 'return' keyword cannot be followed by an expression.";
             Report(span, message);
         }
 
         public void ReportMissingReturnExpression(TextSpan span,TypeSymbol returnType)
         {
-            var message = $"An expression of type '{returnType}' expected.";
+            var message = $"An expression of type '{returnType}' is expected.";
             Report(span, message);
         }
     }
