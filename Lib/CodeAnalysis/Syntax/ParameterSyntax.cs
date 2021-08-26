@@ -4,7 +4,8 @@ namespace complier.CodeAnalysis.Syntax
 {
     public sealed class ParameterSyntax : SyntaxNode
     {
-        public ParameterSyntax(SyntaxToken identifier, TypeClauseSyntax type)
+        public ParameterSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, TypeClauseSyntax type)
+             : base(syntaxTree)
         {
             Identifier = identifier;
             Type = type;

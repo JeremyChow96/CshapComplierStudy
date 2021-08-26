@@ -1,19 +1,19 @@
-﻿namespace complier
-{
-}
+﻿
 
-internal class Program
+namespace complier
 {
-    // 1 + 2 * 3 
-
-    private static void Main(string[] args)
+    internal static class Program
     {
-        var repl = new MinskRepl();
-        repl.Run();
+        // 1 + 2 * 3 
 
+        private static void Main(string[] args)
+        {
+            var repl = new MinskRepl();
+            repl.Run();
+
+        }
     }
-
-
-
 }
+
+
 

@@ -5,7 +5,8 @@ namespace complier.CodeAnalysis.Syntax
 {
     public sealed class AssignmentExpressionSyntax : ExpressionSyntax
     {
-        public AssignmentExpressionSyntax(SyntaxToken identifier, SyntaxToken equalToken, ExpressionSyntax expression)
+        public AssignmentExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, SyntaxToken equalToken, ExpressionSyntax expression)
+            :base(syntaxTree)
         {
             Identifier = identifier;
             EqualToken = equalToken;

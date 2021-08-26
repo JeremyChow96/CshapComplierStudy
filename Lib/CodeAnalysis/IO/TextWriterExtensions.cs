@@ -1,4 +1,5 @@
-﻿using complier.CodeAnalysis.Syntax;
+﻿using complier.CodeAnalysis;
+using complier.CodeAnalysis.Syntax;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace Lib.CodeAnalysis.IO
 {
-    internal static class TextWriterExtensions
+    public static class TextWriterExtensions
     {
 
-        public static bool IsConsoleOut(this TextWriter writer)
+        private static bool IsConsoleOut(this TextWriter writer)
         {
             if (writer == Console.Out)
             {
@@ -26,7 +27,7 @@ namespace Lib.CodeAnalysis.IO
         }
 
 
-        public static void SetForeground(this TextWriter writer,ConsoleColor color)
+        private static void SetForeground(this TextWriter writer,ConsoleColor color)
         {
             if (writer.IsConsoleOut())
             {
@@ -34,7 +35,7 @@ namespace Lib.CodeAnalysis.IO
             }
         }
 
-        public static void ResetColor(this TextWriter writer)
+        private static void ResetColor(this TextWriter writer)
         {
             if (writer.IsConsoleOut())
             {
@@ -89,8 +90,52 @@ namespace Lib.CodeAnalysis.IO
             writer.ResetColor();
         }
 
+        public  static void WriteDiagnostics(this TextWriter writer, IEnumerable<Diagnostic> diagnostics,SyntaxTree syntaxTree)
+
+        {
+            foreach (var diagnostic in diagnostics
+                .OrderBy(c=>c.Location.FileName)
+                .ThenBy(c=>c.Location.Span.Start)
+                .ThenBy(c=>c.Location.Span.Length))
+            {
+                var fileName = diagnostic.Location.FileName;
+                var startLine = diagnostic.Location.StartLine + 1;
+                var startCharacter = diagnostic.Location.StartCharacter + 1;
+                var endLine = diagnostic.Location.EndLine + 1;
+                var endCharacter = diagnostic.Location.EndCharacter + 1;
+
+                var span = diagnostic.Location.Span;
+                var lineIndex = syntaxTree.Text.GetLineIndex(span.Start);
+                var line = syntaxTree.Text.Lines[lineIndex];
+  
+  
 
 
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                Console.Write($"{fileName}({startLine},{startCharacter},{endLine},{endCharacter}):  ");
+                Console.WriteLine(diagnostic);
+                Console.ResetColor();
+
+                var prefixSpan = TextSpan.FromBounds(line.Start, span.Start);
+                var suffixSpan = TextSpan.FromBounds(span.End, line.End);
+
+                var prefix = syntaxTree.Text.ToString(prefixSpan);
+                var error = syntaxTree.Text.ToString(span);
+                var suffix = syntaxTree.Text.ToString(suffixSpan);
+
+                Console.Write("    ");
+                Console.Write(prefix);
+
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write(error);
+                Console.ResetColor();
+                Console.Write(suffix);
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
 
 
     }

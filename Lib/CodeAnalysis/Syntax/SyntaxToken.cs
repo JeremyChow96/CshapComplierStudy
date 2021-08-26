@@ -4,10 +4,11 @@ using complier.CodeAnalysis.Syntax;
 
 namespace Lib.CodeAnalysis.Syntax
 {
-    [DebuggerDisplay(" {Kind} - {Text} : {Value} ")]
+   // [DebuggerDisplay(" {Kind} - {Text} : {Value} ")]
    public sealed  class SyntaxToken : SyntaxNode
     {
-        public SyntaxToken(SyntaxKind kind, int position, string text, object value)
+        public SyntaxToken(SyntaxTree syntaxTree, SyntaxKind kind, int position, string text, object value)
+            : base(syntaxTree)
         {
             Kind = kind;
             Position = position;

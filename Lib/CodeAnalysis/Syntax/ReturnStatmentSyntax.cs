@@ -4,7 +4,7 @@ namespace complier.CodeAnalysis.Syntax
 {
     public sealed class ReturnStatmentSyntax : StatementSyntax
     {
-        public ReturnStatmentSyntax(SyntaxToken returnKeyword, ExpressionSyntax expression)
+        public ReturnStatmentSyntax(SyntaxTree syntaxTree, SyntaxToken returnKeyword, ExpressionSyntax expression) : base(syntaxTree)
         {
             ReturnKeyword = returnKeyword;
             Expression = expression;

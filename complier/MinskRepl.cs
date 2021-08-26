@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Lib.CodeAnalysis.Symbols;
+using Lib.CodeAnalysis.IO;
 
 internal sealed class MinskRepl : Repl
 {
@@ -112,38 +113,8 @@ internal sealed class MinskRepl : Repl
         }
         else
         {
-            foreach (var diagnostic in diagnostics.OrderBy(diag=>diag.Span,new TextSpanComparer()))
-            {
-                var lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
-                var line = syntaxTree.Text.Lines[lineIndex];
-                var lineNumber = lineIndex + 1;
-                var charater = diagnostic.Span.Start - line.Start + 1;
-
-
-                Console.WriteLine();
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.Write($"({lineNumber}, {charater}) :  ");
-                Console.WriteLine(diagnostic);
-                Console.ResetColor();
-
-                var prefixSpan = TextSpan.FromBounds(line.Start, diagnostic.Span.Start);
-                var suffixSpan = TextSpan.FromBounds(diagnostic.Span.End, line.End);
-
-                var prefix = syntaxTree.Text.ToString(prefixSpan);
-                var error = syntaxTree.Text.ToString(diagnostic.Span.Start, diagnostic.Span.Length);
-                var suffix = syntaxTree.Text.ToString(suffixSpan);
-
-                Console.Write("    ");
-                Console.Write(prefix);
-
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.Write(error);
-                Console.ResetColor();
-                Console.Write(suffix);
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
+            Console.Error.WriteDiagnostics(result.Diagnostics,syntaxTree);
+  
         }
     }
 

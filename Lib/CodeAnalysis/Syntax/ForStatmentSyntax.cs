@@ -5,7 +5,15 @@ namespace complier.CodeAnalysis.Syntax
 
     public sealed class ForStatmentSyntax : StatementSyntax
     {
-        public ForStatmentSyntax(SyntaxToken forKeyword, SyntaxToken identifier, SyntaxToken equalsToken, ExpressionSyntax lowerBound, SyntaxToken toKeyword, ExpressionSyntax upperBound, StatementSyntax body)
+        public ForStatmentSyntax(SyntaxTree syntaxTree,
+                                 SyntaxToken forKeyword,
+                                 SyntaxToken identifier,
+                                 SyntaxToken equalsToken,
+                                 ExpressionSyntax lowerBound,
+                                 SyntaxToken toKeyword,
+                                 ExpressionSyntax upperBound,
+                                 StatementSyntax body)
+            : base(syntaxTree)
         {
             ForKeyword = forKeyword;
             Identifier = identifier;

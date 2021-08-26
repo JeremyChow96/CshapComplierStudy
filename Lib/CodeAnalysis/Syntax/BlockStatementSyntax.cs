@@ -10,8 +10,10 @@ namespace complier.CodeAnalysis.Syntax
         public ImmutableArray<StatementSyntax> Statements { get; }
         public SyntaxToken CloseToken { get; }
 
-        public BlockStatementSyntax(SyntaxToken openBraceToken, ImmutableArray<StatementSyntax> statements,
-            SyntaxToken closeToken)
+        public BlockStatementSyntax(SyntaxTree syntaxTree,
+                                    SyntaxToken openBraceToken,
+                                    ImmutableArray<StatementSyntax> statements,
+                                    SyntaxToken closeToken) : base(syntaxTree)
         {
             OpenBraceToken = openBraceToken;
             Statements = statements;

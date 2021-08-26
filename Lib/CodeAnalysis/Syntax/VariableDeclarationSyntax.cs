@@ -8,11 +8,11 @@ namespace complier.CodeAnalysis.Syntax
 
 
         // var  x =10 or let  x = 10
-        public VariableDeclarationSyntax(SyntaxToken keyword,
+        public VariableDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken keyword,
             SyntaxToken identifier,
             TypeClauseSyntax typeClause,
             SyntaxToken equalsToken,
-            ExpressionSyntax initializer)
+            ExpressionSyntax initializer) : base(syntaxTree)
         {
             Keyword = keyword;
             Identifier = identifier;

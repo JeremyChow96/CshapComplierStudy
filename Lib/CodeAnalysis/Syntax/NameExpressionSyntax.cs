@@ -5,7 +5,7 @@ namespace complier.CodeAnalysis.Syntax
 {
     public sealed class NameExpressionSyntax : ExpressionSyntax
     {
-        public NameExpressionSyntax(SyntaxToken identifierToken)
+        public NameExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken) : base(syntaxTree)
         {
             IdentifierToken = identifierToken;
         }

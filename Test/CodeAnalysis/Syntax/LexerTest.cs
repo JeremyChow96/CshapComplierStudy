@@ -24,7 +24,7 @@ namespace Test.CodeAnalysis.Syntax
             Assert.Equal(Text, token.Text);
 
             var diagnostic = Assert.Single(diagnostics);
-            Assert.Equal(new TextSpan(0, 1), diagnostic.Span);
+            Assert.Equal(new TextSpan(0, 1), diagnostic.Location.Span);
             Assert.Equal("Unterminated string literal.", diagnostic.Message);
 
         }
