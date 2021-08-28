@@ -6,7 +6,7 @@ namespace complier.CodeAnalysis.Syntax
     {
    
 
-        public BreakStatementSyntax(SyntaxToken keyword)
+        public BreakStatementSyntax(SyntaxTree syntaxTree, SyntaxToken keyword) : base(syntaxTree)
         {
             Keyword = keyword;
         }

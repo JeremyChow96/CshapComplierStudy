@@ -1,6 +1,7 @@
 ﻿using complier.CodeAnalysis.Syntax;
 using Lib.CodeAnalysis.Symbols;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -56,10 +57,11 @@ namespace complier.CodeAnalysis.Binding
                 }
 
                 using (var writer = new StringWriter())
+                using (var indentedWriter = new IndentedTextWriter(writer))
                 {
                     foreach (var statement in Statements)
                     {
-                        statement.WriteTo(writer);
+                        statement.WriteTo(indentedWriter);
                     }
                     return writer.ToString();
                 }
@@ -304,7 +306,7 @@ namespace complier.CodeAnalysis.Binding
         {
             string Quote(string text)
             {
-                return "\"" + text.Replace("\"", "\\\"") + "\"";
+                return "\"" + text.TrimEnd().Replace("\\", "\\\\").Replace("\"", "\\\"").Replace(Environment.NewLine, "\\l") + "\"";
             }
 
          
@@ -321,8 +323,8 @@ namespace complier.CodeAnalysis.Binding
             foreach (var block in Blocks)
             {
                 var id = blcokIds[block];
-                var label = Quote(block.ToString().Replace(Environment.NewLine,"\\l"));
-                writer.WriteLine($"    {id} [label = {label}  shape = box]");
+                var label = Quote(block.ToString());
+                writer.WriteLine($"    {id} [label = {label} ,  shape = box]");
             }
 
 
@@ -347,15 +349,15 @@ namespace complier.CodeAnalysis.Binding
             return graphBuilder.Build(blocks);
         }
 
-        public static bool AllPathReturn(BoundBlockStatement body)
+        public static bool AllPathsReturn(BoundBlockStatement body)
         {
             var graph = Create(body);
 
             foreach (var branch in graph.End.Incoming)
             {
-                var lastStatement = branch.From.Statements.Last();
+                var lastStatement = branch.From.Statements.LastOrDefault();
 
-                    if (lastStatement.Kind !=BoundNodeKind.ReturnStatement)
+                    if (lastStatement ==null ||lastStatement.Kind !=BoundNodeKind.ReturnStatement)
                     {
                         return false;
                     }

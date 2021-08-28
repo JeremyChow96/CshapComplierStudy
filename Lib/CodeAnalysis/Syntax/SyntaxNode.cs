@@ -9,6 +9,10 @@ namespace complier.CodeAnalysis.Syntax
 {
     public abstract class SyntaxNode
     {
+        protected SyntaxNode(SyntaxTree syntaxTree)
+        {
+            SyntaxTree = syntaxTree;
+        }
         public abstract SyntaxKind Kind { get; }
         //public abstract IEnumerable<SyntaxNode> GetChildren();
         public virtual TextSpan Span
@@ -21,6 +25,8 @@ namespace complier.CodeAnalysis.Syntax
             }
         }
 
+        public SyntaxTree SyntaxTree { get; }
+
         public  SyntaxToken GetLastToken()
         {
             if (this is SyntaxToken token)
@@ -30,6 +36,8 @@ namespace complier.CodeAnalysis.Syntax
 
             return GetChildren().Last().GetLastToken();
         }
+
+        public TextLocation Location => new TextLocation(SyntaxTree.Text, Span);
 
         public IEnumerable<SyntaxNode> GetChildren()
         {
