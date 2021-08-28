@@ -11,9 +11,9 @@ namespace complier
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
-
+ 
             if (args.Length ==0)
             {
                 Console.Error.WriteLine("usage : mc <source-paths>");
@@ -21,38 +21,43 @@ namespace complier
 
             var paths =  GetFilePaths(args);
             var syntaxTrees = new List<SyntaxTree>();
-
+            var hasErrors = false;
 
             foreach (var path in paths)
             {
                 if (!File.Exists(path))
                 {
-                    Console.WriteLine($"error: file '{path}' doesn't exists.");
-                    return;
+                    Console.Error.WriteLine($"error: file '{path}' doesn't exists.");
+                    hasErrors = true;
+                    continue;
                 }
                 var syntaxTree = SyntaxTree.Load(path);
                 syntaxTrees.Add(syntaxTree);
 
             }
 
-
+            if (hasErrors)
+            {
+                return 1;
+            }
 
 
             var compilation = new Compilation(syntaxTrees.ToArray());
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
-            if (result.Diagnostics.Any())
+            if (!result.Diagnostics.Any())
             {
-                Console.Error.WriteDiagnostics(result.Diagnostics);
-            }
-            else
-            {
-                if (result.Value!=null)
+                if (result.Value != null)
                 {
                     Console.WriteLine(result.Value);
                 }
             }
-
+            else
+            {
+                Console.Error.WriteDiagnostics(result.Diagnostics);
+                return 1;
+            }
+            return 0;
           
 
 
