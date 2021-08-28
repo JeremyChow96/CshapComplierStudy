@@ -15,20 +15,20 @@ namespace complier.CodeAnalysis
     {
         private BoundGlobalScope _globalScope;
 
-        public Compilation(SyntaxTree syntax) :
-            this(null, syntax)
+        public Compilation(params SyntaxTree[] syntaxTree) :
+            this(null, syntaxTree)
         {
    
         }
 
-        private Compilation(Compilation previous, SyntaxTree syntax)
+        private Compilation(Compilation previous, params SyntaxTree[] syntaxTrees)
         {
             Previous = previous;
-            SyntaxTree = syntax;
+            SyntaxTrees = syntaxTrees.ToImmutableArray();
         }
 
         public Compilation Previous { get; }
-        public SyntaxTree SyntaxTree { get; }
+        public ImmutableArray<SyntaxTree> SyntaxTrees { get; }
 
         internal BoundGlobalScope GlobalScope
         {
@@ -36,7 +36,7 @@ namespace complier.CodeAnalysis
             {
                 if (_globalScope == null)
                 {
-                    var globalScope = Binder.BindGlobalScope(Previous?.GlobalScope,SyntaxTree.Root);
+                    var globalScope = Binder.BindGlobalScope(Previous?.GlobalScope,SyntaxTrees);
                     Interlocked.CompareExchange(ref _globalScope, globalScope, null);
                 }
 
@@ -52,7 +52,9 @@ namespace complier.CodeAnalysis
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
-            var diagnostics = SyntaxTree.Diagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
+            var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
+
+            var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
             if (diagnostics.Any())
             {
                 return new EvaluationResult(diagnostics, null);

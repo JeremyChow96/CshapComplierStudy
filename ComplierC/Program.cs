@@ -11,48 +11,75 @@ namespace complier
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
-
+ 
             if (args.Length ==0)
             {
                 Console.Error.WriteLine("usage : mc <source-paths>");
             }
 
-            if (args.Length > 1)
+            var paths =  GetFilePaths(args);
+            var syntaxTrees = new List<SyntaxTree>();
+            var hasErrors = false;
+
+            foreach (var path in paths)
             {
-                Console.WriteLine("error: only one path supported right now.");
-                return;
+                if (!File.Exists(path))
+                {
+                    Console.Error.WriteLine($"error: file '{path}' doesn't exists.");
+                    hasErrors = true;
+                    continue;
+                }
+                var syntaxTree = SyntaxTree.Load(path);
+                syntaxTrees.Add(syntaxTree);
+
             }
 
-            var path = args.Single();
-
-            if (!File.Exists(path))
+            if (hasErrors)
             {
-                Console.WriteLine($"error: file '{path}' doesn't exists.");
-                return;
+                return 1;
             }
 
-            var syntaxTree = SyntaxTree.Load(path);
 
-            var compilation = new Compilation(syntaxTree);
+            var compilation = new Compilation(syntaxTrees.ToArray());
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
-            if (result.Diagnostics.Any())
+            if (!result.Diagnostics.Any())
             {
-                Console.Error.WriteDiagnostics(result.Diagnostics, syntaxTree);
-            }
-            else
-            {
-                if (result.Value!=null)
+                if (result.Value != null)
                 {
                     Console.WriteLine(result.Value);
                 }
             }
-
+            else
+            {
+                Console.Error.WriteDiagnostics(result.Diagnostics);
+                return 1;
+            }
+            return 0;
           
 
 
+        }
+
+        private static IEnumerable<string> GetFilePaths(IEnumerable<string> paths)
+        {
+            var result = new SortedSet<string>();
+
+            foreach (var path in paths)
+            {
+             
+                if (Directory.Exists(path))
+                {
+                    result.UnionWith(Directory.EnumerateFiles(path, "*.ms", SearchOption.AllDirectories));
+                }
+                else
+                {
+                    result.Add(path);
+                }
+            }
+            return result;
         }
     }
 }

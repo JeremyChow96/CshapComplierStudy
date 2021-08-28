@@ -113,7 +113,7 @@ internal sealed class MinskRepl : Repl
         }
         else
         {
-            Console.Error.WriteDiagnostics(result.Diagnostics,syntaxTree);
+            Console.Error.WriteDiagnostics(result.Diagnostics);
   
         }
     }
