@@ -50,33 +50,30 @@ internal sealed class MinskRepl : Repl
         }
     }
 
-    protected override void EvaluateMetaCommand(string input)
+    [MetaCommand("showTree","showing parse tree")]
+    private void EvaluateShowTree()
     {
-        switch (input)
-        {
-            case "#showTree":
-                _showTree = !_showTree;
-                Console.WriteLine(_showTree ? "Showing parse tree" : "Not showing parse tree");
+        _showTree = !_showTree;
+        Console.WriteLine(_showTree ? "Showing parse tree" : "Not showing parse tree");
+    }
 
-                break;
-            case "#showProgram":
-                _showProgram = !_showProgram;
-                Console.WriteLine(_showProgram ? "Showing bound tree" : "Not showing bound tree");
+    [MetaCommand("showProgram", "Showing bound tree")]
+    private void EvaluateShowProgram()
+    {
+        _showProgram = !_showProgram;
+        Console.WriteLine(_showProgram ? "Showing bound tree" : "Not showing bound tree");
+    }
+    [MetaCommand("cls", "Clears the screen")]
+    private void EvaluateCls()
+    {
+        Console.Clear();
+    }
+    [MetaCommand("reset", "Clear all previous submissions")]
+    private void EvaluateReset()
+    {
+        _previous = null;
+        _variables.Clear();
 
-                break;
-            case "#cls":
-                Console.Clear();
-
-                break;
-            case "#reset":
-                _previous = null;
-                _variables.Clear();
-                ClearHistory();
-                break;
-            default:
-                base.EvaluateMetaCommand(input);
-                break;
-        }
     }
 
     protected override void EvaluateSubmission(string text)
