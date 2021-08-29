@@ -8,7 +8,7 @@ namespace complier.CodeAnalysis.Binding
         public BoundGlobalScope Previous { get; }
         public ImmutableArray<Diagnostic> Diagnostics { get; }
         public ImmutableArray<FunctionSymbol> Functions { get; }
-        public ImmutableArray<VariableSymbol> Variable { get; }
+        public ImmutableArray<VariableSymbol> Variables { get; }
         public ImmutableArray<BoundStatement> Statement { get; }
 
 
@@ -21,7 +21,7 @@ namespace complier.CodeAnalysis.Binding
             Previous = previous;
             Diagnostics = diagnostics;
             Functions = functions;
-            Variable = variable;
+            Variables = variable;
             Statement = statement;
         }
         
