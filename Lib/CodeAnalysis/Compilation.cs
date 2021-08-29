@@ -29,6 +29,9 @@ namespace complier.CodeAnalysis
 
         public Compilation Previous { get; }
         public ImmutableArray<SyntaxTree> SyntaxTrees { get; }
+        public ImmutableArray<FunctionSymbol> Functions => GlobalScope.Functions;
+        public ImmutableArray<VariableSymbol> Variables => GlobalScope.Variables;
+
 
         internal BoundGlobalScope GlobalScope
         {
@@ -43,6 +46,31 @@ namespace complier.CodeAnalysis
                 return _globalScope;
             }
         }
+
+        public IEnumerable<Symbol> GetSymbols()
+        {
+            var submission = this;
+            var seenSymbolNames = new HashSet<string>();
+            while (submission != null)
+            {
+                foreach (var function in submission.Functions)
+                {
+                    if (seenSymbolNames.Add(function.Name))
+                    {
+                        yield return function;
+                    }
+                }
+                foreach (var varaible in submission.Variables)
+                {
+                    if (seenSymbolNames.Add(varaible.Name))
+                    {
+                        yield return varaible;
+                    }
+                }
+                submission = submission.Previous;
+            }
+        }
+
 
         public Compilation ContinueWith(SyntaxTree syntaxTree)
         {
@@ -109,10 +137,23 @@ namespace complier.CodeAnalysis
                         continue;
                     }
                     functionBody.Key.WriteTo(writer);
+                    writer.WriteLine();
                     functionBody.Value.WriteTo(writer);
                 }
             }
        
+        }
+
+        public void EmitTree(FunctionSymbol symbol, TextWriter writer)
+        {
+            var programn = Binder.BindProgram(GlobalScope);
+            if (!programn.Functions.TryGetValue(symbol,out var body))
+            {
+                return;
+            }
+            symbol.WriteTo(writer);
+            writer.WriteLine();
+            body.WriteTo(writer);
         }
     }
 }

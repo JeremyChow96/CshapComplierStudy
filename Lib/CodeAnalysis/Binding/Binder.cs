@@ -174,7 +174,7 @@ namespace complier.CodeAnalysis.Binding
                     scope.TryDeclareFunction(function);
                 }
                 
-                foreach (var v in previous.Variable)
+                foreach (var v in previous.Variables)
                 {
                     scope.TryDeclareVariable(v);
                 }
