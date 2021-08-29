@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Lib.CodeAnalysis.IO;
 using Microsoft.VisualBasic.FileIO;
 
 namespace complier
@@ -605,7 +606,15 @@ namespace complier
             foreach (var  metaCommand in _metaCommands.OrderBy(n=>n.Name))
             {
                 var paddedName = metaCommand.Name.PadRight(maxNameLength);
-                Console.WriteLine($"#{paddedName}  {metaCommand.Description}");
+                Console.Out.WritePunctuation("#");
+                Console.Out.WriteIdentifier(paddedName);
+                Console.Out.WriteSpace();
+                Console.Out.WriteSpace();
+                Console.Out.WriteSpace();
+                Console.Out.WritePunctuation(metaCommand.Description);
+                Console.Out.WriteLine();
+
+             
             }
         }
 
