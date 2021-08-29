@@ -5,9 +5,9 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Lib.CodeAnalysis.Lowering;
 using Lib.CodeAnalysis.Symbols;
 using System;
+using ReflectionBindingFlags = System.Reflection.BindingFlags;
 
 namespace complier.CodeAnalysis
 {
@@ -53,6 +53,22 @@ namespace complier.CodeAnalysis
             var seenSymbolNames = new HashSet<string>();
             while (submission != null)
             {
+                var builtinFunctions = typeof(BuiltinFunctions)
+                    .GetFields(ReflectionBindingFlags.Public
+                               | ReflectionBindingFlags.Static
+                               | ReflectionBindingFlags.NonPublic)
+                    .Where(f => f.FieldType == typeof(FunctionSymbol))
+                    .Select(fun => (FunctionSymbol)fun.GetValue(null))
+                    .ToList();
+
+                foreach (var builtin in builtinFunctions)
+                {
+                    if (seenSymbolNames.Add(builtin.Name))
+                    {
+                        yield return builtin;
+                    }
+                }
+
                 foreach (var function in submission.Functions)
                 {
                     if (seenSymbolNames.Add(function.Name))
@@ -147,12 +163,15 @@ namespace complier.CodeAnalysis
         public void EmitTree(FunctionSymbol symbol, TextWriter writer)
         {
             var programn = Binder.BindProgram(GlobalScope);
-            if (!programn.Functions.TryGetValue(symbol,out var body))
+           
+            //We already check  function'existence before.
+
+            symbol.WriteTo(writer);
+            writer.WriteLine();
+            if (!programn.Functions.TryGetValue(symbol, out var body))
             {
                 return;
             }
-            symbol.WriteTo(writer);
-            writer.WriteLine();
             body.WriteTo(writer);
         }
     }

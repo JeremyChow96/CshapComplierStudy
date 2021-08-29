@@ -551,7 +551,7 @@ namespace complier
 
             if (args.Count != parameters.Length) 
             {
-                var parameterNames =string.Join(", " ,parameters.Select(p => $"<{p.Name}>"));
+                var parameterNames =string.Join(" " ,parameters.Select(p => $"<{p.Name}>"));
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Error.WriteLine($"error: invalid number of arguments (given {args.Count}, expected {parameters.Length})");
                 Console.Error.WriteLine($"usage: #{command.Name} {parameterNames}");
@@ -559,7 +559,7 @@ namespace complier
                 return;
             }
 
-
+            var instance = command.Method.IsStatic ? null : this;
             command.Method.Invoke(this, args.ToArray());
             
         }
@@ -605,9 +605,33 @@ namespace complier
             
             foreach (var  metaCommand in _metaCommands.OrderBy(n=>n.Name))
             {
-                var paddedName = metaCommand.Name.PadRight(maxNameLength);
-                Console.Out.WritePunctuation("#");
-                Console.Out.WriteIdentifier(paddedName);
+                var metaParameters = metaCommand.Method.GetParameters();
+                if (metaParameters.Length == 0)
+                {
+                    var paddedName = metaCommand.Name.PadRight(maxNameLength);
+                    Console.Out.WritePunctuation("#");
+                    Console.Out.WriteIdentifier(paddedName);
+                }
+                else
+                {
+                    Console.Out.WritePunctuation("#");
+                    Console.Out.WriteIdentifier(metaCommand.Name);
+                    foreach (var pi in metaParameters)
+                    {
+                        Console.Out.WriteSpace();
+                        Console.Out.WritePunctuation("<");
+                        Console.Out.WriteIdentifier(pi.Name);
+                        Console.Out.WritePunctuation(">");
+                    }
+                    Console.Out.WriteLine();
+
+                    Console.Out.WriteSpace();
+
+                    for (int _ = 0; _ < maxNameLength; _++)
+                        Console.Out.WriteSpace();
+                }
+
+              
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();
                 Console.Out.WriteSpace();

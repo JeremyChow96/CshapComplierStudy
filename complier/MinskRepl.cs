@@ -10,11 +10,13 @@ using System.IO;
 
 internal sealed class MinskRepl : Repl
 {
-    private static bool _loadingSubmission;
+    private bool _loadingSubmission;
     private Compilation _previous;
     private bool _showTree;
     private bool _showProgram;
     private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
+    private static readonly Compilation emptyCompilation = new Compilation();
+
 
     public MinskRepl()
     {
@@ -114,11 +116,8 @@ internal sealed class MinskRepl : Repl
     [MetaCommand("ls", "Lists all symbols")]
     private void EvaluateLs( )
     {
-        if (_previous ==null)
-        {
-            return;
-        }
-        var symbols = _previous.GetSymbols().OrderBy(s => s.Kind)
+        var compilation = _previous ?? emptyCompilation;
+        var symbols = compilation.GetSymbols().OrderBy(s => s.Kind)
             .ThenBy(s => s.Name);
         foreach (var symbol in symbols)
         {
@@ -132,14 +131,13 @@ internal sealed class MinskRepl : Repl
     [MetaCommand("dump", "Show bound tree of a given function")]
     private void EvaluateDump(string functionName)
     {
-        if (_previous == null)
-        {
-            return;
-        }
-        var symbol = _previous.GetSymbols()
+
+        var compilation = _previous ?? emptyCompilation;
+        var symbol = compilation.GetSymbols()
             .OfType<FunctionSymbol>()
             .SingleOrDefault(f => f.Name == functionName);
 
+       
         if (symbol ==null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -148,7 +146,7 @@ internal sealed class MinskRepl : Repl
             return;
         }
 
-        _previous.EmitTree(symbol, Console.Out);
+        compilation.EmitTree(symbol, Console.Out);
 
 
     }
@@ -272,7 +270,7 @@ internal sealed class MinskRepl : Repl
         Directory.Delete(GetSubmissionDirectory(), recursive: true);
     }
 
-    private static void SaveSubmission(string text)
+    private  void SaveSubmission(string text)
     {
         if (_loadingSubmission)
         {
