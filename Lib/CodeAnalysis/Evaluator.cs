@@ -9,11 +9,9 @@ namespace complier.CodeAnalysis
 {
     internal class Evaluator
     {
-        // private readonly ImmutableDictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
-        // private readonly BoundBlockStatement _root;
-
         private readonly BoundProgram _program;
         private readonly Dictionary<VariableSymbol, object> _globalVariables;
+        private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
 
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new();
         private Random _random;
@@ -25,6 +23,18 @@ namespace complier.CodeAnalysis
             _program = program;
             _globalVariables = globalVariables;
             _locals.Push(new Dictionary<VariableSymbol, object>());
+
+            var current = program;
+            while (current != null) 
+            {
+                foreach (var kv in current.Functions) 
+                {
+                    var function = kv.Key;
+                    var body = kv.Value;
+                    _functions.Add(function, body);
+                }
+                current = current.Previous;
+            }
         }
 
      
@@ -252,7 +262,7 @@ namespace complier.CodeAnalysis
 
                 _locals.Push(locals);
 
-                var statement = _program.Functions[node.Function];
+                var statement =_functions[node.Function];
 
                 var result = EvaluateStatement(statement);
                 _locals.Pop();

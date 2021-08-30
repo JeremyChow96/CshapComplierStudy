@@ -93,6 +93,11 @@ namespace complier.CodeAnalysis
             return new Compilation(this, syntaxTree);
         }
         
+        private BoundProgram GetProgram()
+        {
+            var preivous = Previous == null ? null : Previous.GetProgram();
+            return Binder.BindProgram(preivous, GlobalScope);
+        }
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)
         {
@@ -104,7 +109,7 @@ namespace complier.CodeAnalysis
                 return new EvaluationResult(diagnostics, null);
             }
 
-            var program = Binder.BindProgram(GlobalScope);
+            var program = GetProgram();
 
 
             var appPath = Environment.GetCommandLineArgs()[0];
@@ -138,7 +143,7 @@ namespace complier.CodeAnalysis
 
         public void EmitTree(TextWriter writer)
         {
-            var program = Binder.BindProgram(GlobalScope);
+            var program = GetProgram();
 
             if (program.Statement.Statements.Any())
             {
@@ -162,8 +167,8 @@ namespace complier.CodeAnalysis
 
         public void EmitTree(FunctionSymbol symbol, TextWriter writer)
         {
-            var programn = Binder.BindProgram(GlobalScope);
-           
+            var programn = GetProgram();
+
             //We already check  function'existence before.
 
             symbol.WriteTo(writer);
