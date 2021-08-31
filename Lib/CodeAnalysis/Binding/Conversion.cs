@@ -31,7 +31,16 @@ namespace complier.CodeAnalysis.Binding
             {
                 return Identity;
             }
-            
+            if (from != TypeSymbol.Void && to == TypeSymbol.Any)
+            {
+                return Implicit;
+            }
+
+            if (from == TypeSymbol.Any && to != TypeSymbol.Void)
+            {
+                return Explicit;
+            }
+
             if (from ==TypeSymbol.Bool|| from==TypeSymbol.Int)
             {
                 if (to ==TypeSymbol.String)

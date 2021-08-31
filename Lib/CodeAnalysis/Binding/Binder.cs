@@ -243,10 +243,7 @@ namespace complier.CodeAnalysis.Binding
         }
 
         private BoundStatement BindReturnStatement(ReturnStatmentSyntax syntax)
-        {
-        
-
-
+        {   
             var expression = syntax.Expression == null ? null : BindExpression(syntax.Expression);
             //Does the function have a return type?
             //Does the return type match?
@@ -359,7 +356,7 @@ namespace complier.CodeAnalysis.Binding
             var initializer = BindExpression(syntax.Initializer);
             var variableType = type ?? initializer.Type;
 
-            var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, initializer.Type);
+            var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType);
 
             //check if the target can be converted from the initializer's type 
             var convertedInitializer = BindConversion(syntax.Initializer.Location,initializer,variableType);
@@ -701,6 +698,7 @@ namespace complier.CodeAnalysis.Binding
         {
             switch (name)
             {
+                case "any": return TypeSymbol.Any;
                 case "bool": return TypeSymbol.Bool;
                 case "int": return TypeSymbol.Int;
                 case "string": return TypeSymbol.String;
