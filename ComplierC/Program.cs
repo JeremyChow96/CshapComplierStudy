@@ -43,7 +43,7 @@ namespace complier
             }
 
 
-            var compilation = new Compilation(syntaxTrees.ToArray());
+            var compilation =  Compilation.Create(syntaxTrees.ToArray());
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
             if (!result.Diagnostics.Any())

@@ -20,10 +20,10 @@ namespace complier.CodeAnalysis
             _diagnostics.Add(diagonstic);
         }
 
-        public void ReportInvalidNumber(TextLocation loaction, string text, TypeSymbol type)
+        public void ReportInvalidNumber(TextLocation location, string text, TypeSymbol type)
         {
             var message = $"The number {text} isn't valid {type}.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
         public void ReportBadCharater(TextLocation location, char current)
@@ -33,10 +33,10 @@ namespace complier.CodeAnalysis
             Report(location, message);
 
         }
-        public void ReportUnterminatedString(TextLocation loaction)
+        public void ReportUnterminatedString(TextLocation location)
         {
             var message = $"Unterminated string literal.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
         public void AddRange(DiagnosticBag diagnostics)
@@ -46,142 +46,148 @@ namespace complier.CodeAnalysis
 
 
 
-        public void ReportUnexpectedToken(TextLocation loaction, SyntaxKind actualKind, SyntaxKind expectedKind)
+        public void ReportUnexpectedToken(TextLocation location, SyntaxKind actualKind, SyntaxKind expectedKind)
         {
             var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportUndefinedUnaryOperator(TextLocation loaction, string text, TypeSymbol type)
+        public void ReportUndefinedUnaryOperator(TextLocation location, string text, TypeSymbol type)
         {
             var message = $"Unary operator '{text}' is not defined for type '{type}'.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportUndefinedBinaryOperator(TextLocation loaction, string text, TypeSymbol leftType, TypeSymbol rightType)
+        public void ReportUndefinedBinaryOperator(TextLocation location, string text, TypeSymbol leftType, TypeSymbol rightType)
         {
             var message = $"Binary operator '{text}' is not defined for type '{leftType}' and '{rightType}'.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportUndefinedVariable(TextLocation loaction, string name)
+        public void ReportUndefinedVariable(TextLocation location, string name)
         {
             var message = $"Variable '{name}' doesn't exist.";
-            Report(loaction, message);
+            Report(location, message);
 
         }
 
-        public void ReportNotAVariable(TextLocation loaction, string name)
+        public void ReportNotAVariable(TextLocation location, string name)
         {
             var message = $"'{name}' is not a variable.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportUndefinedType(TextLocation loaction, string name)
+        public void ReportUndefinedType(TextLocation location, string name)
         {
             var message = $"Type '{name}' doesn't exist.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportNotAFunction(TextLocation loaction, string name)
+        public void ReportNotAFunction(TextLocation location, string name)
         {
             var message = $"'{name}' is not a function.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportSymbolAlreadyDeclared(TextLocation loaction, string name)
+        public void ReportSymbolAlreadyDeclared(TextLocation location, string name)
         {
             var message = $"'{name}' is already declared.";
-            Report(loaction, message);
+            Report(location, message);
         }
-        public void ReportParameterAlreadyDeclared(TextLocation loaction, string parameterName)
+        public void ReportParameterAlreadyDeclared(TextLocation location, string parameterName)
         {
             var message = $"A parameter with the name '{parameterName}' already exists.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
 
 
-        public void ReportCannotConvert(TextLocation loaction, TypeSymbol fromType, TypeSymbol toType)
+        public void ReportCannotConvert(TextLocation location, TypeSymbol fromType, TypeSymbol toType)
         {
             var message = $"Cannot convert type '{fromType}' to '{toType}'.";
-            Report(loaction, message);
+            Report(location, message);
         }
-        public void ReportCannotConvertImplicitly(TextLocation loaction, TypeSymbol fromType, TypeSymbol toType)
+        public void ReportCannotConvertImplicitly(TextLocation location, TypeSymbol fromType, TypeSymbol toType)
         {
             var message = $"Cannot implicitly convert type '{fromType}' to '{toType}'. An explicit conversion exists (are you missing a cast?)";
-            Report(loaction, message);
+            Report(location, message);
         }
-        public void ReportCannotAssign(TextLocation loaction, string name)
+        public void ReportCannotAssign(TextLocation location, string name)
         {
             var message = $"Variable '{name}' is read-only and cannot be assigned to.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
 
 
-        public void ReportUndefinedFunction(TextLocation loaction, string name)
+        public void ReportUndefinedFunction(TextLocation location, string name)
         {
             var message = $"Function '{name}' doesn't exist.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportWrongArguementCount(TextLocation loaction, string name, int expectedCount, int actualCount)
+        public void ReportWrongArguementCount(TextLocation location, string name, int expectedCount, int actualCount)
         {
             var message = $"Function '{name}' requires {expectedCount} arguments but was given {actualCount}.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportWrongArguementType(TextLocation loaction, string name, TypeSymbol expectedType, TypeSymbol actualType)
+        public void ReportWrongArguementType(TextLocation location, string name, TypeSymbol expectedType, TypeSymbol actualType)
         {
             var message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportExpressionMustHaveValue(TextLocation loaction)
+        public void ReportExpressionMustHaveValue(TextLocation location)
         {
             var message = $"Expression must have a value.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
 
-        //public void XXX_ReportFunctionAreUnsupported(TextLocation loaction)
+        //public void XXX_ReportFunctionAreUnsupported(TextLocation location)
         //{
         //    var message = $"Functions with return values are unsupported.";
-        //    Report(loaction, message);
+        //    Report(location, message);
         //}
 
-        public void ReportInvalidBreakOrContinue(TextLocation loaction, string text)
+        public void ReportInvalidBreakOrContinue(TextLocation location, string text)
         {
             var message = $"The keyword '{text}' can only be used inside of loops.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
 
-        public void ReportAllPathMustReturn(TextLocation loaction)
+        public void ReportAllPathMustReturn(TextLocation location)
         {
             var message = "Not all code paths return a value.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
 
-        public void ReportInvalidReturn(TextLocation loaction)
+        public void ReportInvalidReturn(TextLocation location)
         {
 
             var message = "The 'return' keyword can only be used inside of functions.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportInvalidReturnExpression(TextLocation loaction, string functionName)
+        public void ReportInvalidReturnExpression(TextLocation location, string functionName)
         {
             var message = $"Since the function '{functionName}' does not return a value. the 'return' keyword cannot be followed by an expression.";
-            Report(loaction, message);
+            Report(location, message);
         }
 
-        public void ReportMissingReturnExpression(TextLocation loaction, TypeSymbol returnType)
+        public void ReportMissingReturnExpression(TextLocation location, TypeSymbol returnType)
         {
             var message = $"An expression of type '{returnType}' is expected.";
-            Report(loaction, message);
+            Report(location, message);
+        }
+
+        public void ReportInvalidExpressionStatement(TextLocation location)
+        {
+            var message = "Only assignment, call, increment, decrement, await, and new object expressions can be used as a statement.";
+            Report(location, message);
         }
     }
 

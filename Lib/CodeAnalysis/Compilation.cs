@@ -15,18 +15,31 @@ namespace complier.CodeAnalysis
     {
         private BoundGlobalScope _globalScope;
 
-        public Compilation(params SyntaxTree[] syntaxTree) :
-            this(null, syntaxTree)
-        {
+        //public Compilation(params SyntaxTree[] syntaxTree) :
+        //    this(null, syntaxTree)
+        //{
    
-        }
+        //}
 
-        private Compilation(Compilation previous, params SyntaxTree[] syntaxTrees)
+        private Compilation(bool isScript, Compilation previous, params SyntaxTree[] syntaxTrees)
         {
+            IsScript = isScript;
             Previous = previous;
             SyntaxTrees = syntaxTrees.ToImmutableArray();
         }
 
+        public static Compilation Create(params SyntaxTree[] syntaxTrees)
+        {
+            return new Compilation(false, null, syntaxTrees);
+
+        }
+
+        public static Compilation CreateScripts(Compilation previous,params SyntaxTree[] syntaxTrees)
+        {
+            return new Compilation(true, previous, syntaxTrees);
+        }
+
+        public bool IsScript { get; }
         public Compilation Previous { get; }
         public ImmutableArray<SyntaxTree> SyntaxTrees { get; }
         public ImmutableArray<FunctionSymbol> Functions => GlobalScope.Functions;
@@ -39,7 +52,7 @@ namespace complier.CodeAnalysis
             {
                 if (_globalScope == null)
                 {
-                    var globalScope = Binder.BindGlobalScope(Previous?.GlobalScope,SyntaxTrees);
+                    var globalScope = Binder.BindGlobalScope(IsScript, Previous?.GlobalScope,SyntaxTrees);
                     Interlocked.CompareExchange(ref _globalScope, globalScope, null);
                 }
 
@@ -61,14 +74,6 @@ namespace complier.CodeAnalysis
                     .Select(fun => (FunctionSymbol)fun.GetValue(null))
                     .ToList();
 
-                foreach (var builtin in builtinFunctions)
-                {
-                    if (seenSymbolNames.Add(builtin.Name))
-                    {
-                        yield return builtin;
-                    }
-                }
-
                 foreach (var function in submission.Functions)
                 {
                     if (seenSymbolNames.Add(function.Name))
@@ -83,20 +88,29 @@ namespace complier.CodeAnalysis
                         yield return varaible;
                     }
                 }
+
+                foreach (var builtin in builtinFunctions)
+                {
+                    if (seenSymbolNames.Add(builtin.Name))
+                    {
+                        yield return builtin;
+                    }
+                }
+
                 submission = submission.Previous;
             }
         }
 
 
-        public Compilation ContinueWith(SyntaxTree syntaxTree)
-        {
-            return new Compilation(this, syntaxTree);
-        }
+        //public Compilation ContinueWith(SyntaxTree syntaxTree)
+        //{
+        //    return new Compilation(this, syntaxTree);
+        //}
         
         private BoundProgram GetProgram()
         {
             var preivous = Previous == null ? null : Previous.GetProgram();
-            return Binder.BindProgram(preivous, GlobalScope);
+            return Binder.BindProgram(IsScript, preivous, GlobalScope);
         }
 
         public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables)

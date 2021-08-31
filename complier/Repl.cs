@@ -107,14 +107,15 @@ namespace complier
 
                 foreach (var line in _submissionDocument)
                 {
-                    if (_cursorTop + lineCount >= Console.WindowHeight-1)
-                    {
-                        Console.WriteLine();
-                        if (_cursorTop>0)
-                        {
-                            _cursorTop--;
-                        }
-                    }
+                    // Casusing  a console bug
+                    //if (_cursorTop + lineCount >= Console.WindowHeight-1)
+                    //{
+                    //    Console.WriteLine();
+                    //    if (_cursorTop>0)
+                    //    {
+                    //        _cursorTop--;
+                    //    }
+                    //}
 
 
                     Console.SetCursorPosition(0, _cursorTop + lineCount);
