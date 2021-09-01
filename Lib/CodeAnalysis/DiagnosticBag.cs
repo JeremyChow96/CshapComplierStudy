@@ -132,11 +132,11 @@ namespace complier.CodeAnalysis
             Report(location, message);
         }
 
-        public void ReportWrongArguementType(TextLocation location, string name, TypeSymbol expectedType, TypeSymbol actualType)
-        {
-            var message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
-            Report(location, message);
-        }
+        //public void ReportWrongArguementType(TextLocation location, string name, TypeSymbol expectedType, TypeSymbol actualType)
+        //{
+        //    var message = $"Parameter '{name}' requires a value of type '{expectedType}' but was given a value of type '{actualType}'.";
+        //    Report(location, message);
+        //}
 
         public void ReportExpressionMustHaveValue(TextLocation location)
         {

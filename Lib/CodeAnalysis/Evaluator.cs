@@ -236,7 +236,7 @@ namespace complier.CodeAnalysis
             }
             else if (node.Function == BuiltinFunctions.Print)
             {
-                var message = (string) EvaluateExpression(node.Arguments[0]);
+                var message =  EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
             }

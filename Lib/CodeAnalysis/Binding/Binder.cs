@@ -497,29 +497,16 @@ namespace complier.CodeAnalysis.Binding
                 return new BoundErrorExpression();
             }
 
-            bool hasErrors = false;
+
             for (int i = 0; i < syntax.Arguments.Count; i++)
             {
+                var argumentLocation = syntax.Arguments[i].Location;
                 var argument = boundArguments[i];
                 var parameter = function.Parameters[i];
-
-                // parameter type check
-                if (argument.Type != parameter.Type)
-                {
-                    if (argument.Type!= TypeSymbol.Error)
-                    {
-                        _diagnostics.ReportWrongArguementType(syntax.Arguments[i].Location, parameter.Name, parameter.Type, argument.Type);
-                        hasErrors = true;
-                    }
-                    return new BoundErrorExpression();
-                }
+                boundArguments[i] = BindConversion(argumentLocation, argument, parameter.Type);
             }
-            if (hasErrors)
-            {
-                return new BoundErrorExpression();
-            }
-            
-            // _diagnostics.ReportBadCharater(syntax.Identifier.Span.Start,'X');
+    
+           
             return new BoundCallExpression(function, boundArguments.ToImmutable());
         }
 
