@@ -183,13 +183,6 @@ namespace complier.CodeAnalysis
         }
 
 
-        public void ReportInvalidReturn(TextLocation location)
-        {
-
-            var message = "The 'return' keyword can only be used inside of functions.";
-            Report(location, message);
-        }
-
         public void ReportInvalidReturnExpression(TextLocation location, string functionName)
         {
             var message = $"Since the function '{functionName}' does not return a value. the 'return' keyword cannot be followed by an expression.";

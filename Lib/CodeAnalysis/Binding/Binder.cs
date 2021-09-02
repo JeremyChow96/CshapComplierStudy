@@ -55,6 +55,12 @@ namespace complier.CodeAnalysis.Binding
                                               .OfType<GlobalStatementSyntax>();
 
 
+            var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+            foreach (var globalStatement in globalStatements)
+            {
+                var statement = binder.BindGlobalStatement(globalStatement.Statement);
+                statements.Add(statement);
+            }
             // check global statements     
             var firstGlobalStatementPerSyntaxTree = syntaxTrees.Select(st => st.Root.Members.OfType<GlobalStatementSyntax>().FirstOrDefault())
                                                                .Where(g => g != null)
@@ -115,29 +121,15 @@ namespace complier.CodeAnalysis.Binding
                 }
             }
 
-            var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+          
 
             var diagnostics = binder.Diagnostics.ToImmutableArray();
-
-            var globalStatementFunction = mainFunction ?? scriptFunction;
-            if (globalStatementFunction != null) 
-            {
-                var statementBinder = new Binder(isScript, parentScope, globalStatementFunction);
-                foreach (var globalStatement in globalStatements)
-                {
-                    var statement = statementBinder.BindGlobalStatement(globalStatement.Statement);
-                    statements.Add(statement);
-                }
-                diagnostics.AddRange(statementBinder.Diagnostics);
-            }
-     
-
 
             var variables = binder._scope.GetDeclaredVariables();
         
             if (previous != null)
             {
-                diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
+                diagnostics= diagnostics.InsertRange(0, previous.Diagnostics);
             }
 
             return new BoundGlobalScope(previous,
@@ -354,7 +346,19 @@ namespace complier.CodeAnalysis.Binding
 
             if (_function == null)
             {
-                _diagnostics.ReportInvalidReturn(syntax.ReturnKeyword.Location);
+                if (_isScript)
+                {
+                    // Ignore   allow both return with and without values
+                    if (expression ==null)
+                    {
+                        expression = new BoundLiteralExpression("");
+                    }
+                }
+                else if (expression != null) 
+                {
+                    // Main does not support return values.
+                    _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Location, _function.Name);
+                }
             }
             else
             {
@@ -650,7 +654,7 @@ namespace complier.CodeAnalysis.Binding
             //_diagnostics.ReportUndefinedName(syntax.Identifier.Span, name);
             var variable = BindVariableReference(syntax.Identifier);
             if (variable == null)
-                return boundExpresion;
+                return new BoundErrorExpression();
 
 
             if (variable.IsReadOnly)
