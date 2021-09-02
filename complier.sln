@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lib", "Lib\Lib.csproj", "{D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{0E2B4217-820E-44FF-9C8E-A534C7FF71FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplierC", "ComplierC\ComplierC.csproj", "{07C638A6-A1A7-4541-B3BC-12D9B6DAAAA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComplierC", "ComplierC\ComplierC.csproj", "{07C638A6-A1A7-4541-B3BC-12D9B6DAAAA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

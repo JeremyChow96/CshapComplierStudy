@@ -13,10 +13,11 @@ namespace complier
     {
         private static int Main(string[] args)
         {
+       
  
             if (args.Length ==0)
             {
-                Console.Error.WriteLine("usage : mc <source-paths>");
+                Console.Error.WriteLine("usage : msc <source-paths>");
             }
 
             var paths =  GetFilePaths(args);
@@ -42,7 +43,7 @@ namespace complier
             }
 
 
-            var compilation = new Compilation(syntaxTrees.ToArray());
+            var compilation =  Compilation.Create(syntaxTrees.ToArray());
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
             if (!result.Diagnostics.Any())

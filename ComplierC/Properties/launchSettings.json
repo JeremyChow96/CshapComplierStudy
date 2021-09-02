@@ -2,7 +2,7 @@
   "profiles": {
     "ComplierC": {
       "commandName": "Project",
-      "commandLineArgs": "D:\\docker\\complier\\samples\\hello\\helloworld.ms"
+      "commandLineArgs": "D:\\docker\\complier\\samples\\hello\\"
     }
   }
 }

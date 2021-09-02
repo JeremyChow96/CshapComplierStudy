@@ -21,8 +21,8 @@ namespace Test.CodeAnalysis
         [InlineData("1 * 2", 2)]
         [InlineData("6 / 2", 3)]
         [InlineData("(1 + 3) * 3", 12)]
-        [InlineData("var a=12", 12)]
-        [InlineData(" { var a = 10  a = a * a}", 100)]
+        [InlineData("var a=12 return a", 12)]
+        [InlineData(" { var a = 10  a = a * a return a}", 100)]
 
         [InlineData("3 > 4 ", false)]
         [InlineData("2 >= 2", true)]
@@ -67,13 +67,13 @@ namespace Test.CodeAnalysis
         [InlineData("\"test\"==\"test\"",true)]
 
 
-        [InlineData(" { var a = 0 if a == 0 a = 10  a}", 10)]
-        [InlineData(" { var a = 0 if a == 4 a = 10  a}", 0)]
-        [InlineData(" { var a = 0 if a == 0 a = 10 else a = 5 a}", 10)]
-        [InlineData(" { var a = 0 if a == 4 a = 10 else a = 5 a}", 5)]
-        [InlineData(" { var i = 10  var result = 0  while i> 0 {result = result + i i = i - 1}   result }", 55)]
-        [InlineData("{ var result = 0 for i = 1 to 10 { result = result + i }  result }", 55)]
-        [InlineData("{ var a = 10 for i = 1 to (a = a - 1) { }  a }", 9)]
+        [InlineData(" { var a = 0 if a == 0 a = 10 return  a}", 10)]
+        [InlineData(" { var a = 0 if a == 4 a = 10 return a}", 0)]
+        [InlineData(" { var a = 0 if a == 0 a = 10 else a = 5  return a}", 10)]
+        [InlineData(" { var a = 0 if a == 4 a = 10 else a = 5  return a}", 5)]
+        [InlineData(" { var i = 10  var result = 0  while i> 0 {result = result + i i = i - 1} return  result }", 55)]
+        [InlineData("{ var result = 0 for i = 1 to 10 { result = result + i } return result }", 55)]
+        [InlineData("{ var a = 10 for i = 1 to (a = a - 1) { } return  a }", 9)]
 
         public void SyntaxFact_GetText_RoundTrips(string text, object expectedResult)
         {
@@ -378,17 +378,15 @@ namespace Test.CodeAnalysis
         }
 
         [Fact]
-        public void Evaluator_Invalid_Return()
+        public void Evaluator_Script_Return()
         {
             var text = @"
-                [return]
+                return
             ";
 
-            var diagnostics = @"
-                The 'return' keyword can only be used inside of functions.
-            ";
+        
 
-            AssertDiagnostics(text, diagnostics);
+            AssertValue(text, "");
         }
 
         [Fact]
@@ -438,7 +436,7 @@ namespace Test.CodeAnalysis
             ";
 
             var diagnostics = @"
-                Parameter 'n' requires a value of type 'int' but was given a value of type 'string'.
+               Cannot implicitly convert type 'string' to 'int'. An explicit conversion exists (are you missing a cast?)
             ";
 
             AssertDiagnostics(text, diagnostics);
@@ -507,7 +505,7 @@ namespace Test.CodeAnalysis
         private static void AssertValue(string text, object expectedReuslt)
         {
             var syntaxTree = SyntaxTree.Parse(text);
-            var compliation = new Compilation(syntaxTree);
+            var compliation =  Compilation.CreateScripts(null,syntaxTree);
 
             var variables = new Dictionary<VariableSymbol, object>();
             var result = compliation.Evaluate(variables);
@@ -520,7 +518,7 @@ namespace Test.CodeAnalysis
         {
             var annotatedText = AnnotatedText.Parse(text);
             var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
-            var compilation = new Compilation(syntaxTree);
+            var compilation = Compilation.CreateScripts(null, syntaxTree);
             var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
       

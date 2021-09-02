@@ -15,7 +15,7 @@ internal sealed class MinskRepl : Repl
     private bool _showTree;
     private bool _showProgram;
     private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
-    private static readonly Compilation emptyCompilation = new Compilation();
+    private static readonly Compilation emptyCompilation = Compilation.CreateScripts(null);
 
 
     public MinskRepl()
@@ -193,9 +193,7 @@ internal sealed class MinskRepl : Repl
     {
         var syntaxTree = SyntaxTree.Parse(text);
 
-        var compilation = _previous == null
-            ? new Compilation(syntaxTree)
-            : _previous.ContinueWith(syntaxTree);
+        var compilation = Compilation.CreateScripts(_previous, syntaxTree);
 
         if (_showTree)
         {
@@ -267,7 +265,11 @@ internal sealed class MinskRepl : Repl
 
     private static void ClearSubmissions( )
     {
-        Directory.Delete(GetSubmissionDirectory(), recursive: true);
+        var directory = GetSubmissionDirectory();
+        if (Directory.Exists(directory))
+        {
+            Directory.Delete(directory, recursive: true);
+        }
     }
 
     private  void SaveSubmission(string text)

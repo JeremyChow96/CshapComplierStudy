@@ -9,11 +9,9 @@ namespace complier.CodeAnalysis
 {
     internal class Evaluator
     {
-        // private readonly ImmutableDictionary<FunctionSymbol, BoundBlockStatement> _functionBodies;
-        // private readonly BoundBlockStatement _root;
-
         private readonly BoundProgram _program;
         private readonly Dictionary<VariableSymbol, object> _globalVariables;
+        private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
 
         private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new();
         private Random _random;
@@ -25,12 +23,30 @@ namespace complier.CodeAnalysis
             _program = program;
             _globalVariables = globalVariables;
             _locals.Push(new Dictionary<VariableSymbol, object>());
+
+            var current = program;
+            while (current != null) 
+            {
+                foreach (var kv in current.Functions) 
+                {
+                    var function = kv.Key;
+                    var body = kv.Value;
+                    _functions.Add(function, body);
+                }
+                current = current.Previous;
+            }
         }
 
      
         public object Evaluate()
         {
-            return EvaluateStatement(_program.Statement);
+            var function = _program.MainFunction ?? _program.ScriptFunction;
+            if (function==null)
+            {
+                return null;
+            }
+            var body = _functions[function];
+            return EvaluateStatement(body);
         }
 
         private object EvaluateStatement(BoundBlockStatement body)
@@ -226,7 +242,7 @@ namespace complier.CodeAnalysis
             }
             else if (node.Function == BuiltinFunctions.Print)
             {
-                var message = (string) EvaluateExpression(node.Arguments[0]);
+                var message =  EvaluateExpression(node.Arguments[0]);
                 Console.WriteLine(message);
                 return null;
             }
@@ -252,7 +268,7 @@ namespace complier.CodeAnalysis
 
                 _locals.Push(locals);
 
-                var statement = _program.Functions[node.Function];
+                var statement =_functions[node.Function];
 
                 var result = EvaluateStatement(statement);
                 _locals.Pop();
@@ -267,7 +283,11 @@ namespace complier.CodeAnalysis
         private object EvaluateConversionExpression(BoundConversionExpression node)
         {
             var value = EvaluateExpression(node.Expression);
-            if (node.Type == TypeSymbol.Bool)
+            if (node.Type == TypeSymbol.Any)
+            {
+                return value;
+            }
+            else if (node.Type == TypeSymbol.Bool)
             {
                 return Convert.ToBoolean(value);
             }
