@@ -354,11 +354,7 @@ namespace complier.CodeAnalysis.Binding
                         expression = new BoundLiteralExpression("");
                     }
                 }
-                else if (expression != null) 
-                {
-                    // Main does not support return values.
-                    _diagnostics.ReportInvalidReturnExpression(syntax.Expression.Location, _function.Name);
-                }
+ 
             }
             else
             {
