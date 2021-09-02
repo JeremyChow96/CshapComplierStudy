@@ -83,9 +83,27 @@ namespace complier.CodeAnalysis
             Report(location, message);
         }
 
+        public void ReportMainMustHaveCorrectSignature(TextLocation location)
+        {
+            var message = $"Main must not take arguments and not return anything";
+            Report(location, message);
+        }
+
+        public void ReportOnlyOneFileCanHaveGlobalStatements(TextLocation location)
+        {
+            var message = $"At most one file can have global statements.";
+            Report(location, message);
+        }
+
         public void ReportNotAFunction(TextLocation location, string name)
         {
             var message = $"'{name}' is not a function.";
+            Report(location, message);
+        }
+
+        internal void ReportCannotMixMainAndGlobalStatements(TextLocation location)
+        {
+            var message = $"Cannot declare main function when global statements are uesd.";
             Report(location, message);
         }
 
