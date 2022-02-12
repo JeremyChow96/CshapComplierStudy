@@ -13,7 +13,7 @@ namespace complier.CodeAnalysis
         private readonly Dictionary<VariableSymbol, object> _globalVariables;
         private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
 
-        private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new();
+        private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
         private Random _random;
 
         private object _lastValue;
